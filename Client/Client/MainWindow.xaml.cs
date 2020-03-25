@@ -22,6 +22,9 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
+        public static Service.Profile profile;
+        DataProvider dp = new DataProvider();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,13 +32,25 @@ namespace Client
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
 
-            List<Service.Product> products = client.GetProductTable().ToList();
-            DGProducts.ItemsSource = products;
-            var product = products.First();
-            TestImage.Source = DataProvider.GetImageFromByte(product.MainImage);
         }
 
+        private void Login_Click(object sender, RoutedEventArgs e)
+        {
+            profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+            if (profile == null)
+            {
+                MessageBox.Show("Error");
+                return;
+            }
+            MessageBox.Show("Succes login");
+
+        }
+
+        private void Register_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterWindows register = new RegisterWindows();
+            register.Show();
+        }
     }
 }

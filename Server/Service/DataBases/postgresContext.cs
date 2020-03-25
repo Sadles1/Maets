@@ -34,7 +34,6 @@ namespace Service
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=zxcv1234");
             }
         }
@@ -47,38 +46,30 @@ namespace Service
             {
                 entity.ToTable("t_Comments");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Comment)
                     .IsRequired()
                     .HasColumnType("character varying");
 
-                entity.Property(e => e.Idproduct).HasColumnName("IDProduct");
-
-                entity.Property(e => e.Iduser).HasColumnName("IDUser");
-
-                entity.HasOne(d => d.IdproductNavigation)
+                entity.HasOne(d => d.IdProductNavigation)
                     .WithMany(p => p.TComments)
-                    .HasForeignKey(d => d.Idproduct)
+                    .HasForeignKey(d => d.IdProduct)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Comments_IDProduct_fkey");
+                    .HasConstraintName("t_Comments_IdProduct_fkey");
 
-                entity.HasOne(d => d.IduserNavigation)
+                entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.TComments)
-                    .HasForeignKey(d => d.Iduser)
+                    .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Comments_IDUser_fkey");
+                    .HasConstraintName("t_Comments_IdUser_fkey");
             });
 
             modelBuilder.Entity<TDeals>(entity =>
             {
                 entity.ToTable("t_Deals");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Count)
                     .IsRequired()
@@ -86,74 +77,61 @@ namespace Service
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
-                entity.Property(e => e.Idbuyers).HasColumnName("IDBuyers");
-
-                entity.Property(e => e.Idproduct).HasColumnName("IDProduct");
-
-                entity.HasOne(d => d.IdbuyersNavigation)
+                entity.HasOne(d => d.IdBuyersNavigation)
                     .WithMany(p => p.TDeals)
-                    .HasForeignKey(d => d.Idbuyers)
+                    .HasForeignKey(d => d.IdBuyers)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Deals_IDBuyers_fkey");
+                    .HasConstraintName("t_Deals_IdBuyers_fkey");
 
-                entity.HasOne(d => d.IdproductNavigation)
+                entity.HasOne(d => d.IdProductNavigation)
                     .WithMany(p => p.TDeals)
-                    .HasForeignKey(d => d.Idproduct)
+                    .HasForeignKey(d => d.IdProduct)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Deals_IDProduct_fkey");
+                    .HasConstraintName("t_Deals_IdProduct_fkey");
             });
 
             modelBuilder.Entity<TDeveloper>(entity =>
             {
                 entity.ToTable("t_Developer");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Iduser).HasColumnName("IDUser");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IduserNavigation)
+                entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.TDeveloper)
-                    .HasForeignKey(d => d.Iduser)
+                    .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Developer_IDUser_fkey");
+                    .HasConstraintName("t_Developer_IdUser_fkey");
             });
+
             modelBuilder.Entity<TGameGenre>(entity =>
             {
-                entity.HasKey(e => new { e.Idgame, e.Idgenre })
+                entity.HasKey(e => new { e.IdGame, e.IdGenre })
                     .HasName("t_GameGenre_pkey");
 
                 entity.ToTable("t_GameGenre");
 
-                entity.Property(e => e.Idgame).HasColumnName("IDGame");
-
-                entity.Property(e => e.Idgenre).HasColumnName("IDGenre");
-
-                entity.HasOne(d => d.IdgameNavigation)
+                entity.HasOne(d => d.IdGameNavigation)
                     .WithMany(p => p.TGameGenre)
-                    .HasForeignKey(d => d.Idgame)
+                    .HasForeignKey(d => d.IdGame)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_GameGenre_IDGame_fkey");
+                    .HasConstraintName("t_GameGenre_IdGame_fkey");
 
-                entity.HasOne(d => d.IdgenreNavigation)
+                entity.HasOne(d => d.IdGenreNavigation)
                     .WithMany(p => p.TGameGenre)
-                    .HasForeignKey(d => d.Idgenre)
+                    .HasForeignKey(d => d.IdGenre)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_GameGenre_IDGenre_fkey");
+                    .HasConstraintName("t_GameGenre_IdGenre_fkey");
             });
 
             modelBuilder.Entity<TGenre>(entity =>
             {
                 entity.ToTable("t_Genre");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -164,11 +142,7 @@ namespace Service
             {
                 entity.ToTable("t_Login");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Idowner).HasColumnName("IDOwner");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Login)
                     .IsRequired()
@@ -180,80 +154,66 @@ namespace Service
                     .HasColumnName("password")
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IdownerNavigation)
+                entity.HasOne(d => d.IdOwnerNavigation)
                     .WithMany(p => p.TLogin)
-                    .HasForeignKey(d => d.Idowner)
+                    .HasForeignKey(d => d.IdOwner)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Login_IDOwner_fkey");
+                    .HasConstraintName("t_Login_IdOwner_fkey");
             });
 
             modelBuilder.Entity<TMinGameSysReq>(entity =>
             {
-                entity.HasKey(e => new { e.Idgame, e.IdsysReq })
+                entity.HasKey(e => new { e.IdGame, e.IdSysReq })
                     .HasName("t_MinGameSysReq_pkey");
 
                 entity.ToTable("t_MinGameSysReq");
-
-                entity.Property(e => e.Idgame).HasColumnName("IDGame");
-
-                entity.Property(e => e.IdsysReq).HasColumnName("IDSysReq");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IdgameNavigation)
+                entity.HasOne(d => d.IdGameNavigation)
                     .WithMany(p => p.TMinGameSysReq)
-                    .HasForeignKey(d => d.Idgame)
+                    .HasForeignKey(d => d.IdGame)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_MinGameSysReq_IDGame_fkey");
+                    .HasConstraintName("t_MinGameSysReq_IdGame_fkey");
 
-                entity.HasOne(d => d.IdsysReqNavigation)
+                entity.HasOne(d => d.IdSysReqNavigation)
                     .WithMany(p => p.TMinGameSysReq)
-                    .HasForeignKey(d => d.IdsysReq)
+                    .HasForeignKey(d => d.IdSysReq)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_MinGameSysReq_IDSysReq_fkey");
+                    .HasConstraintName("t_MinGameSysReq_IdSysReq_fkey");
             });
 
             modelBuilder.Entity<TModerateEmployers>(entity =>
             {
-                entity.HasKey(e => new { e.Idemployee, e.IdmoderateProduct })
+                entity.HasKey(e => new { e.IdEmployee, e.IdModerateProduct })
                     .HasName("t_ModerateEmployers_pkey");
 
                 entity.ToTable("t_ModerateEmployers");
 
-                entity.Property(e => e.Idemployee).HasColumnName("IDEmployee");
-
-                entity.Property(e => e.IdmoderateProduct).HasColumnName("IDModerateProduct");
-
-                entity.HasOne(d => d.IdemployeeNavigation)
+                entity.HasOne(d => d.IdEmployeeNavigation)
                     .WithMany(p => p.TModerateEmployers)
-                    .HasForeignKey(d => d.Idemployee)
+                    .HasForeignKey(d => d.IdEmployee)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_ModerateEmployers_IDEmployee_fkey");
+                    .HasConstraintName("t_ModerateEmployers_IdEmployee_fkey");
 
-                entity.HasOne(d => d.IdmoderateProductNavigation)
+                entity.HasOne(d => d.IdModerateProductNavigation)
                     .WithMany(p => p.TModerateEmployers)
-                    .HasForeignKey(d => d.IdmoderateProduct)
+                    .HasForeignKey(d => d.IdModerateProduct)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_ModerateEmployers_IDModerateProduct_fkey");
+                    .HasConstraintName("t_ModerateEmployers_IdModerateProduct_fkey");
             });
 
             modelBuilder.Entity<TModerateProducts>(entity =>
             {
                 entity.ToTable("t_ModerateProducts");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.Property(e => e.Iddeveloper).HasColumnName("IDDeveloper");
-
-                entity.Property(e => e.Idpublisher).HasColumnName("IDPublisher");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -261,34 +221,28 @@ namespace Service
 
                 entity.Property(e => e.RequestDate).HasColumnType("date");
 
-                entity.HasOne(d => d.IddeveloperNavigation)
+                entity.HasOne(d => d.IdDeveloperNavigation)
                     .WithMany(p => p.TModerateProducts)
-                    .HasForeignKey(d => d.Iddeveloper)
+                    .HasForeignKey(d => d.IdDeveloper)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_ModerateProducts_IDDeveloper_fkey");
+                    .HasConstraintName("t_ModerateProducts_IdDeveloper_fkey");
 
-                entity.HasOne(d => d.IdpublisherNavigation)
+                entity.HasOne(d => d.IdPublisherNavigation)
                     .WithMany(p => p.TModerateProducts)
-                    .HasForeignKey(d => d.Idpublisher)
+                    .HasForeignKey(d => d.IdPublisher)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_ModerateProducts_IDPublisher_fkey");
+                    .HasConstraintName("t_ModerateProducts_IdPublisher_fkey");
             });
 
             modelBuilder.Entity<TProducts>(entity =>
             {
                 entity.ToTable("t_Products");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.Property(e => e.Iddeveloper).HasColumnName("IDDeveloper");
-
-                entity.Property(e => e.Idpublisher).HasColumnName("IDPublisher");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -296,75 +250,65 @@ namespace Service
 
                 entity.Property(e => e.ReleaseDate).HasColumnType("date");
 
-                entity.HasOne(d => d.IddeveloperNavigation)
+                entity.HasOne(d => d.IdDeveloperNavigation)
                     .WithMany(p => p.TProducts)
-                    .HasForeignKey(d => d.Iddeveloper)
+                    .HasForeignKey(d => d.IdDeveloper)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Products_IDDeveloper_fkey");
+                    .HasConstraintName("t_Products_IdDeveloper_fkey");
 
-                entity.HasOne(d => d.IdpublisherNavigation)
+                entity.HasOne(d => d.IdPublisherNavigation)
                     .WithMany(p => p.TProducts)
-                    .HasForeignKey(d => d.Idpublisher)
+                    .HasForeignKey(d => d.IdPublisher)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Products_IDPublisher_fkey");
+                    .HasConstraintName("t_Products_IdPublisher_fkey");
             });
 
             modelBuilder.Entity<TPublisher>(entity =>
             {
                 entity.ToTable("t_Publisher");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Iduser).HasColumnName("IDUser");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IduserNavigation)
+                entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.TPublisher)
-                    .HasForeignKey(d => d.Iduser)
+                    .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Publisher_IDUser_fkey");
+                    .HasConstraintName("t_Publisher_IdUser_fkey");
             });
 
             modelBuilder.Entity<TRecGameSysReq>(entity =>
             {
-                entity.HasKey(e => new { e.Idgame, e.IdsysReq })
+                entity.HasKey(e => new { e.IdGame, e.IdSysReq })
                     .HasName("t_RecGameSysReq_pkey");
 
                 entity.ToTable("t_RecGameSysReq");
-
-                entity.Property(e => e.Idgame).HasColumnName("IDGame");
-
-                entity.Property(e => e.IdsysReq).HasColumnName("IDSysReq");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IdgameNavigation)
+                entity.HasOne(d => d.IdGameNavigation)
                     .WithMany(p => p.TRecGameSysReq)
-                    .HasForeignKey(d => d.Idgame)
+                    .HasForeignKey(d => d.IdGame)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_RecGameSysReq_IDGame_fkey");
+                    .HasConstraintName("t_RecGameSysReq_IdGame_fkey");
 
-                entity.HasOne(d => d.IdsysReqNavigation)
+                entity.HasOne(d => d.IdSysReqNavigation)
                     .WithMany(p => p.TRecGameSysReq)
-                    .HasForeignKey(d => d.IdsysReq)
+                    .HasForeignKey(d => d.IdSysReq)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_RecGameSysReq_IDSysReq_fkey");
+                    .HasConstraintName("t_RecGameSysReq_IdSysReq_fkey");
             });
 
             modelBuilder.Entity<TSysReq>(entity =>
             {
                 entity.ToTable("t_SysReq");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -375,9 +319,7 @@ namespace Service
             {
                 entity.ToTable("t_Users");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Mail)
                     .IsRequired()

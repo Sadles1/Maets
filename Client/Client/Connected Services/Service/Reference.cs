@@ -15,6 +15,147 @@ namespace Client.Service {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Profile", Namespace="http://schemas.datacontract.org/2004/07/Service")]
+    [System.SerializableAttribute()]
+    public partial class Profile : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<double> DiscountField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IDField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string LoginField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<double> MoneyField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TelephoneField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<double> Discount {
+            get {
+                return this.DiscountField;
+            }
+            set {
+                if ((this.DiscountField.Equals(value) != true)) {
+                    this.DiscountField = value;
+                    this.RaisePropertyChanged("Discount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Login {
+            get {
+                return this.LoginField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LoginField, value) != true)) {
+                    this.LoginField = value;
+                    this.RaisePropertyChanged("Login");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Mail {
+            get {
+                return this.MailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MailField, value) != true)) {
+                    this.MailField = value;
+                    this.RaisePropertyChanged("Mail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<double> Money {
+            get {
+                return this.MoneyField;
+            }
+            set {
+                if ((this.MoneyField.Equals(value) != true)) {
+                    this.MoneyField = value;
+                    this.RaisePropertyChanged("Money");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Telephone {
+            get {
+                return this.TelephoneField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TelephoneField, value) != true)) {
+                    this.TelephoneField = value;
+                    this.RaisePropertyChanged("Telephone");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Product", Namespace="http://schemas.datacontract.org/2004/07/Service")]
     [System.SerializableAttribute()]
     public partial class Product : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -45,6 +186,9 @@ namespace Client.Service {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double RetailPriceField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[][] ScreenshotsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double WholesalePriceField;
@@ -164,6 +308,19 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[][] Screenshots {
+            get {
+                return this.ScreenshotsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ScreenshotsField, value) != true)) {
+                    this.ScreenshotsField = value;
+                    this.RaisePropertyChanged("Screenshots");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public double WholesalePrice {
             get {
                 return this.WholesalePriceField;
@@ -172,131 +329,6 @@ namespace Client.Service {
                 if ((this.WholesalePriceField.Equals(value) != true)) {
                     this.WholesalePriceField = value;
                     this.RaisePropertyChanged("WholesalePrice");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Profile", Namespace="http://schemas.datacontract.org/2004/07/Service")]
-    [System.SerializableAttribute()]
-    public partial class Profile : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IDField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string LoginField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MailField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int MoneyField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TelephoneField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int ID {
-            get {
-                return this.IDField;
-            }
-            set {
-                if ((this.IDField.Equals(value) != true)) {
-                    this.IDField = value;
-                    this.RaisePropertyChanged("ID");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Login {
-            get {
-                return this.LoginField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.LoginField, value) != true)) {
-                    this.LoginField = value;
-                    this.RaisePropertyChanged("Login");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Mail {
-            get {
-                return this.MailField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MailField, value) != true)) {
-                    this.MailField = value;
-                    this.RaisePropertyChanged("Mail");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Money {
-            get {
-                return this.MoneyField;
-            }
-            set {
-                if ((this.MoneyField.Equals(value) != true)) {
-                    this.MoneyField = value;
-                    this.RaisePropertyChanged("Money");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Telephone {
-            get {
-                return this.TelephoneField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TelephoneField, value) != true)) {
-                    this.TelephoneField = value;
-                    this.RaisePropertyChanged("Telephone");
                 }
             }
         }
@@ -409,10 +441,10 @@ namespace Client.Service {
     public interface IWCFService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
-        bool Connect(string Login, string Password);
+        Client.Service.Profile Connect(string Login, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
-        System.Threading.Tasks.Task<bool> ConnectAsync(string Login, string Password);
+        System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
         void Disconnect();
@@ -433,10 +465,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.Product[]> GetProductTableAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        bool Register(Client.Service.Profile profile, string Password);
+        void Register(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        System.Threading.Tasks.Task<bool> RegisterAsync(Client.Service.Profile profile, string Password);
+        System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
         void UpdateChat(Client.Service.Message message);
@@ -472,11 +504,11 @@ namespace Client.Service {
                 base(binding, remoteAddress) {
         }
         
-        public bool Connect(string Login, string Password) {
+        public Client.Service.Profile Connect(string Login, string Password) {
             return base.Channel.Connect(Login, Password);
         }
         
-        public System.Threading.Tasks.Task<bool> ConnectAsync(string Login, string Password) {
+        public System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password) {
             return base.Channel.ConnectAsync(Login, Password);
         }
         
@@ -504,11 +536,11 @@ namespace Client.Service {
             return base.Channel.GetProductTableAsync();
         }
         
-        public bool Register(Client.Service.Profile profile, string Password) {
-            return base.Channel.Register(profile, Password);
+        public void Register(Client.Service.Profile profile, string Password) {
+            base.Channel.Register(profile, Password);
         }
         
-        public System.Threading.Tasks.Task<bool> RegisterAsync(Client.Service.Profile profile, string Password) {
+        public System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password) {
             return base.Channel.RegisterAsync(profile, Password);
         }
         

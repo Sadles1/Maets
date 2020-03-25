@@ -16,12 +16,12 @@ namespace Service
         public double RetailPrice { get; set; }
         public string Description { get; set; }
         public DateTime RequestDate { get; set; }
-        public int Iddeveloper { get; set; }
-        public int Idpublisher { get; set; }
+        public int IdDeveloper { get; set; }
+        public int IdPublisher { get; set; }
         public bool? ResultModeration { get; set; }
 
-        public virtual TDeveloper IddeveloperNavigation { get; set; }
-        public virtual TPublisher IdpublisherNavigation { get; set; }
+        public virtual TDeveloper IdDeveloperNavigation { get; set; }
+        public virtual TPublisher IdPublisherNavigation { get; set; }
         public virtual ICollection<TModerateEmployers> TModerateEmployers { get; set; }
     }
 }

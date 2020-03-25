@@ -5,11 +5,11 @@ namespace Service
 {
     public partial class TMinGameSysReq
     {
-        public int Idgame { get; set; }
-        public int IdsysReq { get; set; }
+        public int IdGame { get; set; }
+        public int IdSysReq { get; set; }
         public string Description { get; set; }
 
-        public virtual TProducts IdgameNavigation { get; set; }
-        public virtual TSysReq IdsysReqNavigation { get; set; }
+        public virtual TProducts IdGameNavigation { get; set; }
+        public virtual TSysReq IdSysReqNavigation { get; set; }
     }
 }

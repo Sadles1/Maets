@@ -22,5 +22,14 @@ namespace Service {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\snayp\\Documents\\GitHub\\MTPProject\\Server\\Source")]
+        public string SourcePath {
+            get {
+                return ((string)(this["SourcePath"]));
+            }
+        }
     }
 }

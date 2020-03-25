@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Security;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Client
 {
     class DataProvider
     {
-        public static ImageSource GetImageFromByte(byte[] buffer)
+        public ImageSource GetImageFromByte(byte[] buffer)
         {
             using (var ms = new MemoryStream(buffer))
             {
@@ -22,6 +23,16 @@ namespace Client
                 image.EndInit();
                 return image;
             }
+        }
+
+        public string HashPassword(string Password)
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes(Password);
+            bytes = DigestUtilities.CalculateDigest("GOST3411-2012-512", bytes);
+            string password = "";
+            foreach (byte b in bytes)
+                password += b;
+            return password;
         }
     }
 }

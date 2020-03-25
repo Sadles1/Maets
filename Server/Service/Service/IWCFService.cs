@@ -12,7 +12,7 @@ namespace Service
     public interface IWCFService
     {
         [OperationContract]
-        bool Connect(string Login, string Password);
+        Profile Connect(string Login, string Password);
         [OperationContract]
         void Disconnect();
         [OperationContract]
@@ -20,7 +20,7 @@ namespace Service
         [OperationContract]
         List<Product> GetProductTable();
         [OperationContract]
-        bool Register(Profile profile, string Password);
+        void Register(Profile profile, string Password);
         [OperationContract]
         void UpdateChat(Message message);
     }

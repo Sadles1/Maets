@@ -8,8 +8,8 @@ namespace Service
         public int Id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public int Idowner { get; set; }
+        public int IdOwner { get; set; }
 
-        public virtual TUsers IdownerNavigation { get; set; }
+        public virtual TUsers IdOwnerNavigation { get; set; }
     }
 }

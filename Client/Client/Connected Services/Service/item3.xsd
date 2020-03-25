@@ -12,7 +12,7 @@
   <xs:element name="ConnectResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="ConnectResult" type="xs:boolean" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="ConnectResult" nillable="true" type="q1:Profile" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -29,7 +29,7 @@
   <xs:element name="AddProduct">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="product" nillable="true" type="q1:Product" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="product" nillable="true" type="q2:Product" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -46,29 +46,27 @@
   <xs:element name="GetProductTableResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="GetProductTableResult" nillable="true" type="q2:ArrayOfProduct" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="GetProductTableResult" nillable="true" type="q3:ArrayOfProduct" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="Register">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="profile" nillable="true" type="q3:Profile" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="profile" nillable="true" type="q4:Profile" />
         <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="RegisterResponse">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="RegisterResult" type="xs:boolean" />
-      </xs:sequence>
+      <xs:sequence />
     </xs:complexType>
   </xs:element>
   <xs:element name="UpdateChat">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="message" nillable="true" type="q4:Message" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="message" nillable="true" type="q5:Message" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

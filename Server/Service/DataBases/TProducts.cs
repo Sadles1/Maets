@@ -22,11 +22,11 @@ namespace Service
         public string Description { get; set; }
         public DateTime ReleaseDate { get; set; }
         public int? Quantity { get; set; }
-        public int Iddeveloper { get; set; }
-        public int Idpublisher { get; set; }
+        public int IdDeveloper { get; set; }
+        public int IdPublisher { get; set; }
 
-        public virtual TDeveloper IddeveloperNavigation { get; set; }
-        public virtual TPublisher IdpublisherNavigation { get; set; }
+        public virtual TDeveloper IdDeveloperNavigation { get; set; }
+        public virtual TPublisher IdPublisherNavigation { get; set; }
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
         public virtual ICollection<TGameGenre> TGameGenre { get; set; }

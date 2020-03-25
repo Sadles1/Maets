@@ -5,11 +5,11 @@ namespace Service
 {
     public partial class TModerateEmployers
     {
-        public int Idemployee { get; set; }
-        public int IdmoderateProduct { get; set; }
+        public int IdEmployee { get; set; }
+        public int IdModerateProduct { get; set; }
         public bool? Result { get; set; }
 
-        public virtual TUsers IdemployeeNavigation { get; set; }
-        public virtual TModerateProducts IdmoderateProductNavigation { get; set; }
+        public virtual TUsers IdEmployeeNavigation { get; set; }
+        public virtual TModerateProducts IdModerateProductNavigation { get; set; }
     }
 }

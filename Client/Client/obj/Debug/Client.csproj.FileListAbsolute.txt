@@ -13,3 +13,7 @@ C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csproj
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.exe
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.pdb
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\RegisterWindows.g.cs
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\RegisterWindows.baml

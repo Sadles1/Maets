@@ -5,10 +5,10 @@ namespace Service
 {
     public partial class TGameGenre
     {
-        public int Idgame { get; set; }
-        public int Idgenre { get; set; }
+        public int IdGame { get; set; }
+        public int IdGenre { get; set; }
 
-        public virtual TProducts IdgameNavigation { get; set; }
-        public virtual TGenre IdgenreNavigation { get; set; }
+        public virtual TProducts IdGameNavigation { get; set; }
+        public virtual TGenre IdGenreNavigation { get; set; }
     }
 }

@@ -14,15 +14,16 @@ namespace Service
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class WCFService : IWCFService
     {
+        DataProvider dp = new DataProvider();
         public List<Product> GetProductTable()//Методя для получения всех продуктов магазина
         {
             using (postgresContext context = new postgresContext())
             {
-                List<TProducts> TProducts = context.TProducts.Include(u => u.IdpublisherNavigation).Include(u => u.IddeveloperNavigation).ToList();
+                List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
                 List<Product> products = new List<Product>();
                 foreach (TProducts TProduct in TProducts)
                 {
-                    var product = DataProvider.FormProduct(TProduct);
+                    var product = dp.FormProduct(TProduct);
                     products.Add(product);
                 }
                 return products;
@@ -36,8 +37,8 @@ namespace Service
                 TProducts TProduct = new TProducts();
                 TProduct.Id = product.Id;
                 TProduct.Name = product.Name;
-                TProduct.Iddeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
-                TProduct.Idpublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
+                TProduct.IdDeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
+                TProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
                 TProduct.Quantity = 100;
                 TProduct.ReleaseDate = product.ReleaseDate;
                 TProduct.RetailPrice = product.RetailPrice;
@@ -59,41 +60,24 @@ namespace Service
                 xml.Serialize(fs, message);
             }
         }
-        public bool Register(Profile profile, string Password)
+        public void Register(Profile profile, string Password)
         {
-            using (postgresContext context = new postgresContext())
-            {
-                TUsers TUser = new TUsers();
-                TLogin Tlogin = new TLogin();
-
-                TUser.Name = profile.Name;
-                TUser.Mail = profile.Mail;
-                TUser.Telephone = profile.Telephone;
-                context.TUsers.Add(TUser);
-                context.SaveChanges();
-
-                Tlogin.Login = profile.Login;
-                Tlogin.Password = Password;
-                Tlogin.Idowner = 1;
-                context.TLogin.Add(Tlogin);
-                context.SaveChanges();
-                return false;
-            }
+            dp.AddUser(profile, Password);
         }
-        public bool Connect(string Login, string Password)//Метод для подключения к магазину
+        public Profile Connect(string Login, string Password)//Метод для подключения к магазину
         {
             using (postgresContext context = new postgresContext())
             {
-                List<TLogin> TLogins = context.TLogin.ToList();
-                TLogin Tlogin = TLogins.FirstOrDefault(u => u.Login == Login);
+                List<TLogin> TLogins = context.TLogin.Include(u => u.IdOwnerNavigation).ToList();
+                TLogin Tlogin = TLogins.FirstOrDefault(u => u.Login == Login && u.Password == Password);
                 if (Tlogin != null)
                 {
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");
-                    return true;
+                    return dp.FormProfile(Tlogin);
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
             }
         }

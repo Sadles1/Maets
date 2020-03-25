@@ -13,6 +13,7 @@ namespace Service
         public string Login { get; set; }
         public string Mail { get; set; }
         public string Telephone { get; set; }
-        public int Money { get; set; }
+        public double? Money { get; set; }
+        public double? Discount { get; set; }
     }
 }
