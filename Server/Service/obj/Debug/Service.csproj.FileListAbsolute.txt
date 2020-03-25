@@ -1,0 +1,6 @@
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\Service.dll
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\Service.pdb
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\obj\Debug\Service.csprojAssemblyReference.cache
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\obj\Debug\Service.csproj.CoreCompileInputs.cache
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\obj\Debug\Service.dll
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\obj\Debug\Service.pdb
