@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
+using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 
 namespace Service
@@ -21,14 +22,7 @@ namespace Service
                 List<Product> products = new List<Product>();
                 foreach (TProducts TProduct in TProducts)
                 {
-                    Product product = new Product();
-                    product.Id = TProduct.Id;
-                    product.Name = TProduct.Name;
-                    product.Publisher = TProduct.IdpublisherNavigation.Name;
-                    product.ReleaseDate = TProduct.ReleaseDate.Date;
-                    product.RetailPrice = (int)TProduct.RetailPrice;
-                    product.Description = TProduct.Description;
-                    product.Developer = TProduct.IddeveloperNavigation.Name;
+                    var product = DataProvider.FormProduct(TProduct);
                     products.Add(product);
                 }
                 return products;
