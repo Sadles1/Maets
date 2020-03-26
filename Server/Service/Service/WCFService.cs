@@ -60,9 +60,10 @@ namespace Service
                 xml.Serialize(fs, message);
             }
         }
-        public void Register(Profile profile, string Password)
+        public Exception Register(Profile profile, string Password)
         {
-            dp.AddUser(profile, Password);
+            Exception ex = dp.AddUser(profile, Password);
+            return ex;
         }
         public Profile Connect(string Login, string Password)//Метод для подключения к магазину
         {

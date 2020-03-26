@@ -27,13 +27,24 @@ namespace Client
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
+
             Service.Profile profile = new Service.Profile();
             profile.Login = tbLogin.Text;
             profile.Mail = tbMail.Text;
             profile.Name = tbName.Text;
             profile.Telephone = tbTelephone.Text;
             string password = dp.HashPassword(tbPassword.Text);
-            MainWindow.client.Register(profile,password);
+            Exception ex = MainWindow.client.Register(profile, password);
+            if (ex == null)
+            {
+                MessageBox.Show("Success");
+                tbPassword.Text = "";
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

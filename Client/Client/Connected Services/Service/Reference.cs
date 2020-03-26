@@ -465,10 +465,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.Product[]> GetProductTableAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        void Register(Client.Service.Profile profile, string Password);
+        System.Exception Register(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password);
+        System.Threading.Tasks.Task<System.Exception> RegisterAsync(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
         void UpdateChat(Client.Service.Message message);
@@ -536,11 +536,11 @@ namespace Client.Service {
             return base.Channel.GetProductTableAsync();
         }
         
-        public void Register(Client.Service.Profile profile, string Password) {
-            base.Channel.Register(profile, Password);
+        public System.Exception Register(Client.Service.Profile profile, string Password) {
+            return base.Channel.Register(profile, Password);
         }
         
-        public System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password) {
+        public System.Threading.Tasks.Task<System.Exception> RegisterAsync(Client.Service.Profile profile, string Password) {
             return base.Channel.RegisterAsync(profile, Password);
         }
         

@@ -10,24 +10,33 @@ namespace Service
 {
     class DataProvider
     {
-        public void AddUser(Profile profile, string Password)
+        public Exception AddUser(Profile profile, string Password)//Метод для добавления нового пользователя, в случае неудачи возвращает ошибка
         {
             using (postgresContext context = new postgresContext())
             {
+                List<TUsers> Tusers = context.TUsers.ToList();
+                List<TLogin> TLogins = context.TLogin.ToList();
                 TUsers TUser = new TUsers();
                 TLogin Tlogin = new TLogin();
+                if (TLogins.FirstOrDefault(u => u.Login == profile.Login) != null)//Проверка что такой же логин не используеться
+                    return new Exception("Данный логин уже занят");
+                if (Tusers.FirstOrDefault(u => u.Mail == profile.Mail) != null)//Проверка что такая же почта не используеться
+                    return new Exception("Данная почта уже зарегестрирована");
+                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null)//Проверка что такой же номер телефона не используеться
+                    return new Exception("Данный номер телефона уже используеться");
 
+                TUser.Id = (Tusers.Max(u => u.Id) + 1);
                 TUser.Name = profile.Name;
                 TUser.Mail = profile.Mail;
                 TUser.Telephone = profile.Telephone;
-                context.TUsers.Add(TUser);
-                context.SaveChanges();
-
+                Tlogin.Id = (TLogins.Max(u => u.Id) + 1);
                 Tlogin.IdOwner = TUser.Id;
                 Tlogin.Login = profile.Login;
                 Tlogin.Password = Password;
-                context.TLogin.Add(Tlogin);
-                context.SaveChanges();
+                context.TUsers.Add(TUser);//Добавление локальных изменений
+                context.TLogin.Add(Tlogin);//Добавление локальных изменений
+                context.SaveChanges();//Сохранение локальных изменений в БД
+                return null;
             }
         }
 

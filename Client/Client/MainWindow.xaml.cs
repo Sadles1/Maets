@@ -23,7 +23,6 @@ namespace Client
     public partial class MainWindow : Window
     {
         public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
-        public static Service.Profile profile;
         DataProvider dp = new DataProvider();
         public MainWindow()
         {
@@ -37,7 +36,7 @@ namespace Client
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+            Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
             if (profile == null)
             {
                 MessageBox.Show("Error");
@@ -51,6 +50,7 @@ namespace Client
         {
             RegisterWindows register = new RegisterWindows();
             register.Show();
+
         }
     }
 }

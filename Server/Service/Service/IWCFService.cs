@@ -20,7 +20,7 @@ namespace Service
         [OperationContract]
         List<Product> GetProductTable();
         [OperationContract]
-        void Register(Profile profile, string Password);
+        Exception Register(Profile profile, string Password);
         [OperationContract]
         void UpdateChat(Message message);
     }
