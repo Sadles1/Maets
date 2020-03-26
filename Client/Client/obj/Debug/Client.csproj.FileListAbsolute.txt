@@ -2,11 +2,9 @@ C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\bin\Debug\Client.exe.co
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\bin\Debug\Client.exe
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\bin\Debug\Client.pdb
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csprojAssemblyReference.cache
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\MainWindow.g.cs
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\App.g.cs
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client_MarkupCompile.cache
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client_MarkupCompile.lref
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\MainWindow.baml
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.g.resources
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.Properties.Resources.resources
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csproj.GenerateResource.cache
@@ -15,5 +13,9 @@ C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.exe
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.pdb
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\bin\Debug\BouncyCastle.Crypto.dll
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Client.csproj.CopyComplete
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\RegisterWindows.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\RegisterWindows.baml
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\MainWindow.g.cs
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\RegisterWindows.g.cs
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\ShopWindows.g.cs
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\MainWindow.baml
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\RegisterWindows.baml
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Windows\ShopWindows.baml

@@ -62,10 +62,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="RegisterWindows.xaml.cs">
+    <Compile Include="Windows\RegisterWindows.xaml.cs">
       <DependentUpon>RegisterWindows.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Windows\ShopWindows.xaml.cs">
+      <DependentUpon>ShopWindows.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -79,11 +82,15 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="DataProvider.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="RegisterWindows.xaml">
+    <Page Include="Windows\RegisterWindows.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ShopWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,9 +129,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\item3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\Service\item4.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\WCFService.wsdl" />

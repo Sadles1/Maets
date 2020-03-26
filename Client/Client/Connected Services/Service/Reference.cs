@@ -23,7 +23,13 @@ namespace Client.Service {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int AccessRightField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<double> DiscountField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private Client.Service.Profile[] FriendsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int IDField;
@@ -33,6 +39,9 @@ namespace Client.Service {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] MainImageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<double> MoneyField;
@@ -54,6 +63,19 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AccessRight {
+            get {
+                return this.AccessRightField;
+            }
+            set {
+                if ((this.AccessRightField.Equals(value) != true)) {
+                    this.AccessRightField = value;
+                    this.RaisePropertyChanged("AccessRight");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<double> Discount {
             get {
                 return this.DiscountField;
@@ -62,6 +84,19 @@ namespace Client.Service {
                 if ((this.DiscountField.Equals(value) != true)) {
                     this.DiscountField = value;
                     this.RaisePropertyChanged("Discount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public Client.Service.Profile[] Friends {
+            get {
+                return this.FriendsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FriendsField, value) != true)) {
+                    this.FriendsField = value;
+                    this.RaisePropertyChanged("Friends");
                 }
             }
         }
@@ -101,6 +136,19 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.MailField, value) != true)) {
                     this.MailField = value;
                     this.RaisePropertyChanged("Mail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] MainImage {
+            get {
+                return this.MainImageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MainImageField, value) != true)) {
+                    this.MainImageField = value;
+                    this.RaisePropertyChanged("MainImage");
                 }
             }
         }
@@ -191,7 +239,7 @@ namespace Client.Service {
         private byte[][] ScreenshotsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double WholesalePriceField;
+        private System.Nullable<double> WholesalePriceField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -321,7 +369,7 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double WholesalePrice {
+        public System.Nullable<double> WholesalePrice {
             get {
                 return this.WholesalePriceField;
             }
@@ -465,10 +513,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.Product[]> GetProductTableAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        System.Exception Register(Client.Service.Profile profile, string Password);
+        void Register(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
-        System.Threading.Tasks.Task<System.Exception> RegisterAsync(Client.Service.Profile profile, string Password);
+        System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
         void UpdateChat(Client.Service.Message message);
@@ -536,11 +584,11 @@ namespace Client.Service {
             return base.Channel.GetProductTableAsync();
         }
         
-        public System.Exception Register(Client.Service.Profile profile, string Password) {
-            return base.Channel.Register(profile, Password);
+        public void Register(Client.Service.Profile profile, string Password) {
+            base.Channel.Register(profile, Password);
         }
         
-        public System.Threading.Tasks.Task<System.Exception> RegisterAsync(Client.Service.Profile profile, string Password) {
+        public System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password) {
             return base.Channel.RegisterAsync(profile, Password);
         }
         

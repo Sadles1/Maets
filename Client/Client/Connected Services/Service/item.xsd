@@ -3,16 +3,25 @@
   <xs:import schemaLocation="http://localhost:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="Profile">
     <xs:sequence>
+      <xs:element minOccurs="0" name="AccessRight" type="xs:int" />
       <xs:element minOccurs="0" name="Discount" nillable="true" type="xs:double" />
+      <xs:element minOccurs="0" name="Friends" nillable="true" type="tns:ArrayOfProfile" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="Login" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MainImage" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="Money" nillable="true" type="xs:double" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Telephone" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Profile" nillable="true" type="tns:Profile" />
+  <xs:complexType name="ArrayOfProfile">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Profile" nillable="true" type="tns:Profile" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProfile" nillable="true" type="tns:ArrayOfProfile" />
   <xs:complexType name="Product">
     <xs:sequence>
       <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
@@ -24,7 +33,7 @@
       <xs:element minOccurs="0" name="ReleaseDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="RetailPrice" type="xs:double" />
       <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Screenshots" nillable="true" type="q1:ArrayOfbase64Binary" />
-      <xs:element minOccurs="0" name="WholesalePrice" type="xs:double" />
+      <xs:element minOccurs="0" name="WholesalePrice" nillable="true" type="xs:double" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Product" nillable="true" type="tns:Product" />

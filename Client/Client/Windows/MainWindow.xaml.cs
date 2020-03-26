@@ -42,8 +42,9 @@ namespace Client
                 MessageBox.Show("Error");
                 return;
             }
-            MessageBox.Show("Succes login");
-
+            ShopWindows shopWindows = new ShopWindows(profile);
+            shopWindows.Show();
+            this.Close();
         }
 
         private void Register_Click(object sender, RoutedEventArgs e)

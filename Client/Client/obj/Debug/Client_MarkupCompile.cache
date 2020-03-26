@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\App.xaml
-2968432590
+3-1424899053
 
-8326052944
+9-1979022551
 18612939291
-MainWindow.xaml;RegisterWindows.xaml;
+Windows\MainWindow.xaml;Windows\RegisterWindows.xaml;Windows\ShopWindows.xaml;
 
 False
 
