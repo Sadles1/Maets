@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -10,33 +11,38 @@ namespace Service
 {
     class DataProvider
     {
-        public Exception AddUser(Profile profile, string Password)//Метод для добавления нового пользователя, в случае неудачи возвращает ошибка
+        public void FormTableUser(Profile profile, string Password, ref TUsers TUser,ref TLogin Tlogin)//Метод формирует таблицу Users и Login используя класс профиль и пароль
         {
             using (postgresContext context = new postgresContext())
             {
                 List<TUsers> Tusers = context.TUsers.ToList();
                 List<TLogin> TLogins = context.TLogin.ToList();
-                TUsers TUser = new TUsers();
-                TLogin Tlogin = new TLogin();
-                if (TLogins.FirstOrDefault(u => u.Login == profile.Login) != null)//Проверка что такой же логин не используеться
-                    return new Exception("Данный логин уже занят");
-                if (Tusers.FirstOrDefault(u => u.Mail == profile.Mail) != null)//Проверка что такая же почта не используеться
-                    return new Exception("Данная почта уже зарегестрирована");
-                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null)//Проверка что такой же номер телефона не используеться
-                    return new Exception("Данный номер телефона уже используеться");
 
-                TUser.Id = (Tusers.Max(u => u.Id) + 1);
+                if (TLogins.FirstOrDefault(u => u.Login == profile.Login) != null)//Проверка что такой же логин не используеться
+                    throw new FaultException("Данный логин уже занят");
+                if (Tusers.FirstOrDefault(u => u.Mail == profile.Mail) != null)//Проверка что такая же почта не используеться
+                    throw new FaultException("Данная почта уже зарегистрирована");
+                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null && profile.Telephone!=null)//Проверка что такой же номер телефона не используеться но номер может быть пустой
+                    throw new FaultException("Данный номер телефона уже используеться");
+
+                if (Tusers.Count == 0)//Для формирования Id
+                    TUser.Id = 1;
+                else
+                    TUser.Id = (Tusers.Max(u => u.Id) + 1);
+
                 TUser.Name = profile.Name;
                 TUser.Mail = profile.Mail;
                 TUser.Telephone = profile.Telephone;
-                Tlogin.Id = (TLogins.Max(u => u.Id) + 1);
+                TUser.AccessRight = profile.AccessRight;
+
+                if (TLogins.Count == 0)//Для формирования Id
+                    Tlogin.Id = 1;
+                else
+                    Tlogin.Id = (TLogins.Max(u => u.Id) + 1);
+
                 Tlogin.IdOwner = TUser.Id;
                 Tlogin.Login = profile.Login;
-                Tlogin.Password = Password;
-                context.TUsers.Add(TUser);//Добавление локальных изменений
-                context.TLogin.Add(Tlogin);//Добавление локальных изменений
-                context.SaveChanges();//Сохранение локальных изменений в БД
-                return null;
+                Tlogin.Password = Password;             
             }
         }
 
@@ -45,6 +51,7 @@ namespace Service
             Profile profile = new Profile();
             profile.ID = Tlogin.Id;
             profile.Login = Tlogin.Login;
+            profile.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.jpg")));//В изображение записываем массив байтов
             profile.Mail = Tlogin.IdOwnerNavigation.Mail;
             profile.Name = Tlogin.IdOwnerNavigation.Name;
             profile.Money = Tlogin.IdOwnerNavigation.Money;
@@ -61,10 +68,27 @@ namespace Service
             product.Publisher = TProduct.IdPublisherNavigation.Name;
             product.ReleaseDate = TProduct.ReleaseDate.Date;
             product.RetailPrice = TProduct.RetailPrice;
-            product.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}\Screenshots\MainImage.jpg")));//В изображение записываем массив байтов
+            product.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}\Images\MainImage.jpg")));//В изображение записываем массив байтов
             product.Description = TProduct.Description;
             product.Developer = TProduct.IdDeveloperNavigation.Name;
             return product;
+        }
+        public TProducts FormTableProducts(Product product)//Метод для формирования таблицы продуктов используя класс продукт
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TProducts TProduct = new TProducts();
+                TProduct.Id = (context.TProducts.ToList().Max(u=>u.Id) +1);
+                TProduct.Name = product.Name;
+                TProduct.IdDeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
+                TProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
+                TProduct.Quantity = 100;
+                TProduct.ReleaseDate = product.ReleaseDate;
+                TProduct.RetailPrice = product.RetailPrice;
+                TProduct.WholesalePrice = product?.WholesalePrice;
+                TProduct.Description = product.Description;
+                return TProduct;
+            }
         }
         public byte[] GetByteImage(BitmapFrame image)//Преобразуем изображение в массив байтов
         {

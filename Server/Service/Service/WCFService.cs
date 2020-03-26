@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class WCFService : IWCFService
     {
         DataProvider dp = new DataProvider();
@@ -29,21 +29,11 @@ namespace Service
                 return products;
             }
         }
-
         public void AddProduct(Product product)//Метод для добавления продукта в магазин
         {
-            using (postgresContext context = new postgresContext())
+            using(postgresContext context = new postgresContext())
             {
-                TProducts TProduct = new TProducts();
-                TProduct.Id = product.Id;
-                TProduct.Name = product.Name;
-                TProduct.IdDeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
-                TProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
-                TProduct.Quantity = 100;
-                TProduct.ReleaseDate = product.ReleaseDate;
-                TProduct.RetailPrice = product.RetailPrice;
-                TProduct.WholesalePrice = product.WholesalePrice;
-                TProduct.Description = product.Description;
+                TProducts TProduct=dp.FormTableProducts(product);
                 context.TProducts.Add(TProduct);
                 context.SaveChanges();
             }
@@ -60,10 +50,17 @@ namespace Service
                 xml.Serialize(fs, message);
             }
         }
-        public Exception Register(Profile profile, string Password)
+        public void Register(Profile profile, string Password)
         {
-            Exception ex = dp.AddUser(profile, Password);
-            return ex;
+            using (postgresContext context = new postgresContext())
+            {
+                TUsers TUser = new TUsers();
+                TLogin Tlogin = new TLogin();
+                dp.FormTableUser(profile, Password,ref TUser,ref Tlogin);
+                context.TLogin.Add(Tlogin);
+                context.TUsers.Add(TUser);
+                context.SaveChanges();
+            }
         }
         public Profile Connect(string Login, string Password)//Метод для подключения к магазину
         {
