@@ -25,7 +25,7 @@ namespace Client
             InitializeComponent();
         }
 
-        async private void Register(string login, string name, string password, string mail, string telephone)
+        async private void Register(string login, string name, string password, string mail, string telephone)//асинхронный метод для регистрации
         {
             bool result = false;
             btnRegister.IsEnabled = false;

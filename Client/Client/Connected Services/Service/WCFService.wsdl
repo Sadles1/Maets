@@ -73,6 +73,12 @@
   <wsdl:message name="IWCFService_UpdateChat_OutputMessage">
     <wsdl:part name="parameters" element="tns:UpdateChatResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_AddFriend_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddFriend" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_AddFriend_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddFriendResponse" />
+  </wsdl:message>
   <wsdl:portType name="IWCFService">
     <wsdl:operation name="Connect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Connect" message="tns:IWCFService_Connect_InputMessage" />
@@ -97,6 +103,10 @@
     <wsdl:operation name="UpdateChat">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/UpdateChat" message="tns:IWCFService_UpdateChat_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/UpdateChatResponse" message="tns:IWCFService_UpdateChat_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddFriend">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddFriend" message="tns:IWCFService_AddFriend_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddFriendResponse" message="tns:IWCFService_AddFriend_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWCFService" type="tns:IWCFService">
@@ -155,6 +165,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="AddFriend">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="NetTcpBinding_IWCFService" type="tns:IWCFService">
     <wsp:PolicyReference URI="#NetTcpBinding_IWCFService_policy" />
@@ -206,6 +225,15 @@
     </wsdl:operation>
     <wsdl:operation name="UpdateChat">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/UpdateChat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddFriend">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

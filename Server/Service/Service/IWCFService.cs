@@ -14,7 +14,7 @@ namespace Service
         [OperationContract]
         Profile Connect(string Login, string Password);
         [OperationContract]
-        void Disconnect();
+        void Disconnect(int id);
         [OperationContract]
         void AddProduct(Product product);
         [OperationContract]
@@ -23,5 +23,7 @@ namespace Service
         void Register(Profile profile, string Password);
         [OperationContract]
         void UpdateChat(Message message);
+        [OperationContract]
+        void AddFriend(int id,int idFriend);
     }
 }

@@ -7,11 +7,12 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class WCFService : IWCFService
     {
         DataProvider dp = new DataProvider();
@@ -31,9 +32,9 @@ namespace Service
         }
         public void AddProduct(Product product)//Метод для добавления продукта в магазин
         {
-            using(postgresContext context = new postgresContext())
+            using (postgresContext context = new postgresContext())
             {
-                TProducts TProduct=dp.FormTableProducts(product);
+                TProducts TProduct = dp.FormTableProducts(product);
                 context.TProducts.Add(TProduct);
                 context.SaveChanges();
             }
@@ -44,11 +45,11 @@ namespace Service
         }
         public void UpdateChat(Message message)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(Message));
-            using (FileStream fs = new FileStream($@"C:\Users\snayp\Documents\GitHub\MTPProject\Messages\User{message.IDSender}.xml", FileMode.OpenOrCreate))
-            {
-                xml.Serialize(fs, message);
-            }
+            
+        }
+        public void AddFriend(int id, int idFriend)
+        {
+
         }
         public void Register(Profile profile, string Password)
         {
@@ -56,7 +57,7 @@ namespace Service
             {
                 TUsers TUser = new TUsers();
                 TLogin Tlogin = new TLogin();
-                dp.FormTableUser(profile, Password,ref TUser,ref Tlogin);
+                dp.FormTableUser(profile, Password, ref TUser, ref Tlogin);
                 context.TLogin.Add(Tlogin);
                 context.TUsers.Add(TUser);
                 context.SaveChanges();
@@ -67,11 +68,30 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 List<TLogin> TLogins = context.TLogin.Include(u => u.IdOwnerNavigation).ToList();
+                List<TOnlineUsers> onlineUsers = context.TOnlineUsers.Include(u => u.IdUsersNavigation).ToList();
                 TLogin Tlogin = TLogins.FirstOrDefault(u => u.Login == Login && u.Password == Password);
                 if (Tlogin != null)
                 {
+                    Profile profile = dp.FormProfile(Tlogin);
+                    TOnlineUsers online = new TOnlineUsers();
+                    online.Id = profile.ID;
+
+                    XmlSerializer xml = new XmlSerializer(typeof(List<int>));
+                    List<int> list = new List<int>();
+                    using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Friends.xml", FileMode.OpenOrCreate))
+                    {
+                        list = (List<int>)(xml.Deserialize(fs));
+                    }
+                    foreach (int id in list)
+                    {
+                        Profile friend = dp.FormProfile(TLogins.FirstOrDefault(u => u.IdOwner == id));
+                        if (friend != null)
+                            profile.Friends.Add(friend);
+                    }
+                    context.TOnlineUsers.Add(online);
+                    context.SaveChanges();
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");
-                    return dp.FormProfile(Tlogin);
+                    return profile;
                 }
                 else
                 {
@@ -79,9 +99,17 @@ namespace Service
                 }
             }
         }
-        public void Disconnect()//Метод для отключения от магазина
+        public void Disconnect(int id)//Метод для отключения от магазина
         {
-
+            using (postgresContext context = new postgresContext())
+            {
+                TOnlineUsers online = new TOnlineUsers
+                {
+                    Id = id
+                };
+                context.TOnlineUsers.Remove(online);
+                context.SaveChanges();
+            }
         }
     }
 }

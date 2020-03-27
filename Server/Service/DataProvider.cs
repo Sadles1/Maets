@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 namespace Service
 {
@@ -54,10 +55,37 @@ namespace Service
             profile.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.jpg")));//В изображение записываем массив байтов
             profile.Mail = Tlogin.IdOwnerNavigation.Mail;
             profile.Name = Tlogin.IdOwnerNavigation.Name;
+            profile.Friends = new List<Profile>();
             profile.Money = Tlogin.IdOwnerNavigation.Money;
             profile.Telephone = Tlogin.IdOwnerNavigation.Telephone;
             profile.Discount = Tlogin.IdOwnerNavigation.PersonalDiscount;
             return profile;
+        }
+        public void XMLSerrialize(int id,int idFriend)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(int));
+            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.xml", FileMode.OpenOrCreate))
+            {
+                xml.Serialize(fs, idFriend);
+            }
+        }
+
+        public void XMLSerrialize(Message message)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(Message));
+            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{message.IDSender}\Message.xml", FileMode.OpenOrCreate))
+            {
+                xml.Serialize(fs, message);
+            }
+        }
+
+        public List<int> XMLDeserrialize(int id)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(List<int>));
+            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.xml", FileMode.OpenOrCreate))
+            {
+                return (xml.Deserialize(fs) as List<int>);
+            }
         }
 
         public Product FormProduct(TProducts TProduct)//Формируем продукт используя таблицу TProduct и связанные с ней таблицы

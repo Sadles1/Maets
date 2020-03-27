@@ -52,6 +52,9 @@ namespace Client.Service {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TelephoneField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool statusField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -188,6 +191,19 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.TelephoneField, value) != true)) {
                     this.TelephoneField = value;
                     this.RaisePropertyChanged("Telephone");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool status {
+            get {
+                return this.statusField;
+            }
+            set {
+                if ((this.statusField.Equals(value) != true)) {
+                    this.statusField = value;
+                    this.RaisePropertyChanged("status");
                 }
             }
         }
@@ -495,10 +511,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
-        void Disconnect();
+        void Disconnect(int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
-        System.Threading.Tasks.Task DisconnectAsync();
+        System.Threading.Tasks.Task DisconnectAsync(int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddProduct", ReplyAction="http://tempuri.org/IWCFService/AddProductResponse")]
         void AddProduct(Client.Service.Product product);
@@ -523,6 +539,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
         System.Threading.Tasks.Task UpdateChatAsync(Client.Service.Message message);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddFriend", ReplyAction="http://tempuri.org/IWCFService/AddFriendResponse")]
+        void AddFriend(int id, int[] idFriend);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddFriend", ReplyAction="http://tempuri.org/IWCFService/AddFriendResponse")]
+        System.Threading.Tasks.Task AddFriendAsync(int id, int[] idFriend);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -560,12 +582,12 @@ namespace Client.Service {
             return base.Channel.ConnectAsync(Login, Password);
         }
         
-        public void Disconnect() {
-            base.Channel.Disconnect();
+        public void Disconnect(int id) {
+            base.Channel.Disconnect(id);
         }
         
-        public System.Threading.Tasks.Task DisconnectAsync() {
-            return base.Channel.DisconnectAsync();
+        public System.Threading.Tasks.Task DisconnectAsync(int id) {
+            return base.Channel.DisconnectAsync(id);
         }
         
         public void AddProduct(Client.Service.Product product) {
@@ -598,6 +620,14 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task UpdateChatAsync(Client.Service.Message message) {
             return base.Channel.UpdateChatAsync(message);
+        }
+        
+        public void AddFriend(int id, int[] idFriend) {
+            base.Channel.AddFriend(id, idFriend);
+        }
+        
+        public System.Threading.Tasks.Task AddFriendAsync(int id, int[] idFriend) {
+            return base.Channel.AddFriendAsync(id, idFriend);
         }
     }
 }

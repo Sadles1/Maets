@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Service
 {
@@ -11,7 +12,6 @@ namespace Service
         public int IdProduct { get; set; }
         public string Count { get; set; }
         public bool Wholesale { get; set; }
-
         public virtual TUsers IdBuyersNavigation { get; set; }
         public virtual TProducts IdProductNavigation { get; set; }
     }

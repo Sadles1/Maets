@@ -32,6 +32,15 @@ namespace Client
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
             lbLogin.Content = profile.Login;
             lbName.Content = profile.Name;
+            Lv.ItemsSource = profile.Friends;
+        }
+
+        private void btnExit_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow window = new MainWindow();   
+            MainWindow.client.Disconnect(profile.ID);
+            window.Show();
+            this.Close();
         }
     }
 }

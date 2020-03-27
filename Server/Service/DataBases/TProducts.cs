@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Service
 {
@@ -13,7 +14,6 @@ namespace Service
             TMinGameSysReq = new HashSet<TMinGameSysReq>();
             TRecGameSysReq = new HashSet<TRecGameSysReq>();
         }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public double? Rate { get; set; }

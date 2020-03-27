@@ -42,6 +42,7 @@ namespace Client
                 MessageBox.Show("Error");
                 return;
             }
+
             ShopWindows shopWindows = new ShopWindows(profile);
             shopWindows.Show();
             this.Close();
@@ -50,6 +51,7 @@ namespace Client
         private void Register_Click(object sender, RoutedEventArgs e)
         {
             RegisterWindows register = new RegisterWindows();
+
             register.Show();
 
         }

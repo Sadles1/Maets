@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Service
 {
@@ -10,7 +11,6 @@ namespace Service
             TModerateProducts = new HashSet<TModerateProducts>();
             TProducts = new HashSet<TProducts>();
         }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public int IdUser { get; set; }

@@ -11,21 +11,12 @@ namespace Host
     {
         static void Main(string[] args)
         {
-            try
+            using (var host = new ServiceHost(typeof(Service.WCFService)))
             {
-                using (var host = new ServiceHost(typeof(Service.WCFService)))
-                {
-
-                    host.Open();
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}: Server start!");
-                    Console.ReadLine();
-                }
+                host.Open();
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}: Server start!");
+                Console.ReadLine();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            Console.ReadLine();
         }
     }
 }

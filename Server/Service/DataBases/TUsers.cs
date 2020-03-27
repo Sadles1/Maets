@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Service
 {
@@ -14,7 +15,7 @@ namespace Service
             TModerateEmployers = new HashSet<TModerateEmployers>();
             TPublisher = new HashSet<TPublisher>();
         }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Telephone { get; set; }
@@ -24,6 +25,7 @@ namespace Service
         public double? TotalSpentMoney { get; set; }
         public double? PersonalDiscount { get; set; }
 
+        public virtual ICollection<TOnlineUsers> TOnlineUsers { get; set; }
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
         public virtual ICollection<TDeveloper> TDeveloper { get; set; }
