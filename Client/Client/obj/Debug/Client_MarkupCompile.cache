@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\
+C:\Users\snayp\Documents\GitHub\MTPProject-UI\Client\Client\obj\Debug\
 Client
 none
 false
 DEBUG;TRACE
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\App.xaml
-41577259283
+C:\Users\snayp\Documents\GitHub\MTPProject-UI\Client\Client\App.xaml
+62034958541
 
-12-822104412
+14-1527557280
 18612939291
-Data\Views\Test.xaml;Data\Views\MainWindow.xaml;Data\Views\RegisterWindows.xaml;Data\Views\ShopWindows.xaml;
+Data\Views\Korzina.xaml;Data\Views\Test.xaml;Data\Views\MainWindow.xaml;Data\Views\RegisterWindows.xaml;Data\Views\ShopWindows.xaml;Data\Views\Product.xaml;
 
 False
 

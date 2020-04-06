@@ -65,3 +65,5 @@ C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\System.Text.
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\System.ValueTuple.xml
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\obj\Debug\Service.csproj.CopyComplete
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\Newtonsoft.Json.dll
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Service\bin\Debug\Newtonsoft.Json.xml

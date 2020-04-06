@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -39,25 +40,35 @@ namespace Service
                 context.SaveChanges();
             }
         }
-        public void GetChat()
+        public List<Message> GetChat(int id)//Метод для получения сообщений
         {
-
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
+            List<Message> messages = JsonConvert.DeserializeObject<List<Message>>(File.ReadAllText(path));
+            return messages;
         }
         public void UpdateChat(Message message)
         {
-            
-        }
-        public void AddFriend(int id, int idFriend)
-        {
 
         }
-        public void Register(Profile profile, string Password)
+        public void AddFriend(int id, int idFriend)//Методя для добавления в список друзей
+        {
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";
+            List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
+            friends.Add(idFriend);
+            File.WriteAllText(path, JsonConvert.SerializeObject(friends));
+        }
+        public void Register(Profile profile, string Password)//Метод для регистрации
         {
             using (postgresContext context = new postgresContext())
             {
                 TUsers TUser = new TUsers();
                 TLogin Tlogin = new TLogin();
                 dp.FormTableUser(profile, Password, ref TUser, ref Tlogin);
+                string path = $@"{BaseSettings.Default.SourcePath}\Users\{TUser.Id}";
+                DirectoryInfo dirInfo = new DirectoryInfo(path);
+                if (dirInfo.Exists)
+                    dirInfo.Delete();
+                dirInfo.Create();
                 context.TLogin.Add(Tlogin);
                 context.TUsers.Add(TUser);
                 context.SaveChanges();
@@ -75,38 +86,38 @@ namespace Service
                     Profile profile = dp.FormProfile(Tlogin);
                     TOnlineUsers online = new TOnlineUsers();
                     online.Id = profile.ID;
-
-                    XmlSerializer xml = new XmlSerializer(typeof(List<int>));
-                    List<int> list = new List<int>();
-                    using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Friends.xml", FileMode.OpenOrCreate))
+                    string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
+                    if (File.Exists($@"{path}Friends.json"))
                     {
-                        list = (List<int>)(xml.Deserialize(fs));
-                    }
-                    foreach (int id in list)
-                    {
-                        Profile friend = dp.FormProfile(TLogins.FirstOrDefault(u => u.IdOwner == id));
-                        if (friend != null)
-                            profile.Friends.Add(friend);
+                        profile.Friends = new List<Profile>();
+                        List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
+                        foreach (int id in IdFriends)
+                        {
+                            Profile friend = dp.FormProfile(TLogins.FirstOrDefault(u => u.IdOwner == id));
+                            if (friend != null)
+                            {
+                                profile.Friends.Add(friend);
+                                if (context.TOnlineUsers.FirstOrDefault(u => u.Id == friend.ID) != null)
+                                    friend.status = true;
+                                else
+                                    friend.status = false;
+                            }
+                        }
                     }
                     context.TOnlineUsers.Add(online);
                     context.SaveChanges();
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");
+                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");//Вывод в серверную консоль
                     return profile;
                 }
                 else
-                {
                     return null;
-                }
             }
         }
         public void Disconnect(int id)//Метод для отключения от магазина
         {
             using (postgresContext context = new postgresContext())
             {
-                TOnlineUsers online = new TOnlineUsers
-                {
-                    Id = id
-                };
+                TOnlineUsers online = new TOnlineUsers { Id = id };
                 context.TOnlineUsers.Remove(online);
                 context.SaveChanges();
             }

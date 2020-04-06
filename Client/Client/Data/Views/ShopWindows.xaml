@@ -4,28 +4,206 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="ShopWindows" Height="470.732" Width="739.024" Initialized="Window_Initialized">
-    <Grid Margin="0,0,2,2">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Column="0">
-            <Image x:Name="imMainImage" HorizontalAlignment="Left" Height="87" Margin="10,10,0,0" VerticalAlignment="Top" Width="113"/>
-            <Label x:Name="lbLogin" Content="Login" FontSize="20"/>
-            <Label x:Name="lbName" Content="Name" FontSize="10"/>
-        </StackPanel>
-        <ListView x:Name="Lv" ItemsSource="{Binding Friends}" Margin="5" Grid.Column ="1">
-            <ListView.ItemTemplate>
-                <DataTemplate x:Name="DT">
-                    <StackPanel Orientation="Horizontal">
-                        <Image x:Name="Image2" Source="{Binding Image}" Width="100" Height="100"/>
-                        <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
-                        <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <Button x:Name="btnExit"  Content="Exit" HorizontalAlignment="Left" Margin="644,408,0,0" VerticalAlignment="Top" Width="75" Click="btnExit_Click"/>
+        WindowStartupLocation="CenterScreen"
+        Title="ShopWindows" Height="470" Width="835.5" Initialized="Window_Initialized" ResizeMode="NoResize" WindowStyle="None">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="15*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="btnExit" Click="TbExit_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold">
+            <Viewbox Width="10" Height="10">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                </Grid>
+            </Viewbox>
+        </Button>
+        <Button x:Name="btnexitProfile" Click="BtnexitProfile_Click" Background="White" BorderThickness="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" Margin="0,0,65.2,440.4" Padding="0" HorizontalAlignment="Right" Height="30" Width="60" Content="выйти" Grid.RowSpan="2"/>
+        <Button x:Name="btnFull" Click="BtnFull_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontSize="30" Margin="0,0,30.2,25.2" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold" Grid.RowSpan="2">
+            <Viewbox Width="10" Height="10" Margin="0,0,10,0">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <Line Width="50" Height="50" X1="-2.5" Y1="0" X2="50" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="5" />
+                    <Line Width="50" Height="50" X1="0" Y1="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="50" Height="50" X1="50" Y1="50" X2="50"  Y2="0"  Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="50" Height="50" X1="0" Y1="0" X2="0" Y2="50" Stroke="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" StrokeThickness="5" />
+                </Grid>
+            </Viewbox>
+        </Button>
+        <Grid Grid.Row="1">
+            <TabControl x:Name="mainTab">
+                <TabItem Padding="15,0,15,0" Header="Магазин"  Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="9*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Button x:Name="Buy" Click="Buy_Click" Grid.Column="2" Grid.Row="0" Background="White" BorderThickness="0" Content="Корзина"></Button>
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="Фильтр: " Margin="10" TextAlignment="Left"/>
+                            <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
+                        </StackPanel>
+                        <Button x:Name="btnFakeProduct"  Grid.ColumnSpan ="3" Grid.Row="1" Height="300" Width="300" Content="Типа товар" Click="BtnFakeProduct_Click"></Button>
+
+                        <!--<ListView ItemsSource="{Binding Items}" Margin="5" Grid.ColumnSpan ="3" Grid.Row="1">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding Image}" Width="100" Height="100"/>
+                                        <TextBlock Text="{Binding Name}" Margin="5"/>
+                                        <TextBlock Text="{Binding Description}" Margin="5"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>-->
+                    </Grid>
+                </TabItem>
+                <TabItem Padding="5,0,5,0" Header="Библиотека" Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="8*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"  >
+                                <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Margin="5" Width="200"/>
+                            </StackPanel>
+                            <ListView ItemsSource="{Binding Items}" Margin="5" Grid.Row ="1" >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding Image}" Width="100" Height="100"/>
+                                            <TextBlock Text="{Binding Name}" Margin="5"/>
+                                            <TextBlock Text="{Binding Description}" Margin="5"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="3*"></RowDefinition>
+                                <RowDefinition Height="8*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="4*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="3*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="3*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Button Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20">
+                                    </Button>
+                                    <Grid Grid.Column="0" Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </Grid>
+
+                    </Grid>
+
+
+                </TabItem>
+                <TabItem Padding="5,0,5,0" Header="Профиль" Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"></RowDefinition>
+                            <RowDefinition Height="3*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image x:Name="imMainImage" Grid.Column="0" Grid.Row="0" />
+                        <Grid Grid.Column="1" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="15*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label x:Name="lbLogin" Grid.ColumnSpan="2" Grid.Row="0" Content="Login" FontSize="20"/>
+                            <Label x:Name="lbStatus" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                            <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" Content="Name" FontSize="10"/>
+                            <TextBlock Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                            <Label x:Name="lbEmail" Grid.Column="0" Grid.Row="3" Content="Email" FontSize="10"/>
+                            <Label x:Name="lbPhone" Grid.Column="0" Grid.Row="4" Content="Phone" FontSize="10"/>
+                        </Grid>
+                        <Grid Grid.Column="0" Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="5*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Ваши друзья" TextAlignment="Center"></TextBlock>
+                            <ListView x:Name="Lv" Grid.Row="1" ItemsSource="{Binding Friends}" Margin="5" >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:Name="DT">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image x:Name="Image2" Source="{Binding Image}" Width="100" Height="100"/>
+                                            <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
+                                            <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                        </Grid>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Padding="5,0,5,0"  Header="Для разработчиков"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="9*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="UserName" Text="Тут сделай список юзеров" Grid.Column="2"></ComboBox>
+                        <Button x:Name="btnChangePriority" Grid.Column="3" Content="Изменить приоритет"></Button>
+                        <ListView Grid.ColumnSpan="5" Grid.Row="1" Margin="5"></ListView>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
     </Grid>
 </Window>

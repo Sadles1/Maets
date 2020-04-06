@@ -54,7 +54,10 @@ namespace Client
             if (result)
                 Close();
         }
-
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -71,6 +74,19 @@ namespace Client
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void TbExit_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow MF = new MainWindow();
+            MF.Show();
+            this.Close();
+        }
+
+        private void TbSver_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+
         }
     }
 }

@@ -38,9 +38,45 @@ namespace Client
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
             MainWindow window = new MainWindow();   
-            MainWindow.client.Disconnect(profile.ID);
+            
             window.Show();
             this.Close();
+        }
+        private void TbExit_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.client.Disconnect(profile.ID);
+            this.Close();
+        }
+
+        private void BtnFull_Click(object sender, RoutedEventArgs e)
+        {
+            if(WindowState != WindowState.Maximized) 
+            WindowState = WindowState.Maximized;
+            else
+            {
+                WindowState= WindowState.Normal;
+            }
+        }
+
+        private void Buy_Click(object sender, RoutedEventArgs e)
+        {
+            Korzina buyProduct = new Korzina(profile);
+            buyProduct.Show();
+            this.Close();
+        }
+
+        private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow MF = new MainWindow();
+            MainWindow.client.Disconnect(profile.ID);
+            MF.Show();
+            this.Close();
+        }
+
+        private void BtnFakeProduct_Click(object sender, RoutedEventArgs e)
+        {
+            Product Pr = new Product();
+            Pr.Show();
         }
     }
 }

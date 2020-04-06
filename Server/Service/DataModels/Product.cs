@@ -8,6 +8,9 @@ namespace Service
     {
         public int Id { get; set; }
         public byte[] MainImage { get; set; }
+        public List<string> GameGenre { get; set; }
+        public List<string> MinGameSysReq { get; set; }
+        public List<string> RecGameSysReq { get; set; }
         public List<byte[]> Screenshots { get; set; }
         public string Name { get; set; }
         public double? WholesalePrice { get; set; }

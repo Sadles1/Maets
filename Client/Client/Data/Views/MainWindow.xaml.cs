@@ -31,12 +31,14 @@ namespace Client
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-
+            tbLogin.Text = "admin";
+            tbPassword.Text = "admin";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+            
             if (profile == null)
             {
                 MessageBox.Show("Error");
@@ -53,7 +55,23 @@ namespace Client
             RegisterWindows register = new RegisterWindows();
 
             register.Show();
+            this.Close();
+        }
 
+        private void TbExit_Click(object sender, RoutedEventArgs e)
+        {
+            
+            this.Close();
+        }
+
+        private void TbSver_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+
+        }
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
     }
 }

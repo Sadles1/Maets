@@ -62,3 +62,5 @@ C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\System.ValueTup
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\System.Text.Encodings.Web.xml
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\System.Buffers.xml
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\Newtonsoft.Json.dll
+C:\Users\snayp\Documents\GitHub\MTPProject\Server\Host\bin\Debug\Newtonsoft.Json.xml

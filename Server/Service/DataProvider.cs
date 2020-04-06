@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,52 +55,44 @@ namespace Service
             profile.Login = Tlogin.Login;
             profile.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.jpg")));//В изображение записываем массив байтов
             profile.Mail = Tlogin.IdOwnerNavigation.Mail;
-            profile.Name = Tlogin.IdOwnerNavigation.Name;
-            profile.Friends = new List<Profile>();
+            profile.Name = Tlogin.IdOwnerNavigation.Name;        
             profile.Money = Tlogin.IdOwnerNavigation.Money;
             profile.Telephone = Tlogin.IdOwnerNavigation.Telephone;
             profile.Discount = Tlogin.IdOwnerNavigation.PersonalDiscount;
             return profile;
-        }
-        public void XMLSerrialize(int id,int idFriend)
-        {
-            XmlSerializer xml = new XmlSerializer(typeof(int));
-            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.xml", FileMode.OpenOrCreate))
-            {
-                xml.Serialize(fs, idFriend);
-            }
-        }
-
-        public void XMLSerrialize(Message message)
-        {
-            XmlSerializer xml = new XmlSerializer(typeof(Message));
-            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{message.IDSender}\Message.xml", FileMode.OpenOrCreate))
-            {
-                xml.Serialize(fs, message);
-            }
-        }
-
-        public List<int> XMLDeserrialize(int id)
-        {
-            XmlSerializer xml = new XmlSerializer(typeof(List<int>));
-            using (FileStream fs = new FileStream($@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.xml", FileMode.OpenOrCreate))
-            {
-                return (xml.Deserialize(fs) as List<int>);
-            }
-        }
-
+        }       
         public Product FormProduct(TProducts TProduct)//Формируем продукт используя таблицу TProduct и связанные с ней таблицы
         {
-            Product product = new Product();
-            product.Id = TProduct.Id;
-            product.Name = TProduct.Name;
-            product.Publisher = TProduct.IdPublisherNavigation.Name;
-            product.ReleaseDate = TProduct.ReleaseDate.Date;
-            product.RetailPrice = TProduct.RetailPrice;
-            product.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}\Images\MainImage.jpg")));//В изображение записываем массив байтов
-            product.Description = TProduct.Description;
-            product.Developer = TProduct.IdDeveloperNavigation.Name;
-            return product;
+            using (postgresContext context = new postgresContext())
+            {
+                List<TGameGenre> gameGenre = context.TGameGenre.Include(u=>u.IdGameNavigation).Include(u=>u.IdGenreNavigation).Where(u => u.IdGame == TProduct.Id).ToList();
+                List<TMinGameSysReq> minGameSysReq = context.TMinGameSysReq.Include(u => u.IdSysReqNavigation).Include(u => u.IdGameNavigation).Where(u => u.IdGame == TProduct.Id).ToList();
+                List<TRecGameSysReq> recGameSysReq = context.TRecGameSysReq.Include(u => u.IdSysReqNavigation).Include(u => u.IdGameNavigation).Where(u => u.IdGame == TProduct.Id).ToList();
+                Product product = new Product();
+
+                product.Id = TProduct.Id;
+                product.Name = TProduct.Name;
+                product.Publisher = TProduct.IdPublisherNavigation.Name;
+                product.ReleaseDate = TProduct.ReleaseDate.Date;
+                product.RetailPrice = TProduct.RetailPrice;
+
+                product.GameGenre = new List<string>();
+                foreach(TGameGenre genre in gameGenre)
+                    product.GameGenre.Add(genre.IdGenreNavigation.Name);
+
+                product.MinGameSysReq = new List<string>();
+                foreach(TMinGameSysReq req in minGameSysReq)
+                    product.MinGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
+
+                product.RecGameSysReq = new List<string>();
+                foreach(TRecGameSysReq req in recGameSysReq)
+                    product.RecGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
+
+                product.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}\Images\MainImage.jpg")));//В изображение записываем массив байтов
+                product.Description = TProduct.Description;
+                product.Developer = TProduct.IdDeveloperNavigation.Name;
+                return product;
+            }
         }
         public TProducts FormTableProducts(Product product)//Метод для формирования таблицы продуктов используя класс продукт
         {
