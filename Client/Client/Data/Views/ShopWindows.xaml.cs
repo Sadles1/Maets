@@ -17,14 +17,37 @@ namespace Client
     /// <summary>
     /// Логика взаимодействия для ShopWindows.xaml
     /// </summary>
+    //public class ModelFriends: Service.Product
+    //{
+    //    public ImageSource Image { get; set; }
+
+    //    public ModelFriends MakeModelFriends(Service.Product product)
+    //    {
+    //        DataProvider dp = new DataProvider();
+    //        ModelFriends modelFriends = new ModelFriends();
+    //        modelFriends.Name = product.Name;
+    //        modelFriends.Image = dp.GetImageFromByte(product.MainImage);
+    //        modelFriends.Description = product.Description;
+    //        return modelFriends;
+    //    }
+    //}
     public partial class ShopWindows : Window
     {
+        public Service.Product fake = new Service.Product();
+        static public List<Service.Product> tvkrz = new List<Service.Product>();
+        static public Korzina buyProduct;
         Service.Profile profile;
         DataProvider dp = new DataProvider();
+        int idxg;
         public ShopWindows(Service.Profile profile)
-        { 
+        {
+          
             this.profile = profile;
             InitializeComponent();
+            Loaded += Window_Loaded;
+            
+            if (profile.AccessRight == 3) Onlyforadmin.Visibility = Visibility.Visible;
+
         }
 
         private void Window_Initialized(object sender, EventArgs e)
@@ -33,6 +56,9 @@ namespace Client
             lbLogin.Content = profile.Login;
             lbName.Content = profile.Name;
             Lv.ItemsSource = profile.Friends;
+           // lbLogin.Content = profile.AccessRight;
+
+
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
@@ -57,12 +83,15 @@ namespace Client
                 WindowState= WindowState.Normal;
             }
         }
-
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+          DataContext = new ProductViewModel();
+            
+        }
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
-            Korzina buyProduct = new Korzina(profile);
+            buyProduct = new Korzina(profile, fake,tvkrz);
             buyProduct.Show();
-            this.Close();
         }
 
         private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
@@ -75,8 +104,53 @@ namespace Client
 
         private void BtnFakeProduct_Click(object sender, RoutedEventArgs e)
         {
-            Product Pr = new Product();
+            Service.Product id = new Service.Product();
+           // Product Pr = new Product(id);
+           // Pr.Show();
+        }
+        private void leftmouse(object sender, EventArgs e)
+        {
+            List<Service.Product> products = MainWindow.client.GetProductTable().ToList();
+
+            int i = Lvm.SelectedIndex;
+            if(i!=-1)
+            { 
+            //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
+            Product Pr = new Product(products[i],profile,tvkrz);
             Pr.Show();
+                }
+
+        }
+        private void leftmousefriend(object sender, EventArgs e)
+        {
+            List<Service.Profile> fr = profile.Friends.ToList();
+            int i = Lv.SelectedIndex;
+           // Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
+            profilefriend r = new profilefriend(fr[i]);
+            r.Show();
+
+        }
+
+        private void leftmouse_2(object sender, EventArgs e)
+        {
+            List<Service.Product> products = MainWindow.client.GetProductTable().ToList();
+
+            int i = Lvmylibrary.SelectedIndex;
+            if (i != -1)
+            {
+                tbgamename.Text = products[i].Name;
+            }
+
+        }
+
+        private void Lvm_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+             idxg = Lvm.SelectedIndex;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Вы запустили игру " + tbgamename.Text);
         }
     }
 }

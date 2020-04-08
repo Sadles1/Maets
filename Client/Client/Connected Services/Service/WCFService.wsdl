@@ -79,6 +79,12 @@
   <wsdl:message name="IWCFService_AddFriend_OutputMessage">
     <wsdl:part name="parameters" element="tns:AddFriendResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_GetChat_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChat" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetChat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChatResponse" />
+  </wsdl:message>
   <wsdl:portType name="IWCFService">
     <wsdl:operation name="Connect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Connect" message="tns:IWCFService_Connect_InputMessage" />
@@ -107,6 +113,10 @@
     <wsdl:operation name="AddFriend">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddFriend" message="tns:IWCFService_AddFriend_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddFriendResponse" message="tns:IWCFService_AddFriend_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetChat" message="tns:IWCFService_GetChat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetChatResponse" message="tns:IWCFService_GetChat_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWCFService" type="tns:IWCFService">
@@ -167,6 +177,15 @@
     </wsdl:operation>
     <wsdl:operation name="AddFriend">
       <soap:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/GetChat" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -241,6 +260,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetChat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="WCFService">
     <wsdl:port name="BasicHttpBinding_IWCFService" binding="tns:BasicHttpBinding_IWCFService">
@@ -251,7 +279,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:904/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>DESKTOP-3Q9LTDF\snayp</Upn>
+          <Upn>DESKTOP-GA22JNL\p4shark</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

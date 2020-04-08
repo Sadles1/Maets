@@ -15,7 +15,27 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="7*"></RowDefinition>
             <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
+        <TextBlock x:Name="tbgame" Grid.Column="1" Grid.Row="1"></TextBlock>
+        <TextBlock x:Name="tbgame1" Grid.Column="1" Grid.Row="2"></TextBlock>
+        <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image x:Name="Screenshoot" Grid.Column="0" Grid.Row="0"  Source="{Binding Image}" />
+
+        </Grid>
+        <Button x:Name="btnBuy" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="Купить" FontSize="15" Click="BtnBuy_Click"></Button>
+        <Button x:Name="btnkorzina" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="К корзине" FontSize="15" Visibility="Hidden" Click="Btnkorzina_Click"></Button>
+        <TextBlock x:Name="price" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="50" Margin="0,0,100,0" TextAlignment="Center" ></TextBlock>
+        <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Margin="0,0,155,0" Text="Цена:" TextAlignment="Right" FontSize="18" FontWeight="Bold" ToolTip="В стиме дешевле" ></TextBlock>
     </Grid>
 </Window>
