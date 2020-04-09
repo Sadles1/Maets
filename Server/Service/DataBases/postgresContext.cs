@@ -71,10 +71,6 @@ namespace Service
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Count)
-                    .IsRequired()
-                    .HasColumnType("character varying");
-
                 entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.HasOne(d => d.IdBuyersNavigation)

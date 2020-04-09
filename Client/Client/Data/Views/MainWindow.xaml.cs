@@ -38,7 +38,6 @@ namespace Client
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
-            
             if (profile == null)
             {
                 MessageBox.Show("Error");

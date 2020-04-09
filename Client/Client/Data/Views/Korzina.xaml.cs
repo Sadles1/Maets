@@ -16,15 +16,40 @@ namespace Client
 {
     /// <summary>
     /// Логика взаимодействия для ShopWindows.xaml
-    /// </summary>
+    /// </summary> 
     public partial class Korzina : Window
     {
+        Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
         Service.Profile profile;
         DataProvider dp = new DataProvider();
-        public Korzina(Service.Profile profile)
-        { 
+        static public List<Service.Product> tvkrz = new List<Service.Product>();
+        public bool check(Service.Product b)
+        {
+            int p=0;
+            for(int i=0;i< tvkrz.Count; i++)
+            {
+                if (tvkrz[i].Id == b.Id) p++;
+            }
+            if (p != 0) return true;
+            else return false ;
+        }
+
+        public Korzina(Service.Profile profile, Service.Product tv,List<Service.Product> korz)
+        {
+            tvkrz = korz;
             this.profile = profile;
             InitializeComponent();
+            if (!check(tv) && tv.Id != -1)
+            {
+                tvkrz.Add(tv);
+                 
+            }
+            for (int i = 0; i < tvkrz.Count; i++)
+            {
+                lvProduct.Items.Add(tvkrz[i]);
+            }
+            allprice();
+
         }
 
         private void Window_Initialized(object sender, EventArgs e)
@@ -41,9 +66,6 @@ namespace Client
         }
         private void TbExit_Click(object sender, RoutedEventArgs e)
         {
-            ShopWindows MF = new ShopWindows(profile);
-           
-            MF.Show();
             this.Close();
         }
 
@@ -64,7 +86,42 @@ namespace Client
 
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
-          
+            if (lvProduct.Items.Count == 0) MessageBox.Show("Сначала добавте товар в корзину!");
+            else
+            {
+                if (profile.Money >= Convert.ToDouble(tbSumm.Text))
+                {
+                    lvProduct.Items.Clear();
+                    profile.Money -= Convert.ToDouble(tbSumm.Text);
+                    tbSumm.Text = "";
+                    client.BuyProduct(tvkrz.ToArray(), profile.ID);
+                    tvkrz.Clear();
+                    MessageBox.Show("Покупка успешно совершена, с вашего счета списано" + tbSumm.Text + "\n Остаток: " + profile.Money);
+                }
+                else
+                {
+                    MessageBox.Show("Недостаточно средств! \n Нужно ещё " + (Convert.ToDouble(tbSumm.Text) - profile.Money));
+                }
+            }
+        }
+
+        private void LvProduct_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            double sum = 0;
+            for (int i=0;i<tvkrz.Count;i++)
+            {
+                sum += tvkrz[i].RetailPrice;
+            }
+            tbSumm.Text = Convert.ToString(sum);
+        }
+        public void allprice()
+        {
+            double sum = 0;
+            for (int i = 0; i < tvkrz.Count; i++)
+            {
+                sum += tvkrz[i].RetailPrice;
+            }
+            tbSumm.Text = Convert.ToString(sum);
         }
     }
 }

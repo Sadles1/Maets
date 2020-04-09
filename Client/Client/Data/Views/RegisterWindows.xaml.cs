@@ -78,15 +78,18 @@ namespace Client
 
         private void TbExit_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow MF = new MainWindow();
-            MF.Show();
             this.Close();
         }
 
         private void TbSver_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+        }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MainWindow MF = new MainWindow();
+            MF.Show();
         }
     }
 }

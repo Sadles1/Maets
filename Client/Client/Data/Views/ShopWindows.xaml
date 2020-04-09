@@ -50,17 +50,18 @@
                         </StackPanel>
                         <Button x:Name="btnFakeProduct"  Grid.ColumnSpan ="3" Grid.Row="1" Height="300" Width="300" Content="Типа товар" Click="BtnFakeProduct_Click"></Button>
 
-                        <!--<ListView ItemsSource="{Binding Items}" Margin="5" Grid.ColumnSpan ="3" Grid.Row="1">
+                        <ListView x:Name="Lvm" SelectionChanged="Lvm_SelectionChanged" MouseLeftButtonUp="leftmouse"  ItemsSource="{Binding Items}" SelectedItem="{Binding Items}" Margin="5" Grid.ColumnSpan ="3" Grid.Row="1">
                             <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding Image}" Width="100" Height="100"/>
-                                        <TextBlock Text="{Binding Name}" Margin="5"/>
-                                        <TextBlock Text="{Binding Description}" Margin="5"/>
-                                    </StackPanel>
+                                <DataTemplate >
+                                        <Grid>
+                                        <Image x:Name="tvI" Source="{Binding Image}" Width="100" Height="100" HorizontalAlignment="Left"/>
+                                        <TextBlock x:Name="tvN" Text="{Binding Name}" Margin="100,0,0,0"/>
+                                        <TextBlock Text="{Binding Description}" Margin="200,0,0,0"/>
+                                        </Grid>
+                                   
                                 </DataTemplate>
                             </ListView.ItemTemplate>
-                        </ListView>-->
+                        </ListView>
                     </Grid>
                 </TabItem>
                 <TabItem Padding="5,0,5,0" Header="Библиотека" Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
@@ -77,7 +78,7 @@
                             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"  >
                                 <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Margin="5" Width="200"/>
                             </StackPanel>
-                            <ListView ItemsSource="{Binding Items}" Margin="5" Grid.Row ="1" >
+                            <ListView x:Name="Lvmylibrary" MouseLeftButtonUp="leftmouse_2" ItemsSource="{Binding Items}" Margin="5" Grid.Row ="1" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -95,6 +96,7 @@
                                 <RowDefinition Height="8*"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
+                            <TextBlock x:Name="tbgamename" TextAlignment="Center" Grid.Column="0" Grid.Row="0" FontSize="50"></TextBlock>
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -106,7 +108,7 @@
                                         <RowDefinition Height="*"></RowDefinition>
                                         <RowDefinition Height="3*"></RowDefinition>
                                     </Grid.RowDefinitions>
-                                    <Button Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20">
+                                    <Button Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20" Click="Button_Click">
                                     </Button>
                                     <Grid Grid.Column="0" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
@@ -155,7 +157,7 @@
                             <Label x:Name="lbLogin" Grid.ColumnSpan="2" Grid.Row="0" Content="Login" FontSize="20"/>
                             <Label x:Name="lbStatus" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                            <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" Content="Name" FontSize="10"/>
+                            <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" Content="Name" VerticalAlignment="Center" FontSize="10"/>
                             <TextBlock Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
@@ -168,14 +170,19 @@
                                 <RowDefinition Height="5*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Text="Ваши друзья" TextAlignment="Center"></TextBlock>
-                            <ListView x:Name="Lv" Grid.Row="1" ItemsSource="{Binding Friends}" Margin="5" >
+                            <ListView x:Name="Lv" Grid.Row="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:Name="DT">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image x:Name="Image2" Source="{Binding Image}" Width="100" Height="100"/>
+                                        <WrapPanel Orientation="Horizontal">
+                                            <Image x:Name="Image2"  Height="50" Width="50" >
+                                                <Image.Source >
+                                                    <CroppedBitmap Source="{Binding MainImage}" ></CroppedBitmap>
+                                                         
+                                                </Image.Source>
+                                            </Image>
                                             <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
                                             <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
-                                        </StackPanel>
+                                        </WrapPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -184,7 +191,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Padding="5,0,5,0"  Header="Для разработчиков"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" >
+                <TabItem x:Name="Onlyforadmin" Padding="5,0,5,0"  Header="Для разработчиков"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" Visibility="Hidden" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>

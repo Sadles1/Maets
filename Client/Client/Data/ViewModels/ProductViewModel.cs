@@ -40,6 +40,7 @@ namespace Client
             set { SetValue(ItemsProperty, value); }
         }
 
+
         // Using a DependencyProperty as the backing store for Items.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(ICollectionView), typeof(ProductViewModel), new PropertyMetadata(null));

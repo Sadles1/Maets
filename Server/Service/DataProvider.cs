@@ -7,13 +7,12 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Xml.Serialization;
 
 namespace Service
 {
     class DataProvider
     {
-        public void FormTableUser(Profile profile, string Password, ref TUsers TUser,ref TLogin Tlogin)//Метод формирует таблицу Users и Login используя класс профиль и пароль
+        public void FormTableUser(Profile profile, string Password, ref TUsers TUser,ref TLogin Tlogin)//Метод формирует таблицы Users и Login используя класс профиль и пароль
         {
             using (postgresContext context = new postgresContext())
             {
@@ -23,8 +22,8 @@ namespace Service
                 if (TLogins.FirstOrDefault(u => u.Login == profile.Login) != null)//Проверка что такой же логин не используеться
                     throw new FaultException("Данный логин уже занят");
                 if (Tusers.FirstOrDefault(u => u.Mail == profile.Mail) != null)//Проверка что такая же почта не используеться
-                    throw new FaultException("Данная почта уже зарегистрирована");
-                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null && profile.Telephone!=null)//Проверка что такой же номер телефона не используеться но номер может быть пустой
+                    throw new FaultException("Данный почта уже зарегистрирована");
+                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null && profile.Telephone!=null)//Проверка что такой же номер телефона не используеться, но номер может быть пустой
                     throw new FaultException("Данный номер телефона уже используеться");
 
                 if (Tusers.Count == 0)//Для формирования Id
@@ -36,6 +35,7 @@ namespace Service
                 TUser.Mail = profile.Mail;
                 TUser.Telephone = profile.Telephone;
                 TUser.AccessRight = profile.AccessRight;
+                TUser.Money = 0;
 
                 if (TLogins.Count == 0)//Для формирования Id
                     Tlogin.Id = 1;
@@ -47,18 +47,34 @@ namespace Service
                 Tlogin.Password = Password;             
             }
         }
-
-        public Profile FormProfile(TLogin Tlogin)//Формируем профиль используя таблицу Tlogin и связанные с ней таблицы
+        public TDeals FormTDeal(int id,int idProfile,Product pr,int Count,bool Wholesale)//Формирует таблицу сделок
+        {
+            TDeals deal = new TDeals();
+            deal.Id = id;
+            deal.Date = DateTime.Now.Date;
+            deal.IdBuyers = idProfile;
+            deal.IdProduct = pr.Id;
+            deal.BuyingPrice = pr.RetailPrice;
+            deal.Count = Count;
+            deal.Wholesale = Wholesale;
+            return deal;
+        }
+        public Profile FormProfile(TLogin Tlogin)//Формируем профиль используя таблицу login и связанные с ней таблицы
         {
             Profile profile = new Profile();
             profile.ID = Tlogin.Id;
             profile.Login = Tlogin.Login;
-            profile.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.jpg")));//В изображение записываем массив байтов
+            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))
+            {
+                profile.MainImage = new byte[fstream.Length];
+                fstream.Read(profile.MainImage, 0, profile.MainImage.Length);
+            }
             profile.Mail = Tlogin.IdOwnerNavigation.Mail;
             profile.Name = Tlogin.IdOwnerNavigation.Name;        
             profile.Money = Tlogin.IdOwnerNavigation.Money;
             profile.Telephone = Tlogin.IdOwnerNavigation.Telephone;
             profile.Discount = Tlogin.IdOwnerNavigation.PersonalDiscount;
+            profile.AccessRight = Tlogin.IdOwnerNavigation.AccessRight;
             return profile;
         }       
         public Product FormProduct(TProducts TProduct)//Формируем продукт используя таблицу TProduct и связанные с ней таблицы
@@ -88,13 +104,18 @@ namespace Service
                 foreach(TRecGameSysReq req in recGameSysReq)
                     product.RecGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
 
-                product.MainImage = GetByteImage(BitmapFrame.Create(new Uri($@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}\Images\MainImage.jpg")));//В изображение записываем массив байтов
+                using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Products\{product.Id}\Images\MainImage.encr"))
+                {
+                    product.MainImage = new byte[fstream.Length];
+                    fstream.Read(product.MainImage, 0, product.MainImage.Length);
+                }
+
                 product.Description = TProduct.Description;
                 product.Developer = TProduct.IdDeveloperNavigation.Name;
                 return product;
             }
         }
-        public TProducts FormTableProducts(Product product)//Метод для формирования таблицы продуктов используя класс продукт
+        public TProducts FormTableProducts(Product product)//Формирует таблицу product используя класс product
         {
             using (postgresContext context = new postgresContext())
             {

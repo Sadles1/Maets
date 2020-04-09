@@ -82,6 +82,9 @@
     <Compile Include="Data\Views\Korzina.xaml.cs">
       <DependentUpon>Korzina.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\Views\profilefriend.xaml.cs">
+      <DependentUpon>profilefriend.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Views\Test.xaml.cs">
       <DependentUpon>Test.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <DependentUpon>ShopWindows.xaml</DependentUpon>
     </Compile>
     <Page Include="Data\Views\Korzina.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Data\Views\profilefriend.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -151,6 +158,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\Service\Client.Service.Message.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\Service\Client.Service.Product.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -167,6 +177,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\item3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\Service\item4.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\WCFService.wsdl" />

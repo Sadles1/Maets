@@ -16,7 +16,7 @@ namespace Service
         [OperationContract]
         void Disconnect(int id);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void AddProduct(Product product);
 
         [OperationContract]
@@ -25,13 +25,16 @@ namespace Service
         [OperationContract]
         void Register(Profile profile, string Password);
 
-        [OperationContract]
-        void UpdateChat(Message message);
-
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void AddFriend(int id,int idFriend);
 
         [OperationContract]
         List<Message> GetChat(int id);
+
+        [OperationContract(IsOneWay = true)]
+        void BuyProduct(List<Product> Cart, int idProfile);
+
+        [OperationContract(IsOneWay = true)]
+        void BuyProductWholesale(List<Tuple<Product, int>> Cart, int idProfile);
     }
 }

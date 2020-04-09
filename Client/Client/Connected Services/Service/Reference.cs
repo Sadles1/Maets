@@ -234,16 +234,25 @@ namespace Client.Service {
         private string DeveloperField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] GameGenreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private byte[] MainImageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] MinGameSysReqField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string PublisherField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] RecGameSysReqField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime ReleaseDateField;
@@ -294,6 +303,19 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] GameGenre {
+            get {
+                return this.GameGenreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.GameGenreField, value) != true)) {
+                    this.GameGenreField = value;
+                    this.RaisePropertyChanged("GameGenre");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int Id {
             get {
                 return this.IdField;
@@ -320,6 +342,19 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] MinGameSysReq {
+            get {
+                return this.MinGameSysReqField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MinGameSysReqField, value) != true)) {
+                    this.MinGameSysReqField = value;
+                    this.RaisePropertyChanged("MinGameSysReq");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Name {
             get {
                 return this.NameField;
@@ -341,6 +376,19 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.PublisherField, value) != true)) {
                     this.PublisherField = value;
                     this.RaisePropertyChanged("Publisher");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] RecGameSysReq {
+            get {
+                return this.RecGameSysReqField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RecGameSysReqField, value) != true)) {
+                    this.RecGameSysReqField = value;
+                    this.RaisePropertyChanged("RecGameSysReq");
                 }
             }
         }
@@ -516,10 +564,10 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
         System.Threading.Tasks.Task DisconnectAsync(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddProduct", ReplyAction="http://tempuri.org/IWCFService/AddProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
         void AddProduct(Client.Service.Product product);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddProduct", ReplyAction="http://tempuri.org/IWCFService/AddProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
         System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductTable", ReplyAction="http://tempuri.org/IWCFService/GetProductTableResponse")]
@@ -534,17 +582,29 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Register", ReplyAction="http://tempuri.org/IWCFService/RegisterResponse")]
         System.Threading.Tasks.Task RegisterAsync(Client.Service.Profile profile, string Password);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
-        void UpdateChat(Client.Service.Message message);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddFriend")]
+        void AddFriend(int id, int idFriend);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/UpdateChat", ReplyAction="http://tempuri.org/IWCFService/UpdateChatResponse")]
-        System.Threading.Tasks.Task UpdateChatAsync(Client.Service.Message message);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddFriend")]
+        System.Threading.Tasks.Task AddFriendAsync(int id, int idFriend);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddFriend", ReplyAction="http://tempuri.org/IWCFService/AddFriendResponse")]
-        void AddFriend(int id, int[] idFriend);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
+        Client.Service.Message[] GetChat(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddFriend", ReplyAction="http://tempuri.org/IWCFService/AddFriendResponse")]
-        System.Threading.Tasks.Task AddFriendAsync(int id, int[] idFriend);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
+        System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
+        void BuyProduct(Client.Service.Product[] Cart, int idProfile);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
+        System.Threading.Tasks.Task BuyProductAsync(Client.Service.Product[] Cart, int idProfile);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
+        void BuyProductWholesale(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
+        System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -614,20 +674,36 @@ namespace Client.Service {
             return base.Channel.RegisterAsync(profile, Password);
         }
         
-        public void UpdateChat(Client.Service.Message message) {
-            base.Channel.UpdateChat(message);
-        }
-        
-        public System.Threading.Tasks.Task UpdateChatAsync(Client.Service.Message message) {
-            return base.Channel.UpdateChatAsync(message);
-        }
-        
-        public void AddFriend(int id, int[] idFriend) {
+        public void AddFriend(int id, int idFriend) {
             base.Channel.AddFriend(id, idFriend);
         }
         
-        public System.Threading.Tasks.Task AddFriendAsync(int id, int[] idFriend) {
+        public System.Threading.Tasks.Task AddFriendAsync(int id, int idFriend) {
             return base.Channel.AddFriendAsync(id, idFriend);
+        }
+        
+        public Client.Service.Message[] GetChat(int id) {
+            return base.Channel.GetChat(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int id) {
+            return base.Channel.GetChatAsync(id);
+        }
+        
+        public void BuyProduct(Client.Service.Product[] Cart, int idProfile) {
+            base.Channel.BuyProduct(Cart, idProfile);
+        }
+        
+        public System.Threading.Tasks.Task BuyProductAsync(Client.Service.Product[] Cart, int idProfile) {
+            return base.Channel.BuyProductAsync(Cart, idProfile);
+        }
+        
+        public void BuyProductWholesale(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile) {
+            base.Channel.BuyProductWholesale(Cart, idProfile);
+        }
+        
+        public System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile) {
+            return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
         }
     }
 }

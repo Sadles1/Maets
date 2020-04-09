@@ -35,6 +35,7 @@
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Service" />
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IWCFService_Connect_InputMessage">
@@ -52,9 +53,6 @@
   <wsdl:message name="IWCFService_AddProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:AddProduct" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_AddProduct_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AddProductResponse" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_GetProductTable_InputMessage">
     <wsdl:part name="parameters" element="tns:GetProductTable" />
   </wsdl:message>
@@ -67,17 +65,20 @@
   <wsdl:message name="IWCFService_Register_OutputMessage">
     <wsdl:part name="parameters" element="tns:RegisterResponse" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_UpdateChat_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateChat" />
-  </wsdl:message>
-  <wsdl:message name="IWCFService_UpdateChat_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateChatResponse" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_AddFriend_InputMessage">
     <wsdl:part name="parameters" element="tns:AddFriend" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_AddFriend_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AddFriendResponse" />
+  <wsdl:message name="IWCFService_GetChat_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChat" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetChat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChatResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_BuyProduct_InputMessage">
+    <wsdl:part name="parameters" element="tns:BuyProduct" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_BuyProductWholesale_InputMessage">
+    <wsdl:part name="parameters" element="tns:BuyProductWholesale" />
   </wsdl:message>
   <wsdl:portType name="IWCFService">
     <wsdl:operation name="Connect">
@@ -90,7 +91,6 @@
     </wsdl:operation>
     <wsdl:operation name="AddProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddProduct" message="tns:IWCFService_AddProduct_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddProductResponse" message="tns:IWCFService_AddProduct_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetProductTable">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetProductTable" message="tns:IWCFService_GetProductTable_InputMessage" />
@@ -100,13 +100,18 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Register" message="tns:IWCFService_Register_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/RegisterResponse" message="tns:IWCFService_Register_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="UpdateChat">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/UpdateChat" message="tns:IWCFService_UpdateChat_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/UpdateChatResponse" message="tns:IWCFService_UpdateChat_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="AddFriend">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddFriend" message="tns:IWCFService_AddFriend_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddFriendResponse" message="tns:IWCFService_AddFriend_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetChat" message="tns:IWCFService_GetChat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetChatResponse" message="tns:IWCFService_GetChat_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="BuyProduct">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/BuyProduct" message="tns:IWCFService_BuyProduct_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="BuyProductWholesale">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/BuyProductWholesale" message="tns:IWCFService_BuyProductWholesale_InputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWCFService" type="tns:IWCFService">
@@ -134,9 +139,6 @@
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetProductTable">
       <soap:operation soapAction="http://tempuri.org/IWCFService/GetProductTable" style="document" />
@@ -156,8 +158,14 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UpdateChat">
-      <soap:operation soapAction="http://tempuri.org/IWCFService/UpdateChat" style="document" />
+    <wsdl:operation name="AddFriend">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/GetChat" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -165,14 +173,17 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="AddFriend">
-      <soap:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+    <wsdl:operation name="BuyProduct">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/BuyProduct" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuyProductWholesale">
+      <soap:operation soapAction="http://tempuri.org/IWCFService/BuyProductWholesale" style="document" />
+      <wsdl:input>
         <soap:body use="literal" />
-      </wsdl:output>
+      </wsdl:input>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="NetTcpBinding_IWCFService" type="tns:IWCFService">
@@ -201,9 +212,6 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetProductTable">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetProductTable" style="document" />
@@ -223,8 +231,14 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UpdateChat">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/UpdateChat" style="document" />
+    <wsdl:operation name="AddFriend">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetChat" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -232,14 +246,17 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="AddFriend">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/AddFriend" style="document" />
+    <wsdl:operation name="BuyProduct">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/BuyProduct" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuyProductWholesale">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/BuyProductWholesale" style="document" />
+      <wsdl:input>
         <soap12:body use="literal" />
-      </wsdl:output>
+      </wsdl:input>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="WCFService">
