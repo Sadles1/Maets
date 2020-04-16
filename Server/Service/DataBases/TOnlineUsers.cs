@@ -9,6 +9,7 @@ namespace Service
     public partial class TOnlineUsers
     {
         public int Id { get; set; }
+        public string IdSession { get; set; }
         public virtual TUsers IdUsersNavigation { get; set; }
     }
 }

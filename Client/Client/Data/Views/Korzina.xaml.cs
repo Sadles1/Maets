@@ -19,7 +19,6 @@ namespace Client
     /// </summary> 
     public partial class Korzina : Window
     {
-        Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
         Service.Profile profile;
         DataProvider dp = new DataProvider();
         static public List<Service.Product> tvkrz = new List<Service.Product>();
@@ -94,7 +93,7 @@ namespace Client
                     lvProduct.Items.Clear();
                     profile.Money -= Convert.ToDouble(tbSumm.Text);
                     tbSumm.Text = "";
-                    client.BuyProduct(tvkrz.ToArray(), profile.ID);
+                    MainWindow.client.BuyProduct(tvkrz.ToArray(), profile.ID);
                     tvkrz.Clear();
                     MessageBox.Show("Покупка успешно совершена, с вашего счета списано" + tbSumm.Text + "\n Остаток: " + profile.Money);
                 }

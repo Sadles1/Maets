@@ -70,8 +70,8 @@ namespace Client
         }
         private void TbExit_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.client.Disconnect(profile.ID);
-            this.Close();
+            MainWindow.client.Close();
+            Close();
         }
 
         private void BtnFull_Click(object sender, RoutedEventArgs e)
@@ -97,9 +97,9 @@ namespace Client
         private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
         {
             MainWindow MF = new MainWindow();
-            MainWindow.client.Disconnect(profile.ID);
+            MainWindow.client.Close();
             MF.Show();
-            this.Close();
+            Close();
         }
 
         private void BtnFakeProduct_Click(object sender, RoutedEventArgs e)

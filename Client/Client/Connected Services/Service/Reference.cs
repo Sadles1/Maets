@@ -32,6 +32,9 @@ namespace Client.Service {
         private Client.Service.Profile[] FriendsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private Client.Service.Product[] GamesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int IDField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -100,6 +103,19 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.FriendsField, value) != true)) {
                     this.FriendsField = value;
                     this.RaisePropertyChanged("Friends");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public Client.Service.Product[] Games {
+            get {
+                return this.GamesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.GamesField, value) != true)) {
+                    this.GamesField = value;
+                    this.RaisePropertyChanged("Games");
                 }
             }
         }
@@ -549,7 +565,7 @@ namespace Client.Service {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IWCFService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
@@ -557,12 +573,6 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
-        void Disconnect(int id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Disconnect", ReplyAction="http://tempuri.org/IWCFService/DisconnectResponse")]
-        System.Threading.Tasks.Task DisconnectAsync(int id);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
         void AddProduct(Client.Service.Product product);
@@ -605,6 +615,24 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
         System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
+        Client.Service.Profile CheckFriend(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        void AddModerationProduct(Client.Service.Product product);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        void DeleteAccount(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        System.Threading.Tasks.Task DeleteAccountAsync(int id);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -640,14 +668,6 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password) {
             return base.Channel.ConnectAsync(Login, Password);
-        }
-        
-        public void Disconnect(int id) {
-            base.Channel.Disconnect(id);
-        }
-        
-        public System.Threading.Tasks.Task DisconnectAsync(int id) {
-            return base.Channel.DisconnectAsync(id);
         }
         
         public void AddProduct(Client.Service.Product product) {
@@ -704,6 +724,30 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile) {
             return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
+        }
+        
+        public Client.Service.Profile CheckFriend(int id) {
+            return base.Channel.CheckFriend(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id) {
+            return base.Channel.CheckFriendAsync(id);
+        }
+        
+        public void AddModerationProduct(Client.Service.Product product) {
+            base.Channel.AddModerationProduct(product);
+        }
+        
+        public System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product) {
+            return base.Channel.AddModerationProductAsync(product);
+        }
+        
+        public void DeleteAccount(int id) {
+            base.Channel.DeleteAccount(id);
+        }
+        
+        public System.Threading.Tasks.Task DeleteAccountAsync(int id) {
+            return base.Channel.DeleteAccountAsync(id);
         }
     }
 }

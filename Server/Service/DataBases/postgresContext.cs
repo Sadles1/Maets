@@ -162,11 +162,10 @@ namespace Service
                     .HasColumnName("password")
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IdOwnerNavigation)
+                entity.HasOne(d => d.IdNavigation)
                     .WithMany(p => p.TLogin)
-                    .HasForeignKey(d => d.IdOwner)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Login_IdOwner_fkey");
+                    .HasForeignKey(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<TMinGameSysReq>(entity =>

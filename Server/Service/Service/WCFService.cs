@@ -2,14 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using System.Windows.Media.Imaging;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace Service
 {
@@ -17,18 +12,24 @@ namespace Service
     public class WCFService : IWCFService
     {
         DataProvider dp = new DataProvider();
-        public void BuyProduct(List<Product> Cart, int idProfile)//Метод для покупки товаров
+
+
+        /// <summary>
+        /// Метод для покупки товаров
+        /// </summary>
+        public void BuyProduct(List<Product> Cart, int idProfile)
         {
             using (postgresContext context = new postgresContext())
             {
                 List<TDeals> TDeals = context.TDeals.ToList();
-                int id;
-                if (TDeals.Count == 0)//Для формирования Id
-                    id = 1;
-                else
-                    id = (TDeals.Max(u => u.Id) + 1);
+
+                //Формируем ID
+                int id = TDeals.Count == 0 ? 1 : (TDeals.Max(u => u.Id) + 1);
+
+                //Находим пользователя совершившего покупку
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
 
+                //Записываем все сделки в БД
                 foreach (Product pr in Cart)
                 {
                     TDeals deal = dp.FormTDeal(id, idProfile, pr, 1, false);
@@ -37,22 +38,28 @@ namespace Service
                     profile.TotalSpentMoney += pr.RetailPrice * (1 - profile.PersonalDiscount);
                     id++;
                 }
+
+                //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
+                //Сохраняем БД
                 context.SaveChanges();
             }
         }
 
-        public void BuyProductWholesale(List<Tuple<Product, int>> Cart, int idProfile)//Метод для оптовой покупки товаров
+        /// <summary>
+        /// Метод для оптовой покупки товаров
+        /// </summary>
+        /// <param name="Cart">Необходимо передать пары Product + количество</param>
+        public void BuyProductWholesale(List<Tuple<Product, int>> Cart, int idProfile)
         {
             using (postgresContext context = new postgresContext())
             {
                 List<TDeals> TDeals = context.TDeals.ToList();
-                int id;
-                if (TDeals.Count == 0)//Для формирования Id
-                    id = 1;
-                else
-                    id = (TDeals.Max(u => u.Id) + 1);
 
+                //Формируем ID
+                int id = TDeals.Count == 0 ? 1 : (TDeals.Max(u => u.Id) + 1);
+
+                //Записываем все сделки в БД
                 foreach (Tuple<Product, int> tuple in Cart)
                 {
                     TDeals deal = dp.FormTDeal(id, idProfile, tuple.Item1, tuple.Item2, true);
@@ -60,11 +67,16 @@ namespace Service
                     id++;
                 }
 
+                //Сохраняем БД
                 context.SaveChanges();
             }
         }
 
-        public List<Product> GetProductTable()//Методя для получения всех продуктов магазина
+
+        /// <summary>
+        /// Метод для получения всех продуктов магазина
+        /// </summary>
+        public List<Product> GetProductTable()
         {
             using (postgresContext context = new postgresContext())
             {
@@ -79,7 +91,26 @@ namespace Service
             }
         }
 
-        public void AddProduct(Product product)//Метод для добавления продукта в магазин
+
+        /// <summary>
+        /// Метод для добавления продукта на модерацию
+        /// </summary>
+        /// <param name="product"></param>
+        public void AddModerationProduct(Product product)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TModerateProducts moderateProduct = dp.FormModerateProduct(product);
+                context.TModerateProducts.Add(moderateProduct);
+                context.SaveChanges();
+            }
+        }
+
+
+        /// <summary>
+        /// Метод для добавления продукта в магазин
+        /// </summary>
+        public void AddProduct(Product product)
         {
             using (postgresContext context = new postgresContext())
             {
@@ -89,105 +120,281 @@ namespace Service
             }
         }
 
-        public List<Message> GetChat(int id)//Метод для получения сообщений
+        /// <summary>
+        /// Метод для получения сообщений с конкретным пользователем
+        /// </summary>
+        /// <param name="idMain">ID основного пользователя</param>
+        /// <param name="idComrade">ID пользователя с которым нужно получить сообщения</param>
+        public List<Message> GetChat(int idMain, int idComrade)
         {
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
-            List<Message> messages = JsonConvert.DeserializeObject<List<Message>>(File.ReadAllText(path));
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{idMain}\Messages.json";
+            List<Message> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<Message>>(File.ReadAllText(path)).Where(u => u.IDReceiver == idComrade).ToList() : null;
             return messages;
         }
 
-        public void AddFriend(int id, int idFriend)//Метод для добавления в список друзей
+        /// <summary>
+        /// Метод для формирование полной версии профиля при переходе из подключённого
+        /// </summary>
+        /// <param name="id">ID нужного профиля</param>
+        /// <returns></returns>
+        public Profile CheckFriend(int id)
         {
+            using (postgresContext context = new postgresContext())
+            {
+                TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Id == id);
+                Profile profile = dp.FormProfile(Tlogin);
+
+                //Проверка что данный профиль не добавил вас в чёрный список
+                bool blacklist = false;
+                string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
+                if (File.Exists(path))
+                {
+                    List<int> Blacklist = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path));
+                    if (Blacklist.Where(u => u == id) != null)
+                        blacklist = true;
+
+                }
+
+                return profile;
+            }
+        }
+
+
+        /// <summary>
+        /// Метод для удаления из чёрного списка
+        /// </summary>
+        /// <param name="id">ID пользователя который добавил в чёрный список</param>
+        /// <param name="idUserInBlacklist">ID пользователя которого необходимо удалить из чёрного списока</param>
+        public void RemoveFromBlacklist(int id, int idUserInBlacklist)
+        {
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            List<int> Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
+            Blacklist.Remove(idUserInBlacklist);
+            File.WriteAllText(path, JsonConvert.SerializeObject(Blacklist));
+        }
+
+        /// <summary>
+        /// Метод для добавления в чёрный список
+        /// </summary>
+        /// <param name="id">ID пользователя который добавил в чёрный список</param>
+        /// <param name="idUserToBlacklist">ID пользователя которого добавили в чёрный список</param>
+        public void AddToBlacklist(int id, int idUserToBlacklist)
+        {
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            List<int> Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
+            Blacklist.Add(idUserToBlacklist);
+            File.WriteAllText(path, JsonConvert.SerializeObject(Blacklist));
+        }
+
+        /// <summary>
+        /// Метод для добавления в список друзей
+        /// </summary>
+        public void AddFriend(int id, int idFriend)
+        {
+            //Обновляем файл с друзьями у одного аккаунта
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";//Сначала обновляем файл с друзьями у одного аккаунта
             List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Add(idFriend);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
 
-            path = $@"{BaseSettings.Default.SourcePath}\Users\{idFriend}\Friends.json";//Теперь обновляем файл с друзьями у другого аккаунта
+            //Обновляем файл с друзьями у другого аккаунта
+            path = $@"{BaseSettings.Default.SourcePath}\Users\{idFriend}\Friends.json";
             friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Add(id);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
         }
 
-        public void Register(Profile profile, string Password)//Метод для регистрации
+
+        /// <summary>
+        /// Метод для регистрации пользователя
+        /// </summary>
+        /// <param name="profile">Регистрируемый профиль. Необходимо передать поля Login и Mail.
+        /// по желанию можно передать поля Telephone и Name, либо прировнять их к null</param>
+        /// <param name="Password">Пароль</param>
+        public void Register(Profile profile, string Password)
         {
             using (postgresContext context = new postgresContext())
             {
+
                 TUsers TUser = new TUsers();
                 TLogin Tlogin = new TLogin();
+
                 dp.FormTableUser(profile, Password, ref TUser, ref Tlogin);
+
+                //Создаём папку для нового пользователя
                 string path = $@"{BaseSettings.Default.SourcePath}\Users";
                 DirectoryInfo dirInfo = new DirectoryInfo($@"{path}\{TUser.Id}\Images");
-                if (dirInfo.Exists)
-                    dirInfo.Delete();
                 dirInfo.Create();
+
+                //Копируем Файл со стандартным изображением в папку нового профиля  
                 File.Copy($@"{path}\DefaultImage\MainImage.encr", $@"{path}\{TUser.Id}\Images\MainImage.encr", true);
+
+                //Добавляем профиль в БД
                 context.TLogin.Add(Tlogin);
                 context.TUsers.Add(TUser);
                 context.SaveChanges();
             }
         }
 
+        /// <summary>
+        /// Метод для изменения счёта пользователя
+        /// </summary>
+        /// <param name="id">ID пользователя</param>
+        /// <param name="money">Сумма на которую измениться счёт</param>
         public void AddMoney(int id, int money)
         {
             using (postgresContext context = new postgresContext())
             {
+                //Находим пользователя
                 TUsers user = context.TUsers.FirstOrDefault(u => u.Id == id);
+
+                //Прибавляем к его текущему счёт дополнительные средства
                 user.Money += money;
+
+                //Сохраняем изменение в БД
                 context.TUsers.Update(user);
                 context.SaveChanges();
             }
         }
-        public Profile Connect(string Login, string Password)//Метод для подключения к магазину
+
+        /// <summary>
+        /// Метод выполняет соединение используя передоваемый логин и пароль
+        /// </summary>
+        /// <param name="Login">Логин</param>
+        /// <param name="Password">Пароль</param>
+        /// <returns></returns>
+        public Profile Connect(string Login, string Password)
         {
             using (postgresContext context = new postgresContext())
             {
-                List<TLogin> TLogins = context.TLogin.Include(u => u.IdOwnerNavigation).ToList();
-                List<TOnlineUsers> onlineUsers = context.TOnlineUsers.Include(u => u.IdUsersNavigation).ToList();
-                TLogin Tlogin = TLogins.FirstOrDefault(u => u.Login == Login && u.Password == Password);
+                //Ищем пользователя, если находим, то подключаем
+                TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Login == Login && u.Password == Password);
+
                 if (Tlogin != null)
                 {
+                    //Формируем профиль
                     Profile profile = dp.FormProfile(Tlogin);
-                    TOnlineUsers online = new TOnlineUsers();
-                    online.Id = profile.ID;
-                    string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
-                    if (File.Exists($@"{path}Friends.json"))
-                    {
-                        profile.Friends = new List<Profile>();
-                        List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
-                        foreach (int id in IdFriends)
-                        {
-                            Profile friend = dp.FormProfile(TLogins.FirstOrDefault(u => u.IdOwner == id));
-                            if (friend != null)
-                            {
-                                profile.Friends.Add(friend);
-                                if (context.TOnlineUsers.FirstOrDefault(u => u.Id == friend.ID) != null)
-                                    friend.status = true;
-                                else
-                                    friend.status = false;
-                            }
-                        }
+                    profile.status = true;
 
+                    //Записываем подключеного пользователя
+                    TOnlineUsers online = new TOnlineUsers { Id = profile.ID };
+                    online.IdSession = OperationContext.Current.Channel.SessionId;
+
+                    TOnlineUsers user = context.TOnlineUsers.FirstOrDefault(u => u.Id == profile.ID);
+
+                    if (user == null)
+                        //Если пользователь не записан добавляем пользователя в БД
+                        context.TOnlineUsers.Add(online);
+                    else
+                    {
+                        //Если пользователь есть в бд, то обновляем его данные(ДОПИСАТЬ!!! нужно кикать пользователя который логинился до этого)
+                        string SessionId = user.IdSession;
+
+                        context.TOnlineUsers.Update(user);
                     }
-                    context.TOnlineUsers.Add(online);
+
+                    //Сохраняем изменения в БД
                     context.SaveChanges();
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");//Вывод в серверную консоль
+
+                    //Добавляем события на выход из профиля
+                    IContextChannel objClientHandle = OperationContext.Current.Channel;
+                    objClientHandle.Closed += new EventHandler(ClientDisconnected);
+                    objClientHandle.Faulted += new EventHandler(ClientDisconnected);
+
+                    //Выводим сообщение в серверную консоль
+                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server");
+
                     return profile;
                 }
                 else
-                    return null;
+                    return null;//Если пользователь не найден возвращаем null
             }
         }
 
-        public void Disconnect(int id)//Метод для отключения от магазина
+        /// <summary>
+        /// Метод удаляет аккаунт
+        /// </summary>
+        /// <param name="id">ID аккаунта для удаления</param>
+        public void DeleteAccount(int id)
         {
             using (postgresContext context = new postgresContext())
             {
-                TOnlineUsers online = new TOnlineUsers { Id = id };
-                context.TOnlineUsers.Remove(online);
+                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == id);
+
+                //Удаляем из БД
+                context.TLogin.Remove(login);
                 context.SaveChanges();
+
+                //Вывод в серверную консоль
+                Console.WriteLine($" {DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Account {context.TLogin.FirstOrDefault(u => u.Id == id).Login} deleted");
             }
         }
 
+        /// <summary>
+        /// Метод отправляет сообщение ползователю
+        /// </summary>
+        /// <param name="msg">
+        /// Данные о сообщении.
+        /// Необходимо заполнить поля: 
+        /// IDSender - ID отправителя,
+        /// IDReceiver - ID получателя,
+        /// message - передаваемое сообещение
+        /// </param>
+        public void SendMsg(Message msg)
+        {
+            msg.date = DateTime.Now;
+            msg.isRead = false;
+
+            //Добавляем сообщения для одного пользователя
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDSender}\Messages.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            List<Message> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<Message>>(File.ReadAllText(path)) : new List<Message>();
+            messages.Add(msg);
+            File.WriteAllText(path, JsonConvert.SerializeObject(messages));
+
+            //Добавляем сообщения для второго пользователя
+            path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDReceiver}\Messages.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<Message>>(File.ReadAllText(path)) : new List<Message>();
+            messages.Add(msg);
+            File.WriteAllText(path, JsonConvert.SerializeObject(messages));
+
+            //Если пользователь в сети, то нужно вызвать callback для отображения сообщения
+            using (postgresContext context = new postgresContext())
+            {
+                TOnlineUsers UserReseived = context.TOnlineUsers.FirstOrDefault(u => u.Id == msg.IDReceiver);
+                if (UserReseived != null)
+                {
+                    //TODO: вызвать callback
+                }
+            }
+        }
+
+        /// <summary>
+        /// Метод для загрузки продукта
+        /// </summary>
+        public void DownloadProduct(Product pr)
+        {
+            
+        }
+
+        /// <summary>
+        /// Событие при отключении клиента
+        /// </summary>
+        private void ClientDisconnected(object sender, EventArgs e)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                string sessionId = ((IClientChannel)sender).SessionId;
+
+                TOnlineUsers online = context.TOnlineUsers.FirstOrDefault(u => u.IdSession == sessionId);
+                if (online != null)
+                {
+                    context.TOnlineUsers.Remove(online);
+                    context.SaveChanges();
+                }
+
+                //Вывод в серверную консоль
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {context.TLogin.FirstOrDefault(u => u.Id == online.Id).Login} disconnect from server");
+            }
+        }
     }
 }

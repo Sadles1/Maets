@@ -12,5 +12,6 @@ namespace Service
         public int IDReceiver { get; set; }
         public string message { get; set; }
         public DateTime date { get; set; }
+        public bool isRead { get; set; }
     }
 }
