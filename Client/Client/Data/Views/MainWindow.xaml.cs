@@ -22,17 +22,18 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
         DataProvider dp = new DataProvider();
         public MainWindow()
-        {
+        {          
             InitializeComponent();
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
             tbLogin.Text = "admin";
-            tbPassword.Text = "admin";
+            tbPassword.Text = "admin";         
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -43,7 +44,6 @@ namespace Client
                 MessageBox.Show("Error");
                 return;
             }
-
             ShopWindows shopWindows = new ShopWindows(profile);
             shopWindows.Show();
             this.Close();
@@ -58,19 +58,19 @@ namespace Client
         }
 
         private void TbExit_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {           
             this.Close();
         }
 
         private void TbSver_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
-
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
         }
+
+  
     }
 }

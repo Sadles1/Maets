@@ -19,23 +19,56 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-        <TextBlock x:Name="tbgame" Grid.Column="1" Grid.Row="1"></TextBlock>
-        <TextBlock x:Name="tbgame1" Grid.Column="1" Grid.Row="2"></TextBlock>
-        <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+        <Grid Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Image x:Name="Screenshoot" Grid.Column="0" Grid.Row="0"  Source="{Binding Image}" />
+            <Grid Grid.Column="1" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"></RowDefinition>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="tbgameName" Grid.Column="0" Grid.Row="0"  FontSize="55" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="8*"></RowDefinition>
 
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Описание:" Margin="5,0,0,0" FontSize="18"></TextBlock>
+                    <TextBlock x:Name="tbDescription" Grid.Column="0" Grid.Row="1" Text="{Binding Description}" TextWrapping="Wrap" FontSize="14" ></TextBlock>
+                    
+                </Grid>
+                <Grid Grid.Column="0" Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Разработчик:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18"></TextBlock>
+                    <TextBlock x:Name="tbDeveloper" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18"></TextBlock>
+                </Grid> 
+                <Grid Grid.Column="0" Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Издатель:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18"></TextBlock>
+                    <TextBlock x:Name="tbPublisher" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18"></TextBlock>
+
+                </Grid>
+            </Grid>
         </Grid>
         <Button x:Name="btnBuy" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="Купить" FontSize="15" Click="BtnBuy_Click"></Button>
         <Button x:Name="btnkorzina" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="К корзине" FontSize="15" Visibility="Hidden" Click="Btnkorzina_Click"></Button>
-        <TextBlock x:Name="price" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="50" Margin="0,0,100,0" TextAlignment="Center" ></TextBlock>
+        <TextBlock x:Name="price" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="50" Margin="0,0,100,0" TextAlignment="Center" VerticalAlignment="Center" FontSize="15" ></TextBlock>
         <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Margin="0,0,155,0" Text="Цена:" TextAlignment="Right" FontSize="18" FontWeight="Bold" ToolTip="В стиме дешевле" ></TextBlock>
     </Grid>
 </Window>

@@ -16,40 +16,22 @@ namespace Client
 {
     /// <summary>
     /// Логика взаимодействия для ShopWindows.xaml
-    /// </summary>
-   
+    /// </summary> 
     public partial class Korzina : Window
     {
-       
         Service.Profile profile;
         DataProvider dp = new DataProvider();
-        static public List<Service.Product> tvkrz = new List<Service.Product>();
-        public bool check(Service.Product b)
+        
+        public Korzina(Service.Profile profile)
         {
-            int p=0;
-            for(int i=0;i< tvkrz.Count; i++)
-            {
-                if (tvkrz[i].Id == b.Id) p++;
-            }
-            if (p != 0) return true;
-            else return false ;
-        }
 
-        public Korzina(Service.Profile profile, Service.Product tv,List<Service.Product> korz)
-        {
-            tvkrz = korz;
             this.profile = profile;
             InitializeComponent();
-            if (!check(tv) && tv.Id != -1)
-            {
-                tvkrz.Add(tv);
-                 
-            }
-            for (int i = 0; i < tvkrz.Count; i++)
-            {
-                lvProduct.Items.Add(tvkrz[i]);
-            }
             allprice();
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+            {
+                lvProduct.Items.Add(ShopWindows.mainfprofile[i]);
+            }
 
         }
 
@@ -58,31 +40,9 @@ namespace Client
 
         }
 
-        private void btnExit_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow window = new MainWindow();   
-            
-            window.Show();
-            this.Close();
-        }
-        private void TbExit_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void BtnFull_Click(object sender, RoutedEventArgs e)
-        {
-            if(WindowState != WindowState.Maximized) 
-            WindowState = WindowState.Maximized;
-            else
-            {
-                WindowState= WindowState.Normal;
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Buy_Click(object sender, RoutedEventArgs e)
@@ -92,11 +52,16 @@ namespace Client
             {
                 if (profile.Money >= Convert.ToDouble(tbSumm.Text))
                 {
-                    lvProduct.Items.Clear();
+                    
                     profile.Money -= Convert.ToDouble(tbSumm.Text);
+                    
+                    MainWindow.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
+                   
+                    //Тутт будет добавление самой игры на аккаунт
+                    MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
+                    ShopWindows.mainfprofile.Clear();
+                    lvProduct.Items.Clear();
                     tbSumm.Text = "";
-                    tvkrz.Clear();
-                    MessageBox.Show("Покупка успешно совершена, с вашего счета списано" + tbSumm.Text + "\n Остаток: " + profile.Money);
                 }
                 else
                 {
@@ -108,18 +73,18 @@ namespace Client
         private void LvProduct_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             double sum = 0;
-            for (int i=0;i<tvkrz.Count;i++)
+            for (int i=0;i< ShopWindows.mainfprofile.Count;i++)
             {
-                sum += tvkrz[i].RetailPrice;
+                sum += ShopWindows.mainfprofile[i].RetailPrice;
             }
             tbSumm.Text = Convert.ToString(sum);
         }
         public void allprice()
         {
             double sum = 0;
-            for (int i = 0; i < tvkrz.Count; i++)
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
             {
-                sum += tvkrz[i].RetailPrice;
+                sum += ShopWindows.mainfprofile[i].RetailPrice;
             }
             tbSumm.Text = Convert.ToString(sum);
         }
