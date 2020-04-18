@@ -41,6 +41,8 @@ namespace Client
         {
             try
             {
+                if(client.State ==  CommunicationState.Closed)
+                    client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
                 Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
                 if (profile == null)
                 {
