@@ -69,7 +69,8 @@ namespace Service
             {
                 entity.ToTable("t_Deals");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasKey(e => new { e.IdBuyers, e.IdProduct })
+                    .HasName("t_RecGameSysReq_pkey");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
@@ -107,12 +108,6 @@ namespace Service
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.TDeveloper)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Developer_IdUser_fkey");
             });
 
             modelBuilder.Entity<TGameGenre>(entity =>
@@ -279,12 +274,6 @@ namespace Service
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.TPublisher)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Publisher_IdUser_fkey");
             });
 
             modelBuilder.Entity<TRecGameSysReq>(entity =>

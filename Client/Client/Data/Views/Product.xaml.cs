@@ -21,21 +21,36 @@ namespace Client
     {  public Service.Profile prof;
         public static Korzina buyProduct;
        public Service.Product tv1 = new Service.Product();
-        List<Service.Product> tvkrz = new List<Service.Product>();
         DataProvider dp = new DataProvider();
-        public Product(Service.Product tv, Service.Profile profile, List<Service.Product> korz)
+        public Product(Service.Product tv, Service.Profile profile)
         {
-            tvkrz = korz;
             tv1 = tv;
             InitializeComponent();
             prof = profile;
             Inicialize(tv1);
+            int p = 0;
+            
+            if (ShopWindows.mainfprofile.Count!=0)
+            {
+                for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+                {
+                    if (ShopWindows.mainfprofile[i].Id == tv1.Id) p++;
+                }
+                if (p != 0)
+                {
+                    btnBuy.Visibility = Visibility.Hidden;
+                    btnkorzina.Visibility = Visibility.Visible;
+                }
+            }
         }
         private void Inicialize(Service.Product productnow)
         {
-            tbgame.Text = productnow.Name;
+            tbgameName.Text = productnow.Name;
             Screenshoot.Source = dp.GetImageFromByte(productnow.MainImage);
-            tbgame1.Text = productnow.Description + "\n" + productnow.Developer + "\n";
+            tbDescription.Text = productnow.Description;
+            tbDeveloper.Text = productnow.Developer;
+            tbPublisher.Text = productnow.Publisher;
+            //tbgame1.Text = productnow.Description + "\n" + productnow.Developer + "\n";
             price.Text = Convert.ToString(productnow.RetailPrice);
             price.ToolTip = "Тут должна быть цена другая, но она пока не рабоатет";
            // Screenshoot.Source = dp.GetImageFromByte(tv.MainImage);
@@ -47,15 +62,17 @@ namespace Client
 
         private void BtnBuy_Click(object sender, RoutedEventArgs e)
         {
+            ShopWindows.mainfprofile.Add(tv1);
             btnBuy.Visibility = Visibility.Hidden;
             btnkorzina.Visibility = Visibility.Visible;
         }
 
         private void Btnkorzina_Click(object sender, RoutedEventArgs e)
         {
-            buyProduct = new Korzina(prof, tv1,tvkrz);
+            buyProduct = new Korzina(prof);
             buyProduct.Show();
             this.Close();
         }
+        
     }
 }

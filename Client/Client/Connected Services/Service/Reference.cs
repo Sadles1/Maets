@@ -26,6 +26,9 @@ namespace Client.Service {
         private int AccessRightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private Client.Service.Product[] CartField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<double> DiscountField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -77,6 +80,19 @@ namespace Client.Service {
                 if ((this.AccessRightField.Equals(value) != true)) {
                     this.AccessRightField = value;
                     this.RaisePropertyChanged("AccessRight");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public Client.Service.Product[] Cart {
+            get {
+                return this.CartField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CartField, value) != true)) {
+                    this.CartField = value;
+                    this.RaisePropertyChanged("Cart");
                 }
             }
         }
@@ -473,9 +489,9 @@ namespace Client.Service {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/Service")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserMessage", Namespace="http://schemas.datacontract.org/2004/07/Service")]
     [System.SerializableAttribute()]
-    public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class UserMessage : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -488,6 +504,9 @@ namespace Client.Service {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime dateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool isReadField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string messageField;
@@ -537,6 +556,19 @@ namespace Client.Service {
                 if ((this.dateField.Equals(value) != true)) {
                     this.dateField = value;
                     this.RaisePropertyChanged("date");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool isRead {
+            get {
+                return this.isReadField;
+            }
+            set {
+                if ((this.isReadField.Equals(value) != true)) {
+                    this.isReadField = value;
+                    this.RaisePropertyChanged("isRead");
                 }
             }
         }
@@ -599,10 +631,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task AddFriendAsync(int id, int idFriend);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
-        Client.Service.Message[] GetChat(int id);
+        Client.Service.UserMessage[] GetChat(int idMain, int idComrade);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
-        System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int id);
+        System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetChatAsync(int idMain, int idComrade);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
         void BuyProduct(Client.Service.Product[] Cart, int idProfile);
@@ -622,17 +654,59 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
         void AddModerationProduct(Client.Service.Product product);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
         System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         void DeleteAccount(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         System.Threading.Tasks.Task DeleteAccountAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddToBlacklist")]
+        void AddToBlacklist(int id, int idUserToBlacklist);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddToBlacklist")]
+        System.Threading.Tasks.Task AddToBlacklistAsync(int id, int idUserToBlacklist);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/RemoveFromBlacklist")]
+        void RemoveFromBlacklist(int id, int idUserInBlacklist);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/RemoveFromBlacklist")]
+        System.Threading.Tasks.Task RemoveFromBlacklistAsync(int id, int idUserInBlacklist);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendMsg")]
+        void SendMsg(Client.Service.UserMessage msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendMsg")]
+        System.Threading.Tasks.Task SendMsgAsync(Client.Service.UserMessage msg);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
+        void DownloadProduct(Client.Service.Product pr);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
+        System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SaveCart")]
+        void SaveCart(int idUser, Client.Service.Product[] Cart);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SaveCart")]
+        System.Threading.Tasks.Task SaveCartAsync(int idUser, Client.Service.Product[] Cart);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendFriendRequest")]
+        void SendFriendRequest(int idSender, int idReceiver);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendFriendRequest")]
+        System.Threading.Tasks.Task SendFriendRequestAsync(int idSender, int idReceiver);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckProfile", ReplyAction="http://tempuri.org/IWCFService/CheckProfileResponse")]
+        Client.Service.Profile CheckProfile(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckProfile", ReplyAction="http://tempuri.org/IWCFService/CheckProfileResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -702,12 +776,12 @@ namespace Client.Service {
             return base.Channel.AddFriendAsync(id, idFriend);
         }
         
-        public Client.Service.Message[] GetChat(int id) {
-            return base.Channel.GetChat(id);
+        public Client.Service.UserMessage[] GetChat(int idMain, int idComrade) {
+            return base.Channel.GetChat(idMain, idComrade);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int id) {
-            return base.Channel.GetChatAsync(id);
+        public System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetChatAsync(int idMain, int idComrade) {
+            return base.Channel.GetChatAsync(idMain, idComrade);
         }
         
         public void BuyProduct(Client.Service.Product[] Cart, int idProfile) {
@@ -748,6 +822,62 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task DeleteAccountAsync(int id) {
             return base.Channel.DeleteAccountAsync(id);
+        }
+        
+        public void AddToBlacklist(int id, int idUserToBlacklist) {
+            base.Channel.AddToBlacklist(id, idUserToBlacklist);
+        }
+        
+        public System.Threading.Tasks.Task AddToBlacklistAsync(int id, int idUserToBlacklist) {
+            return base.Channel.AddToBlacklistAsync(id, idUserToBlacklist);
+        }
+        
+        public void RemoveFromBlacklist(int id, int idUserInBlacklist) {
+            base.Channel.RemoveFromBlacklist(id, idUserInBlacklist);
+        }
+        
+        public System.Threading.Tasks.Task RemoveFromBlacklistAsync(int id, int idUserInBlacklist) {
+            return base.Channel.RemoveFromBlacklistAsync(id, idUserInBlacklist);
+        }
+        
+        public void SendMsg(Client.Service.UserMessage msg) {
+            base.Channel.SendMsg(msg);
+        }
+        
+        public System.Threading.Tasks.Task SendMsgAsync(Client.Service.UserMessage msg) {
+            return base.Channel.SendMsgAsync(msg);
+        }
+        
+        public void DownloadProduct(Client.Service.Product pr) {
+            base.Channel.DownloadProduct(pr);
+        }
+        
+        public System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr) {
+            return base.Channel.DownloadProductAsync(pr);
+        }
+        
+        public void SaveCart(int idUser, Client.Service.Product[] Cart) {
+            base.Channel.SaveCart(idUser, Cart);
+        }
+        
+        public System.Threading.Tasks.Task SaveCartAsync(int idUser, Client.Service.Product[] Cart) {
+            return base.Channel.SaveCartAsync(idUser, Cart);
+        }
+        
+        public void SendFriendRequest(int idSender, int idReceiver) {
+            base.Channel.SendFriendRequest(idSender, idReceiver);
+        }
+        
+        public System.Threading.Tasks.Task SendFriendRequestAsync(int idSender, int idReceiver) {
+            return base.Channel.SendFriendRequestAsync(idSender, idReceiver);
+        }
+        
+        public Client.Service.Profile CheckProfile(int idUser) {
+            return base.Channel.CheckProfile(idUser);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser) {
+            return base.Channel.CheckProfileAsync(idUser);
         }
     }
 }

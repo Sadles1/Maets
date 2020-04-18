@@ -52,10 +52,9 @@ namespace Service
             }
         }
 
-        public TDeals FormTDeal(int id, int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
+        public TDeals FormTDeal(int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
         {
             TDeals deal = new TDeals();
-            deal.Id = id;
             deal.Date = DateTime.Now.Date;
             deal.IdBuyers = idProfile;
             deal.IdProduct = pr.Id;
@@ -80,7 +79,24 @@ namespace Service
             profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
             profile.AccessRight = Tlogin.IdNavigation.AccessRight;
 
+            //Заполенение корзины
+            string pathToCart = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Cart.json";
+            profile.Cart = File.Exists(pathToCart) ? JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(pathToCart)) : new List<Product>();
 
+            //Формируем список игр
+            using (postgresContext context = new postgresContext())
+            {
+                profile.Games = new List<Product>();
+                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == profile.ID).Select(u => u.IdProduct).ToList();
+                if (idGames.Count != 0)
+                {
+                    List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList(); 
+                    foreach (int id in idGames)
+                    {
+                        profile.Games.Add(FormProduct(TProducts.FirstOrDefault(u => u.Id == id)));
+                    }
+                }
+            }
             using (postgresContext context = new postgresContext())
             {
                 //Формируем список друзей
@@ -88,7 +104,6 @@ namespace Service
                 if (File.Exists($@"{path}Friends.json"))
                 {
                     List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
-
                     profile.Friends = new List<Profile>();
                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
                     foreach (int id in IdFriends)
@@ -98,11 +113,9 @@ namespace Service
                             profile.Friends.Add(friend);
                     }
                 }
-
                 //Определяем статус подключения
                 profile.status = context.TOnlineUsers.FirstOrDefault(u => u.Id == profile.ID) != null ? true : false;//Определяет в сети ли человек
             }
-
             //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))
             {
@@ -196,7 +209,7 @@ namespace Service
                 //Выбираем двух случаных модераторов для модерирования
                 List<int> Moderators = context.TUsers.Where(u => u.AccessRight == 3).Select(u=>u.Id).ToList();//Список всех id модераторов
 
-                Random rnd = new Random();
+                Random rnd = new Random();             
                 int rnd1 = rnd.Next(0, Moderators.Count);
                 int rnd2 = rnd.Next(0, Moderators.Count);
                 while (rnd2 == rnd1)
@@ -204,17 +217,12 @@ namespace Service
                 int moderator1 = Moderators[rnd1];
                 int moderator2 = Moderators[rnd2];
 
-                TModerateEmployers employer = new TModerateEmployers();
-                employer.IdEmployee = moderator1;
-                employer.IdModerateProduct = product.Id;
-                employer.Result = null;
+                TModerateEmployers employer;
+                employer = new TModerateEmployers { IdEmployee = moderator1, IdModerateProduct = product.Id, Result = null };
                 TModerateProduct.TModerateEmployers.Add(employer);
                 context.TModerateEmployers.Add(employer);
 
-                employer = new TModerateEmployers();
-                employer.IdEmployee = moderator2;
-                employer.IdModerateProduct = product.Id;
-                employer.Result = null;
+                employer = new TModerateEmployers { IdEmployee = moderator2, IdModerateProduct = product.Id, Result = null };
                 TModerateProduct.TModerateEmployers.Add(employer);
                 context.TModerateEmployers.Add(employer);
 
@@ -223,7 +231,7 @@ namespace Service
             }
         }
 
-        public TProducts FormTableProducts(Product product)//Формирует таблицу product используя класс product
+        public TProducts FormTableProducts(Product product)//Формирует таблицу TProduct используя класс product
         {
             using (postgresContext context = new postgresContext())
             {
@@ -231,13 +239,33 @@ namespace Service
 
                 TProduct.Id = (context.TProducts.ToList().Max(u => u.Id) + 1);
                 TProduct.Name = product.Name;
-                TProduct.IdDeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
+                TProduct.Description = product.Description;
+
+                //Если такого же разработчика нету в БД, то добавляем
+                List<TDeveloper> TDevelopers = context.TDeveloper.ToList();
+                if (TDevelopers.FirstOrDefault(u => u.Name == product.Developer) == null)
+                {
+                    int ID = TDevelopers.Count == 0 ? 0 : (TDevelopers.Max(u => u.Id) + 1);
+                    context.TDeveloper.Add(new TDeveloper { Id = ID, Name = product.Developer });
+                }
+
+                //Если такого же издателя нету в БД, то добавляем
+                List<TPublisher> TPublishers = context.TPublisher.ToList();
+                if (TPublishers.FirstOrDefault(u => u.Name == product.Publisher) == null)
+                {
+                    int ID = TPublishers.Count == 0 ? 0 : (TPublishers.Max(u => u.Id) + 1);
+                    context.TPublisher.Add(new TPublisher { Id = ID, Name = product.Publisher });
+                }
+                //Сохраняем изменения
+                context.SaveChanges();
+
+                TProduct.IdDeveloper = TDevelopers.FirstOrDefault(u => u.Name == product.Developer).Id;
                 TProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
+
                 TProduct.Quantity = 100;
                 TProduct.ReleaseDate = product.ReleaseDate;
                 TProduct.RetailPrice = product.RetailPrice;
                 TProduct.WholesalePrice = product?.WholesalePrice;
-                TProduct.Description = product.Description;
 
                 return TProduct;
             }

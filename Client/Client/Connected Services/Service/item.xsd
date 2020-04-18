@@ -4,6 +4,7 @@
   <xs:complexType name="Profile">
     <xs:sequence>
       <xs:element minOccurs="0" name="AccessRight" type="xs:int" />
+      <xs:element minOccurs="0" name="Cart" nillable="true" type="tns:ArrayOfProduct" />
       <xs:element minOccurs="0" name="Discount" nillable="true" type="xs:double" />
       <xs:element minOccurs="0" name="Friends" nillable="true" type="tns:ArrayOfProfile" />
       <xs:element minOccurs="0" name="Games" nillable="true" type="tns:ArrayOfProduct" />
@@ -18,12 +19,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Profile" nillable="true" type="tns:Profile" />
-  <xs:complexType name="ArrayOfProfile">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Profile" nillable="true" type="tns:Profile" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfProfile" nillable="true" type="tns:ArrayOfProfile" />
   <xs:complexType name="ArrayOfProduct">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Product" nillable="true" type="tns:Product" />
@@ -48,19 +43,26 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Product" nillable="true" type="tns:Product" />
-  <xs:complexType name="ArrayOfMessage">
+  <xs:complexType name="ArrayOfProfile">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Message" nillable="true" type="tns:Message" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Profile" nillable="true" type="tns:Profile" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfMessage" nillable="true" type="tns:ArrayOfMessage" />
-  <xs:complexType name="Message">
+  <xs:element name="ArrayOfProfile" nillable="true" type="tns:ArrayOfProfile" />
+  <xs:complexType name="ArrayOfUserMessage">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UserMessage" nillable="true" type="tns:UserMessage" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfUserMessage" nillable="true" type="tns:ArrayOfUserMessage" />
+  <xs:complexType name="UserMessage">
     <xs:sequence>
       <xs:element minOccurs="0" name="IDReceiver" type="xs:int" />
       <xs:element minOccurs="0" name="IDSender" type="xs:int" />
       <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="isRead" type="xs:boolean" />
       <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="Message" nillable="true" type="tns:Message" />
+  <xs:element name="UserMessage" nillable="true" type="tns:UserMessage" />
 </xs:schema>

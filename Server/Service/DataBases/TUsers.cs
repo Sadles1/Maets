@@ -10,10 +10,8 @@ namespace Service
         {
             TComments = new HashSet<TComments>();
             TDeals = new HashSet<TDeals>();
-            TDeveloper = new HashSet<TDeveloper>();
             TLogin = new HashSet<TLogin>();
             TModerateEmployers = new HashSet<TModerateEmployers>();
-            TPublisher = new HashSet<TPublisher>();
         }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -28,9 +26,7 @@ namespace Service
         public virtual ICollection<TOnlineUsers> TOnlineUsers { get; set; }
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
-        public virtual ICollection<TDeveloper> TDeveloper { get; set; }
         public virtual ICollection<TLogin> TLogin { get; set; }
         public virtual ICollection<TModerateEmployers> TModerateEmployers { get; set; }
-        public virtual ICollection<TPublisher> TPublisher { get; set; }
     }
 }

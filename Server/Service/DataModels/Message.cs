@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class Message
+    public class UserMessage
     {
         public int IDSender { get; set; }
         public int IDReceiver { get; set; }

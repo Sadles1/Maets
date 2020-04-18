@@ -4,7 +4,7 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceContract(SessionMode = SessionMode.Required)]
+    [ServiceContract(SessionMode = SessionMode.Required,CallbackContract = typeof(IWCFServiceCalbback))]
     public interface IWCFService
     {
         [OperationContract]
@@ -23,7 +23,7 @@ namespace Service
         void AddFriend(int id,int idFriend);
 
         [OperationContract]
-        List<Message> GetChat(int idMain, int idComrade);
+        List<UserMessage> GetChat(int idMain, int idComrade);
 
         [OperationContract(IsOneWay = true)]
         void BuyProduct(List<Product> Cart, int idProfile);
@@ -34,28 +34,41 @@ namespace Service
         [OperationContract]
         Profile CheckFriend(int id);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void AddModerationProduct(Product product);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void DeleteAccount(int id);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void AddToBlacklist(int id, int idUserToBlacklist);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void RemoveFromBlacklist(int id, int idUserInBlacklist);
 
-        [OperationContract]
-        void SendMsg(Message msg);
+        [OperationContract(IsOneWay = true)]
+        void SendMsg(UserMessage msg);
 
         [OperationContract]
         void DownloadProduct(Product pr);
 
+        [OperationContract(IsOneWay = true)]
+        void SaveCart(int idUser,List<Product> Cart);
+
+        [OperationContract(IsOneWay = true)]
+        void SendFriendRequest(int idSender, int idReceiver);
+
+        [OperationContract]
+        Profile CheckProfile(int idUser);
     }
 
     public interface IWCFServiceCalbback
     {
+        void GetMessage(UserMessage msg);
+
+        void ConnectionFromAnotherDevice();
+
+        void GetFriendRequest(int idSender);
 
     }
 }

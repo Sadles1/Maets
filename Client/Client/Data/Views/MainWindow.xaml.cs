@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Drawing;
 using System.IO;
 using System.Configuration;
+using System.ServiceModel;
 
 namespace Client
 {
@@ -26,27 +27,34 @@ namespace Client
         public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
         DataProvider dp = new DataProvider();
         public MainWindow()
-        {          
+        {
             InitializeComponent();
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
             tbLogin.Text = "admin";
-            tbPassword.Text = "admin";         
+            tbPassword.Text = "admin";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
-            if (profile == null)
+            try
             {
-                MessageBox.Show("Error");
-                return;
+                Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+                if (profile == null)
+                {
+                    MessageBox.Show("Error");
+                    return;
+                }
+                ShopWindows shopWindows = new ShopWindows(profile);
+                shopWindows.Show();
+                this.Close();
             }
-            ShopWindows shopWindows = new ShopWindows(profile);
-            shopWindows.Show();
-            this.Close();
+            catch (FaultException ex)
+            {
+                MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message),"ERROR",MessageBoxButton.OK);
+            }
         }
 
         private void Register_Click(object sender, RoutedEventArgs e)
@@ -58,7 +66,7 @@ namespace Client
         }
 
         private void TbExit_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             this.Close();
         }
 
@@ -71,6 +79,6 @@ namespace Client
             this.DragMove();
         }
 
-  
+
     }
 }
