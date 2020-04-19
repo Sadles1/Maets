@@ -23,7 +23,6 @@ namespace Service
         public double TotalSpentMoney { get; set; }
         public double PersonalDiscount { get; set; }
 
-        public virtual ICollection<TOnlineUsers> TOnlineUsers { get; set; }
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
         public virtual ICollection<TLogin> TLogin { get; set; }

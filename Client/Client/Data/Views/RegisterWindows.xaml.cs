@@ -41,7 +41,7 @@ namespace Client
                     profile.Telephone = telephone;
                     profile.Name = name;
 
-                    MainWindow.client.Register(profile, hashpassword);
+                    ShopWindows.client.Register(profile, hashpassword);
                     MessageBox.Show("Success");
                     result = true;
                 }

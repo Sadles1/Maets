@@ -8,9 +8,10 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class WCFService : IWCFService
     {
+        public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
         DataProvider dp = new DataProvider();
 
         /// <summary>
@@ -271,40 +272,24 @@ namespace Service
                     profile.status = true;
 
                     //Записываем подключеного пользователя
-                    TOnlineUsers online = new TOnlineUsers { Id = profile.ID };
-                    online.IdSession = OperationContext.Current.Channel.SessionId;
-
-                    
-
-                    TOnlineUsers user = context.TOnlineUsers.FirstOrDefault(u => u.Id == profile.ID);
-
-                    if (user == null)
-                        //Если пользователь не записан добавляем пользователя в БД
-                        context.TOnlineUsers.Add(online);
-                    else
+                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
+                    if (ActiveUser != null)
                     {
-                        //Если пользователь есть в бд, то обновляем его данные
-                        string SessionId = user.IdSession;
-                        //TODO: вызывать callback чтобы предыдущего usera выкидывало
-                        user.IdSession = online.IdSession;
-                        context.TOnlineUsers.Update(user);
+                        ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
+                        onlineUsers.Remove(ActiveUser);
                     }
+                    onlineUsers.Add(new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current });
 
                     //Сохраняем изменения в БД
                     context.SaveChanges();
 
-                    //Добавляем события на выход из профиля
-                    IContextChannel objClientHandle = OperationContext.Current.Channel;
-                    objClientHandle.Closed += new EventHandler(ClientDisconnected);
-                    objClientHandle.Faulted += new EventHandler(ClientDisconnected);
-
                     //Выводим сообщение в серверную консоль
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {online.IdSession}");
+                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
                     return profile;
                 }
                 else
-                    return null;//Если пользователь не найден возвращаем null
+                    throw new Exception("Логин или пароль не верны");//Если пользователь не найден возвращаем null
             }
         }
 
@@ -355,14 +340,9 @@ namespace Service
             File.WriteAllText(path, JsonConvert.SerializeObject(messages));
 
             //Если пользователь в сети, то нужно вызвать callback для отображения сообщения
-            using (postgresContext context = new postgresContext())
-            {
-                TOnlineUsers UserReseived = context.TOnlineUsers.FirstOrDefault(u => u.Id == msg.IDReceiver);
-                if (UserReseived != null)
-                {
-                    //TODO: вызвать callback
-                }
-            }
+            OnlineUser ReceiverUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == msg.IDReceiver);
+            if (ReceiverUser != null)
+                ReceiverUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().GetMessage(msg);
         }
 
         /// <summary>
@@ -374,23 +354,17 @@ namespace Service
         }
 
         /// <summary>
-        /// Событие при отключении клиента
+        /// Вызываеться для отключения от сервера
         /// </summary>
-        private void ClientDisconnected(object sender, EventArgs e)
+        /// <param name="Id"></param>
+        public void Disconnect(int Id)
         {
-            using (postgresContext context = new postgresContext())
+            OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
+            if (User != null)
             {
-                string sessionId = ((IClientChannel)sender).SessionId;
-
-                TOnlineUsers online = context.TOnlineUsers.FirstOrDefault(u => u.IdSession == sessionId);
-                if (online != null)
-                {
-                    context.TOnlineUsers.Remove(online);
-                    context.SaveChanges();
-                }
-
-                //Вывод в серверную консоль
-                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {context.TLogin.FirstOrDefault(u => u.Id == online.Id).Login} disconnect from server");
+                string sessionId = (OperationContext.Current.SessionId);
+                onlineUsers.Remove(User);
+                Console.WriteLine($"{User.UserProfile.Name} with Session Id {sessionId} disconnect");
             }
         }
 
@@ -425,14 +399,9 @@ namespace Service
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
 
             //Если пользователь в сети, то нужно вызвать callback для отображения запроса
-            using (postgresContext context = new postgresContext())
-            {
-                TOnlineUsers UserReseived = context.TOnlineUsers.FirstOrDefault(u => u.Id == idReceiver);
-                if (UserReseived != null)
-                {
-                    //TODO: вызвать callback
-                }
-            }
+            OnlineUser ReceiverUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == idReceiver);
+            if (ReceiverUser != null)
+                ReceiverUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().GetFriendRequest(idSender);
         }
 
 

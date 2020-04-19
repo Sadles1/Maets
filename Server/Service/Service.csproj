@@ -151,8 +151,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>BaseSettings.settings</DependentUpon>
     </Compile>
-    <Compile Include="DataBases\TOnlineUsers.cs" />
     <Compile Include="DataModels\Message.cs" />
+    <Compile Include="DataModels\OnlineUser.cs" />
     <Compile Include="DataModels\Product.cs" />
     <Compile Include="DataModels\Profile.cs" />
     <Compile Include="DataProvider.cs" />

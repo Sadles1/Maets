@@ -78,6 +78,7 @@ namespace Service
             profile.Telephone = Tlogin.IdNavigation.Telephone;
             profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
             profile.AccessRight = Tlogin.IdNavigation.AccessRight;
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             //Заполенение корзины
             string pathToCart = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Cart.json";
@@ -114,7 +115,8 @@ namespace Service
                     }
                 }
                 //Определяем статус подключения
-                profile.status = context.TOnlineUsers.FirstOrDefault(u => u.Id == profile.ID) != null ? true : false;//Определяет в сети ли человек
+               
+
             }
             //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))
@@ -133,11 +135,7 @@ namespace Service
             profile.ID = Tlogin.Id;
             profile.Login = Tlogin.Login;
 
-            //Определяем статус
-            using (postgresContext context = new postgresContext())
-            {
-                profile.status = context.TOnlineUsers.FirstOrDefault(u => u.Id == profile.ID) != null ? true : false;//Определяет в сети ли человек
-            }
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             //Получем основное изображение
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))

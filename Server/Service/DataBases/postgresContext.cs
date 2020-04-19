@@ -28,7 +28,6 @@ namespace Service
         public virtual DbSet<TRecGameSysReq> TRecGameSysReq { get; set; }
         public virtual DbSet<TSysReq> TSysReq { get; set; }
         public virtual DbSet<TUsers> TUsers { get; set; }
-        public virtual DbSet<TOnlineUsers> TOnlineUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -87,17 +86,7 @@ namespace Service
                     .HasConstraintName("t_Deals_IdProduct_fkey");
             });
 
-            modelBuilder.Entity<TOnlineUsers>(entity =>
-            {
-                entity.ToTable("t_OnlineUsers");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.HasOne(d => d.IdUsersNavigation)
-                   .WithMany(p => p.TOnlineUsers)
-                   .HasForeignKey(d => d.Id)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("t_OnlineUsers_IdUser_fkey");
-            });
 
             modelBuilder.Entity<TDeveloper>(entity =>
             {

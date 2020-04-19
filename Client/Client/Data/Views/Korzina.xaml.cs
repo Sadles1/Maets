@@ -58,8 +58,8 @@ namespace Client
 
                         profile.Money -= Convert.ToDouble(tbSumm.Text);
 
-                        MainWindow.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
-                        MainWindow.client.CheckProfile(profile.ID);
+                        ShopWindows.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
+                        ShopWindows.client.CheckProfile(profile.ID);
                         //Тут будет добавление самой игры на аккаунт
                         MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
                         ShopWindows.mainfprofile.Clear();

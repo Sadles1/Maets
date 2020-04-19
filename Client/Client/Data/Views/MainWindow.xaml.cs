@@ -22,9 +22,7 @@ namespace Client
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-
-        public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
+    {      
         DataProvider dp = new DataProvider();
         public MainWindow()
         {
@@ -41,21 +39,17 @@ namespace Client
         {
             try
             {
-                if(client.State ==  CommunicationState.Closed)
-                    client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
-                Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
-                if (profile == null)
-                {
-                    MessageBox.Show("Error");
-                    return;
-                }
-                ShopWindows shopWindows = new ShopWindows(profile);
+                ShopWindows shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Text));
                 shopWindows.Show();
-                this.Close();
+                Close();
             }
             catch (FaultException ex)
             {
                 MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message),"ERROR",MessageBoxButton.OK);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ERROR", MessageBoxButton.OK);
             }
         }
 

@@ -32,7 +32,7 @@ namespace Client
             Inicialize(productnow);
 
             Loaded += Window_Loaded;
-            MainWindow.client.CheckFriend(tv1.ID);
+            ShopWindows.client.CheckFriend(tv1.ID);
         }
         private void Inicialize(Service.Profile productnow)
         {
@@ -65,7 +65,7 @@ namespace Client
             if (i != -1)
             {
 
-                profilefriend r = new profilefriend(MainWindow.client.CheckFriend(fr[i].ID));
+                profilefriend r = new profilefriend(ShopWindows.client.CheckFriend(fr[i].ID));
                 r.Show();
             }
 

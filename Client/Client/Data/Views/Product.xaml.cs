@@ -18,9 +18,10 @@ namespace Client
     /// Логика взаимодействия для Window1.xaml
     /// </summary>
     public partial class Product : Window
-    {  public Service.Profile prof;
+    {
+        public Service.Profile prof;
         public static Korzina buyProduct;
-       public Service.Product tv1 = new Service.Product();
+        public Service.Product tv1 = new Service.Product();
         DataProvider dp = new DataProvider();
         public Product(Service.Product tv, Service.Profile profile)
         {
@@ -29,8 +30,8 @@ namespace Client
             prof = profile;
             Inicialize(tv1);
             int p = 0;
-            
-            if (ShopWindows.mainfprofile.Count!=0)
+
+            if (ShopWindows.mainfprofile.Count != 0)
             {
                 for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
                 {
@@ -53,7 +54,7 @@ namespace Client
             //tbgame1.Text = productnow.Description + "\n" + productnow.Developer + "\n";
             price.Text = Convert.ToString(productnow.RetailPrice);
             price.ToolTip = "Тут должна быть цена другая, но она пока не рабоатет";
-           // Screenshoot.Source = dp.GetImageFromByte(tv.MainImage);
+            // Screenshoot.Source = dp.GetImageFromByte(tv.MainImage);
         }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
@@ -73,6 +74,6 @@ namespace Client
             buyProduct.Show();
             this.Close();
         }
-        
+
     }
 }

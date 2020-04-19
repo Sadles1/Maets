@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,85 +18,83 @@ namespace Client
     /// <summary>
     /// Логика взаимодействия для ShopWindows.xaml
     /// </summary>
-    //public class ModelFriends: Service.Product
-    //{
-    //    public ImageSource Image { get; set; }
 
-    //    public ModelFriends MakeModelFriends(Service.Product product)
-    //    {
-    //        DataProvider dp = new DataProvider();
-    //        ModelFriends modelFriends = new ModelFriends();
-    //        modelFriends.Name = product.Name;
-    //        modelFriends.Image = dp.GetImageFromByte(product.MainImage);
-    //        modelFriends.Description = product.Description;
-    //        return modelFriends;
-    //    }
-    //}
     public partial class ShopWindows : Window
     {
         public static List<Service.Product> mainfprofile = new List<Service.Product>();
+        public static WCFServiceClient client;
         static public Korzina buyProduct;
-        Service.Profile profile;
-        List<Service.Product> products = MainWindow.client.GetProductTable().ToList();
+        public Profile profile;
+        List<Service.Product> products;
         int ishop = 0;
         DataProvider dp = new DataProvider();
         int idxg;
-        public ShopWindows(Service.Profile profile)
-        {
-          
-            this.profile = profile;
-            InitializeComponent();
-            Loaded += Window_Loaded;
-            
-            if (profile.AccessRight == 3) Onlyforadmin.Visibility = Visibility.Visible;
 
+
+
+        public ShopWindows(string Login, string Password)
+        {
+            client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass(this)), "NetTcpBinding_IWCFService");
+
+            profile = client.Connect(Login, Password);
+            if (profile != null)
+            {
+                products = client.GetProductTable().ToList();
+
+                InitializeComponent();
+                Loaded += Window_Loaded;
+
+                if (profile.AccessRight == 3) Onlyforadmin.Visibility = Visibility.Visible;
+            }
+            else
+                throw new Exception("Ошибка подключения");
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
             lbLogin.Content = profile.Login;
             lbName.Content = profile.Name;
             Lv.ItemsSource = profile.Friends;
             Back.IsEnabled = false;
 
-            ProductOne.Items.Add(products[ishop]);      
-            ProductTwo.Items.Add(products[ishop+1]);
-            ProductFree.Items.Add(products[ishop+2]);
+            ProductOne.Items.Add(products[ishop]);
+            ProductTwo.Items.Add(products[ishop + 1]);
+            ProductFree.Items.Add(products[ishop + 2]);
             //.ItemsSource = profile.Games;
             btnMoney.Content = Convert.ToString(profile.Money) + " р";
-           // lbLogin.Content = profile.AccessRight;
+            // lbLogin.Content = profile.AccessRight;
 
 
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow window = new MainWindow();   
-            
+            MainWindow window = new MainWindow();
             window.Show();
-            this.Close();
+            Close();
         }
+
         private void TbExit_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.client.Close();
             Close();
         }
 
         private void BtnFull_Click(object sender, RoutedEventArgs e)
         {
-            if(WindowState != WindowState.Maximized) 
-            WindowState = WindowState.Maximized;
+            if (WindowState != WindowState.Maximized)
+                WindowState = WindowState.Maximized;
             else
             {
-                WindowState= WindowState.Normal;
+                WindowState = WindowState.Normal;
             }
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-          DataContext = new ProductViewModel();
+            DataContext = new ProductViewModel();
             Lvm.Visibility = Visibility.Hidden;
-            
+
         }
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
@@ -106,7 +105,6 @@ namespace Client
         private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
         {
             MainWindow MF = new MainWindow();
-            MainWindow.client.Close();
             MF.Show();
             Close();
         }
@@ -114,13 +112,13 @@ namespace Client
         private void BtnFakeProduct_Click(object sender, RoutedEventArgs e)
         {
             Service.Product id = new Service.Product();
-           // Product Pr = new Product(id);
-           // Pr.Show();
+            // Product Pr = new Product(id);
+            // Pr.Show();
         }
         private void leftmouse(object sender, EventArgs e)
         {
-            List<Service.Product> products = MainWindow.client.GetProductTable().ToList();
-             int i = Lvm.SelectedIndex;
+            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
+            int i = Lvm.SelectedIndex;
             if (i != -1)
             {
                 //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
@@ -131,32 +129,32 @@ namespace Client
         }
         private void leftmouse1(object sender, EventArgs e)
         {
-                Product Pr = new Product(products[ishop], profile);
-                Pr.Show();
+            Product Pr = new Product(products[ishop], profile);
+            Pr.Show();
         }
         private void leftmouse2(object sender, EventArgs e)
         {
-                Product Pr = new Product(products[ishop + 1], profile);
-                Pr.Show();
+            Product Pr = new Product(products[ishop + 1], profile);
+            Pr.Show();
         }
         private void leftmouse3(object sender, EventArgs e)
         {
-                Product Pr = new Product(products[ishop + 2], profile);
-                Pr.Show();
+            Product Pr = new Product(products[ishop + 2], profile);
+            Pr.Show();
 
         }
         private void leftmousefriend(object sender, EventArgs e)
         {
-           List<Service.Profile> fr = profile.Friends.ToList();
-           
+            List<Service.Profile> fr = profile.Friends.ToList();
+
             int i = Lv.SelectedIndex;
             //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
             if (i != -1)
             {
-                
-                profilefriend r = new profilefriend(MainWindow.client.CheckFriend(fr[i].ID));
+
+                profilefriend r = new profilefriend(ShopWindows.client.CheckFriend(fr[i].ID));
                 r.Show();
-             }
+            }
 
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -166,12 +164,12 @@ namespace Client
 
         private void leftmouse_mylibrary(object sender, EventArgs e)
         {
-            List<Service.Product> products = MainWindow.client.GetProductTable().ToList();
+            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
 
             int i = Lvm.SelectedIndex;
             if (i != -1)
             {
-                tbgamename.Text = products[i].Name;               
+                tbgamename.Text = products[i].Name;
             }
 
         }
@@ -203,7 +201,7 @@ namespace Client
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            if (ishop>=0)
+            if (ishop >= 0)
             {
                 ishop--;
                 ProductOne.Items.Clear();
@@ -220,7 +218,7 @@ namespace Client
                     //Next.Visibility = Visibility.Visible;
                 }
             }
-          
+
         }
 
         private void Next_Click(object sender, RoutedEventArgs e)
@@ -238,10 +236,15 @@ namespace Client
                 {
                     Next.IsEnabled = false;
                     Back.IsEnabled = true;
-                   // Next.Visibility = Visibility.Hidden;
+                    // Next.Visibility = Visibility.Hidden;
                     //Back.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            client.Disconnect(profile.ID);
         }
     }
 }

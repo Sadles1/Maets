@@ -13,7 +13,6 @@ namespace Client
     class ProductViewModel : DependencyObject
     {
         DataProvider dp = new DataProvider();
-        private Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
         public string FilterText
         {
             get { return (string)GetValue(FilterTextProperty); }
@@ -48,7 +47,7 @@ namespace Client
         public ProductViewModel()
         {
             List<ModelProduct> modelProducts = new List<ModelProduct>();
-            List<Service.Product> products = client.GetProductTable().ToList();
+            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
             foreach(Service.Product product in products)
             {
                 ModelProduct modelProduct = new ModelProduct();

@@ -47,6 +47,9 @@
   <wsdl:message name="IWCFService_AddProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:AddProduct" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_Disconnect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disconnect" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetProductTable_InputMessage">
     <wsdl:part name="parameters" element="tns:GetProductTable" />
   </wsdl:message>
@@ -113,6 +116,15 @@
   <wsdl:message name="IWCFService_CheckProfile_OutputMessage">
     <wsdl:part name="parameters" element="tns:CheckProfileResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:GetMessage" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ConnectionFromAnotherDevice_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConnectionFromAnotherDevice" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetFriendRequest_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:GetFriendRequest" />
+  </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IWCFService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Connect" message="tns:IWCFService_Connect_InputMessage" />
@@ -120,6 +132,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddProduct" message="tns:IWCFService_AddProduct_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Disconnect">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Disconnect" message="tns:IWCFService_Disconnect_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetProductTable">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetProductTable" message="tns:IWCFService_GetProductTable_InputMessage" />
@@ -175,6 +190,15 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckProfile" message="tns:IWCFService_CheckProfile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckProfileResponse" message="tns:IWCFService_CheckProfile_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConnectionFromAnotherDevice">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ConnectionFromAnotherDevice" message="tns:IWCFService_ConnectionFromAnotherDevice_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetFriendRequest">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetFriendRequest" message="tns:IWCFService_GetFriendRequest_OutputCallbackMessage" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IWCFService" type="tns:IWCFService">
     <wsp:PolicyReference URI="#NetTcpBinding_IWCFService_policy" />
@@ -190,6 +214,12 @@
     </wsdl:operation>
     <wsdl:operation name="AddProduct">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/AddProduct" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/Disconnect" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -304,6 +334,24 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMessage">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetMessage" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConnectionFromAnotherDevice">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ConnectionFromAnotherDevice" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFriendRequest">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetFriendRequest" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

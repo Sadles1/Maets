@@ -13,6 +13,9 @@ namespace Service
         [OperationContract(IsOneWay = true)]
         void AddProduct(Product product);
 
+        [OperationContract(IsOneWay = true)]
+        void Disconnect(int Id);
+
         [OperationContract]
         List<Product> GetProductTable();
 
@@ -64,10 +67,13 @@ namespace Service
 
     public interface IWCFServiceCalbback
     {
+        [OperationContract(IsOneWay = true)]
         void GetMessage(UserMessage msg);
 
+        [OperationContract(IsOneWay = true)]
         void ConnectionFromAnotherDevice();
 
+        [OperationContract(IsOneWay = true)]
         void GetFriendRequest(int idSender);
 
     }

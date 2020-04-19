@@ -597,7 +597,7 @@ namespace Client.Service {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", SessionMode=System.ServiceModel.SessionMode.Required)]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", CallbackContract=typeof(Client.Service.IWCFServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IWCFService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
@@ -611,6 +611,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
         System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
+        void Disconnect(int Id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
+        System.Threading.Tasks.Task DisconnectAsync(int Id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductTable", ReplyAction="http://tempuri.org/IWCFService/GetProductTableResponse")]
         Client.Service.Product[] GetProductTable();
@@ -710,30 +716,44 @@ namespace Client.Service {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IWCFServiceCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetMessage")]
+        void GetMessage(Client.Service.UserMessage msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ConnectionFromAnotherDevice")]
+        void ConnectionFromAnotherDevice();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetFriendRequest")]
+        void GetFriendRequest(int idSender);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IWCFServiceChannel : Client.Service.IWCFService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class WCFServiceClient : System.ServiceModel.ClientBase<Client.Service.IWCFService>, Client.Service.IWCFService {
+    public partial class WCFServiceClient : System.ServiceModel.DuplexClientBase<Client.Service.IWCFService>, Client.Service.IWCFService {
         
-        public WCFServiceClient() {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance) : 
+                base(callbackInstance) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : 
+                base(callbackInstance, endpointConfigurationName) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public WCFServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(binding, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, binding, remoteAddress) {
         }
         
         public Client.Service.Profile Connect(string Login, string Password) {
@@ -750,6 +770,14 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product) {
             return base.Channel.AddProductAsync(product);
+        }
+        
+        public void Disconnect(int Id) {
+            base.Channel.Disconnect(Id);
+        }
+        
+        public System.Threading.Tasks.Task DisconnectAsync(int Id) {
+            return base.Channel.DisconnectAsync(Id);
         }
         
         public Client.Service.Product[] GetProductTable() {
