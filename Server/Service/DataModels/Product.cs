@@ -14,7 +14,7 @@ namespace Service
         public List<string> MinGameSysReq { get; set; }
         public List<string> RecGameSysReq { get; set; }
         public List<byte[]> Screenshots { get; set; }
-        public double? WholesalePrice { get; set; }
+        public double WholesalePrice { get; set; }
         public double RetailPrice { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Developer { get; set; }

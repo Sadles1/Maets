@@ -263,7 +263,7 @@ namespace Service
                 TProduct.Quantity = 100;
                 TProduct.ReleaseDate = product.ReleaseDate;
                 TProduct.RetailPrice = product.RetailPrice;
-                TProduct.WholesalePrice = product?.WholesalePrice;
+                TProduct.WholesalePrice = product.WholesalePrice;
 
                 return TProduct;
             }

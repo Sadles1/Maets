@@ -35,7 +35,7 @@ namespace Service
         void BuyProductWholesale(List<Tuple<Product, int>> Cart, int idProfile);
 
         [OperationContract]
-        Profile CheckFriend(int id);
+        bool CheckBlacklist(int IdMainUser, int IdSeconUser);
 
         [OperationContract(IsOneWay = true)]
         void AddModerationProduct(Product product);
@@ -75,6 +75,9 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void GetFriendRequest(int idSender);
+
+        [OperationContract(IsOneWay = true)]
+        void FriendOnline();
 
     }
 }

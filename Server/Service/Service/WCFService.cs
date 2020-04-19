@@ -51,11 +51,16 @@ namespace Service
             {
                 List<TDeals> TDeals = context.TDeals.ToList();
 
+                //Находим пользователя совершившего покупку
+                TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
+
                 //Записываем все сделки в БД
                 foreach (Tuple<Product, int> tuple in Cart)
                 {
                     TDeals deal = dp.FormTDeal(idProfile, tuple.Item1, tuple.Item2, true);
                     context.TDeals.Add(deal);
+                    profile.Money -= tuple.Item1.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+                    profile.TotalSpentMoney += tuple.Item1.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
                 }
 
                 //Сохраняем БД
@@ -119,36 +124,34 @@ namespace Service
         /// <param name="idComrade">ID пользователя с которым нужно получить сообщения</param>
         public List<UserMessage> GetChat(int idMain, int idComrade)
         {
+            //Прописываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{idMain}\Messages.json";
-            List<UserMessage> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.IDReceiver == idComrade).ToList() : null;
+
+            //Десериализуем файл, если файла нет то создаём пустой список
+            List<UserMessage> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.IDReceiver == idComrade || u.IDSender == idComrade).ToList() : new List<UserMessage>();
             return messages;
         }
 
         /// <summary>
-        /// Метод для формирование полной версии профиля при переходе из подключённого
+        /// Метод для проверки есть ли текущий пользователь в чёрном списке другого пользователя
         /// </summary>
         /// <param name="id">ID нужного профиля</param>
         /// <returns></returns>
-        public Profile CheckFriend(int id)
+        public bool CheckBlacklist(int IdMainUser, int IdSeconUser)
         {
-            using (postgresContext context = new postgresContext())
-            {
-                Profile profile = CheckProfile(id);
-                //Проверка что данный профиль не добавил вас в чёрный список
-                bool blacklist = false;
-                string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
-                if (File.Exists(path))
-                {
-                    List<int> Blacklist = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path));
-                    if (Blacklist.Where(u => u == id) != null)
-                        blacklist = true;
+            //Прописываем путь
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{IdSeconUser}\Blacklist.json";
 
-                }
+            //Десериализуем файл
+            List<int> Blacklist = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path));
 
-                return profile;
-            }
+            //Если он пустой то возвращем false так как мы не в чёрном списке
+            if (Blacklist == null)
+                return false;
+            else
+                //Если он не пустой, то ищем пользователя с нужным нам id, если его там нет то возвращаем false если есть true
+                return Blacklist.Where(u => u == IdMainUser) == null ? false : true;
         }
-
 
         /// <summary>
         /// Метод для удаления из чёрного списка
@@ -157,9 +160,16 @@ namespace Service
         /// <param name="idUserInBlacklist">ID пользователя которого необходимо удалить из чёрного списока</param>
         public void RemoveFromBlacklist(int id, int idUserInBlacklist)
         {
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";//Сначала обновляем файл с друзьями у одного аккаунта
-            List<int> Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
+            //Прописываем путь
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
+
+            //Десериализуем файл
+            List<int> Blacklist = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path));
+
+            //Удаляем из списка user которого надо убрать из чёрного списка
             Blacklist.Remove(idUserInBlacklist);
+
+            //Сериализуем новый список в файл
             File.WriteAllText(path, JsonConvert.SerializeObject(Blacklist));
         }
 
@@ -186,6 +196,7 @@ namespace Service
             List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Add(idFriend);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
+
 
             //Обновляем файл с друзьями у другого аккаунта
             path = $@"{BaseSettings.Default.SourcePath}\Users\{idFriend}\Friends.json";
@@ -280,6 +291,12 @@ namespace Service
                     }
                     onlineUsers.Add(new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current });
 
+
+                    foreach (Profile friend in profile.Friends)
+                    {
+                        ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
+                    }
+
                     //Сохраняем изменения в БД
                     context.SaveChanges();
 
@@ -289,7 +306,7 @@ namespace Service
                     return profile;
                 }
                 else
-                    throw new Exception("Логин или пароль не верны");//Если пользователь не найден возвращаем null
+                    throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
             }
         }
 
@@ -308,7 +325,7 @@ namespace Service
                 context.SaveChanges();
 
                 //Вывод в серверную консоль
-                Console.WriteLine($" {DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Account {context.TLogin.FirstOrDefault(u => u.Id == id).Login} deleted");
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Account {context.TLogin.FirstOrDefault(u => u.Id == id).Login} deleted");
             }
         }
 
@@ -364,7 +381,7 @@ namespace Service
             {
                 string sessionId = (OperationContext.Current.SessionId);
                 onlineUsers.Remove(User);
-                Console.WriteLine($"{User.UserProfile.Name} with Session Id {sessionId} disconnect");
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {User.UserProfile.Name} with Session Id {sessionId} disconnect");
             }
         }
 
