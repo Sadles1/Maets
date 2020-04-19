@@ -77,7 +77,7 @@ namespace Service
         void GetFriendRequest(int idSender);
 
         [OperationContract(IsOneWay = true)]
-        void FriendOnline();
+        void FriendOnline(int idUser);
 
     }
 }
