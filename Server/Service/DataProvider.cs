@@ -78,7 +78,7 @@ namespace Service
             profile.Telephone = Tlogin.IdNavigation.Telephone;
             profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
             profile.AccessRight = Tlogin.IdNavigation.AccessRight;
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;           
 
             //Заполенение корзины
             string pathToCart = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Cart.json";
@@ -98,14 +98,16 @@ namespace Service
                     }
                 }
             }
+
+
+            profile.Friends = new List<Profile>();
             using (postgresContext context = new postgresContext())
             {
                 //Формируем список друзей
                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
                 if (File.Exists($@"{path}Friends.json"))
                 {
-                    List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
-                    profile.Friends = new List<Profile>();
+                    List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();                   
                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
                     foreach (int id in IdFriends)
                     {

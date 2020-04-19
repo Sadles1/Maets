@@ -275,13 +275,13 @@ namespace Service
             {
                 //Ищем пользователя, если находим, то подключаем
                 TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Login == Login && u.Password == Password);
-
+                Console.WriteLine("Test1");
                 if (Tlogin != null)
                 {
                     //Формируем профиль
                     Profile profile = dp.FormProfile(Tlogin);
                     profile.status = true;
-
+                    Console.WriteLine("Test2");
                     //Записываем подключеного пользователя
                     OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
                     if (ActiveUser != null)
@@ -291,18 +291,24 @@ namespace Service
                     }
                     onlineUsers.Add(new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current });
 
-
-                    foreach (Profile friend in profile.Friends)
+                    Console.WriteLine("Test3");
+                    if (profile.Friends != null)
                     {
-                        ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
+                        foreach (Profile friend in profile.Friends)
+                        {
+                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
+                            if (OnlineFriend != null)
+                                ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
+                        }
                     }
 
+                    Console.WriteLine("Test4");
                     //Сохраняем изменения в БД
                     context.SaveChanges();
 
                     //Выводим сообщение в серверную консоль
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
-
+                    Console.WriteLine("Test5");
                     return profile;
                 }
                 else
