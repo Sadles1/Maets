@@ -13,9 +13,6 @@ namespace Service
         }
         public int Id { get; set; }
         public string Name { get; set; }
-        public int IdUser { get; set; }
-
-        public virtual TUsers IdUserNavigation { get; set; }
         public virtual ICollection<TModerateProducts> TModerateProducts { get; set; }
         public virtual ICollection<TProducts> TProducts { get; set; }
     }

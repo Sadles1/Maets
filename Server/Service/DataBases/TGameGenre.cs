@@ -7,7 +7,6 @@ namespace Service
     {
         public int IdGame { get; set; }
         public int IdGenre { get; set; }
-
         public virtual TProducts IdGameNavigation { get; set; }
         public virtual TGenre IdGenreNavigation { get; set; }
     }

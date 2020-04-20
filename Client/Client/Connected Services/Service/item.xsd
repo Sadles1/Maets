@@ -49,13 +49,13 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfProfile" nillable="true" type="tns:ArrayOfProfile" />
-  <xs:complexType name="ArrayOfMessage">
+  <xs:complexType name="ArrayOfUserMessage">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Message" nillable="true" type="tns:Message" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UserMessage" nillable="true" type="tns:UserMessage" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfMessage" nillable="true" type="tns:ArrayOfMessage" />
-  <xs:complexType name="Message">
+  <xs:element name="ArrayOfUserMessage" nillable="true" type="tns:ArrayOfUserMessage" />
+  <xs:complexType name="UserMessage">
     <xs:sequence>
       <xs:element minOccurs="0" name="IDReceiver" type="xs:int" />
       <xs:element minOccurs="0" name="IDSender" type="xs:int" />
@@ -64,5 +64,5 @@
       <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="Message" nillable="true" type="tns:Message" />
+  <xs:element name="UserMessage" nillable="true" type="tns:UserMessage" />
 </xs:schema>

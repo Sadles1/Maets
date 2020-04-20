@@ -296,7 +296,7 @@ namespace Client.Service {
         private byte[][] ScreenshotsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<double> WholesalePriceField;
+        private double WholesalePriceField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -465,7 +465,7 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<double> WholesalePrice {
+        public double WholesalePrice {
             get {
                 return this.WholesalePriceField;
             }
@@ -489,9 +489,9 @@ namespace Client.Service {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/Service")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserMessage", Namespace="http://schemas.datacontract.org/2004/07/Service")]
     [System.SerializableAttribute()]
-    public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class UserMessage : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -597,7 +597,7 @@ namespace Client.Service {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", SessionMode=System.ServiceModel.SessionMode.Required)]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", CallbackContract=typeof(Client.Service.IWCFServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IWCFService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
@@ -611,6 +611,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
         System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
+        void Disconnect(int Id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
+        System.Threading.Tasks.Task DisconnectAsync(int Id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductTable", ReplyAction="http://tempuri.org/IWCFService/GetProductTableResponse")]
         Client.Service.Product[] GetProductTable();
@@ -631,10 +637,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task AddFriendAsync(int id, int idFriend);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
-        Client.Service.Message[] GetChat(int idMain, int idComrade);
+        Client.Service.UserMessage[] GetChat(int idMain, int idComrade);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetChat", ReplyAction="http://tempuri.org/IWCFService/GetChatResponse")]
-        System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int idMain, int idComrade);
+        System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetChatAsync(int idMain, int idComrade);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
         void BuyProduct(Client.Service.Product[] Cart, int idProfile);
@@ -648,47 +654,81 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
         System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
-        Client.Service.Profile CheckFriend(int id);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
+        bool CheckBlacklist(int IdMainUser, int IdSeconUser);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
-        System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
+        System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
         void AddModerationProduct(Client.Service.Product product);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddModerationProduct", ReplyAction="http://tempuri.org/IWCFService/AddModerationProductResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
         System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         void DeleteAccount(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DeleteAccount", ReplyAction="http://tempuri.org/IWCFService/DeleteAccountResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         System.Threading.Tasks.Task DeleteAccountAsync(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddToBlacklist", ReplyAction="http://tempuri.org/IWCFService/AddToBlacklistResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddToBlacklist")]
         void AddToBlacklist(int id, int idUserToBlacklist);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddToBlacklist", ReplyAction="http://tempuri.org/IWCFService/AddToBlacklistResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddToBlacklist")]
         System.Threading.Tasks.Task AddToBlacklistAsync(int id, int idUserToBlacklist);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/RemoveFromBlacklist", ReplyAction="http://tempuri.org/IWCFService/RemoveFromBlacklistResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/RemoveFromBlacklist")]
         void RemoveFromBlacklist(int id, int idUserInBlacklist);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/RemoveFromBlacklist", ReplyAction="http://tempuri.org/IWCFService/RemoveFromBlacklistResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/RemoveFromBlacklist")]
         System.Threading.Tasks.Task RemoveFromBlacklistAsync(int id, int idUserInBlacklist);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/SendMsg", ReplyAction="http://tempuri.org/IWCFService/SendMsgResponse")]
-        void SendMsg(Client.Service.Message msg);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendMsg")]
+        void SendMsg(Client.Service.UserMessage msg);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/SendMsg", ReplyAction="http://tempuri.org/IWCFService/SendMsgResponse")]
-        System.Threading.Tasks.Task SendMsgAsync(Client.Service.Message msg);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendMsg")]
+        System.Threading.Tasks.Task SendMsgAsync(Client.Service.UserMessage msg);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
-        void DownloadProduct(Client.Service.Product pr);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SaveCart")]
+        void SaveCart(int idUser, Client.Service.Product[] Cart);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
-        System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SaveCart")]
+        System.Threading.Tasks.Task SaveCartAsync(int idUser, Client.Service.Product[] Cart);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendFriendRequest")]
+        void SendFriendRequest(int idSender, int idReceiver);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendFriendRequest")]
+        System.Threading.Tasks.Task SendFriendRequestAsync(int idSender, int idReceiver);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckProfile", ReplyAction="http://tempuri.org/IWCFService/CheckProfileResponse")]
+        Client.Service.Profile CheckProfile(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckProfile", ReplyAction="http://tempuri.org/IWCFService/CheckProfileResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllUsers", ReplyAction="http://tempuri.org/IWCFService/GetAllUsersResponse")]
+        Client.Service.Profile[] GetAllUsers();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllUsers", ReplyAction="http://tempuri.org/IWCFService/GetAllUsersResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IWCFServiceCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetMessage")]
+        void GetMessage(Client.Service.UserMessage msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ConnectionFromAnotherDevice")]
+        void ConnectionFromAnotherDevice();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetFriendRequest")]
+        void GetFriendRequest(int idSender);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/FriendOnline")]
+        void FriendOnline(int idUser);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -697,25 +737,26 @@ namespace Client.Service {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class WCFServiceClient : System.ServiceModel.ClientBase<Client.Service.IWCFService>, Client.Service.IWCFService {
+    public partial class WCFServiceClient : System.ServiceModel.DuplexClientBase<Client.Service.IWCFService>, Client.Service.IWCFService {
         
-        public WCFServiceClient() {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance) : 
+                base(callbackInstance) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : 
+                base(callbackInstance, endpointConfigurationName) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public WCFServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public WCFServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(binding, remoteAddress) {
+        public WCFServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, binding, remoteAddress) {
         }
         
         public Client.Service.Profile Connect(string Login, string Password) {
@@ -732,6 +773,14 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product) {
             return base.Channel.AddProductAsync(product);
+        }
+        
+        public void Disconnect(int Id) {
+            base.Channel.Disconnect(Id);
+        }
+        
+        public System.Threading.Tasks.Task DisconnectAsync(int Id) {
+            return base.Channel.DisconnectAsync(Id);
         }
         
         public Client.Service.Product[] GetProductTable() {
@@ -758,11 +807,11 @@ namespace Client.Service {
             return base.Channel.AddFriendAsync(id, idFriend);
         }
         
-        public Client.Service.Message[] GetChat(int idMain, int idComrade) {
+        public Client.Service.UserMessage[] GetChat(int idMain, int idComrade) {
             return base.Channel.GetChat(idMain, idComrade);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Message[]> GetChatAsync(int idMain, int idComrade) {
+        public System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetChatAsync(int idMain, int idComrade) {
             return base.Channel.GetChatAsync(idMain, idComrade);
         }
         
@@ -782,12 +831,12 @@ namespace Client.Service {
             return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
         }
         
-        public Client.Service.Profile CheckFriend(int id) {
-            return base.Channel.CheckFriend(id);
+        public bool CheckBlacklist(int IdMainUser, int IdSeconUser) {
+            return base.Channel.CheckBlacklist(IdMainUser, IdSeconUser);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id) {
-            return base.Channel.CheckFriendAsync(id);
+        public System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser) {
+            return base.Channel.CheckBlacklistAsync(IdMainUser, IdSeconUser);
         }
         
         public void AddModerationProduct(Client.Service.Product product) {
@@ -822,20 +871,91 @@ namespace Client.Service {
             return base.Channel.RemoveFromBlacklistAsync(id, idUserInBlacklist);
         }
         
-        public void SendMsg(Client.Service.Message msg) {
+        public void SendMsg(Client.Service.UserMessage msg) {
             base.Channel.SendMsg(msg);
         }
         
-        public System.Threading.Tasks.Task SendMsgAsync(Client.Service.Message msg) {
+        public System.Threading.Tasks.Task SendMsgAsync(Client.Service.UserMessage msg) {
             return base.Channel.SendMsgAsync(msg);
         }
         
-        public void DownloadProduct(Client.Service.Product pr) {
-            base.Channel.DownloadProduct(pr);
+        public void SaveCart(int idUser, Client.Service.Product[] Cart) {
+            base.Channel.SaveCart(idUser, Cart);
         }
         
-        public System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr) {
-            return base.Channel.DownloadProductAsync(pr);
+        public System.Threading.Tasks.Task SaveCartAsync(int idUser, Client.Service.Product[] Cart) {
+            return base.Channel.SaveCartAsync(idUser, Cart);
+        }
+        
+        public void SendFriendRequest(int idSender, int idReceiver) {
+            base.Channel.SendFriendRequest(idSender, idReceiver);
+        }
+        
+        public System.Threading.Tasks.Task SendFriendRequestAsync(int idSender, int idReceiver) {
+            return base.Channel.SendFriendRequestAsync(idSender, idReceiver);
+        }
+        
+        public Client.Service.Profile CheckProfile(int idUser) {
+            return base.Channel.CheckProfile(idUser);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser) {
+            return base.Channel.CheckProfileAsync(idUser);
+        }
+        
+        public Client.Service.Profile[] GetAllUsers() {
+            return base.Channel.GetAllUsers();
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync() {
+            return base.Channel.GetAllUsersAsync();
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IDownloadService")]
+    public interface IDownloadService {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
+        System.IO.Stream DownloadProduct(int idProduct);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
+        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IDownloadServiceChannel : Client.Service.IDownloadService, System.ServiceModel.IClientChannel {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class DownloadServiceClient : System.ServiceModel.ClientBase<Client.Service.IDownloadService>, Client.Service.IDownloadService {
+        
+        public DownloadServiceClient() {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName) : 
+                base(endpointConfigurationName) {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName, string remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DownloadServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress) {
+        }
+        
+        public System.IO.Stream DownloadProduct(int idProduct) {
+            return base.Channel.DownloadProduct(idProduct);
+        }
+        
+        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct) {
+            return base.Channel.DownloadProductAsync(idProduct);
         }
     }
 }

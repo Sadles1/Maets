@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="SourcePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Users\snayp\Documents\GitHub\MTPProject\Server\Source</Value>
+      <Value Profile="(Default)">C:\Users\p4shark\Desktop\MTPProject-master\Server\Source</Value>
     </Setting>
   </Settings>
 </SettingsFile>

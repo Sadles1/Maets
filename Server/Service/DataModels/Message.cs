@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class Message
+    public class UserMessage
     {
         public int IDSender { get; set; }
         public int IDReceiver { get; set; }
         public string message { get; set; }
         public DateTime date { get; set; }
+        public bool isRead { get; set; }
     }
 }

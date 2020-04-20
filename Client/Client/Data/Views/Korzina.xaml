@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-                WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="Korzina" Height="470" Width="835.5" Initialized="Window_Initialized" ResizeMode="NoResize" WindowStyle="None">
     <Grid>
         <Grid.RowDefinitions>
@@ -25,13 +25,20 @@
         <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35"></TextBlock>
         <TextBlock Grid.Column="1" Grid.Row="0" Text="Стоимость" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
-            <ListView x:Name="lvProduct" ItemsSource="{Binding Items}"  Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">
+            <ListView x:Name="lvProduct"  ItemsSource="{Binding Items}"  Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >
                             <Image Source="{Binding MainImage}" Width="100" Height="100"/>
                             <TextBlock Text="{Binding Name}" Margin="25,5,0,0" FontSize="30" Width="400" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding RetailPrice}" Margin="150,0,0,0" HorizontalAlignment="Right"  TextAlignment="Right" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                            <Viewbox Width="10" Height="10" MouseLeftButtonUp="BtnDelete_Click"  Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Margin="35,5,0,0" HorizontalAlignment="Right"  >
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                    <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                                    <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                                </Grid>
+                            </Viewbox>
+
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

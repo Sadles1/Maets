@@ -20,8 +20,9 @@ namespace Client
     public partial class Korzina : Window
     {
         Service.Profile profile;
+        int idx = -1;
         DataProvider dp = new DataProvider();
-        
+
         public Korzina(Service.Profile profile)
         {
 
@@ -40,40 +41,57 @@ namespace Client
 
         }
 
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID);
+            MainWindow.shopWindows.Visibility = Visibility.Visible;
         }
 
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
-            if (lvProduct.Items.Count == 0) MessageBox.Show("Сначала добавте товар в корзину!");
-            else
+            try
             {
-                if (profile.Money >= Convert.ToDouble(tbSumm.Text))
-                {
-                    
-                    profile.Money -= Convert.ToDouble(tbSumm.Text);
-                    
-                    MainWindow.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
-                   
-                    //Тутт будет добавление самой игры на аккаунт
-                    MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
-                    ShopWindows.mainfprofile.Clear();
-                    lvProduct.Items.Clear();
-                    tbSumm.Text = "";
-                }
+                if (lvProduct.Items.Count == 0)
+                    MessageBox.Show("Сначала добавте товар в корзину!");
                 else
                 {
-                    MessageBox.Show("Недостаточно средств! \n Нужно ещё " + (Convert.ToDouble(tbSumm.Text) - profile.Money));
+                    if (profile.Money >= Convert.ToDouble(tbSumm.Text))
+                    {
+
+                        profile.Money -= Convert.ToDouble(tbSumm.Text);
+
+                        ShopWindows.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
+                        ShopWindows.client.CheckProfile(profile.ID);
+                        //Тут будет добавление самой игры на аккаунт
+                        MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
+                        ShopWindows.mainfprofile.Clear();
+                        lvProduct.Items.Clear();
+                        tbSumm.Text = "";
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Недостаточно средств! \n Нужно ещё " + (Convert.ToDouble(tbSumm.Text) - profile.Money));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("{0}", ex.Message), "ERROR", MessageBoxButton.OK);
             }
         }
 
         private void LvProduct_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             double sum = 0;
-            for (int i=0;i< ShopWindows.mainfprofile.Count;i++)
+            idx = lvProduct.SelectedIndex;
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
             {
                 sum += ShopWindows.mainfprofile[i].RetailPrice;
             }
@@ -87,6 +105,32 @@ namespace Client
                 sum += ShopWindows.mainfprofile[i].RetailPrice;
             }
             tbSumm.Text = Convert.ToString(sum);
+        }
+        public void deleteproduct()
+        {
+            if (ShopWindows.mainfprofile.Count != 0)
+            {
+                double sum = 0;
+                for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+                {
+                    sum += ShopWindows.mainfprofile[i].RetailPrice;
+                }
+                tbSumm.Text = Convert.ToString(sum);
+            }
+            else tbSumm.Text = "0";
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
+            int i = lvProduct.SelectedIndex;
+            if (i != -1)
+            {
+                //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
+                lvProduct.Items.RemoveAt(i);
+                ShopWindows.mainfprofile.RemoveAt(i);
+                deleteproduct();
+            }
         }
     }
 }

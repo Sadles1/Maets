@@ -28,13 +28,12 @@ namespace Service
         public virtual DbSet<TRecGameSysReq> TRecGameSysReq { get; set; }
         public virtual DbSet<TSysReq> TSysReq { get; set; }
         public virtual DbSet<TUsers> TUsers { get; set; }
-        public virtual DbSet<TOnlineUsers> TOnlineUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=zxcv1234");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres2;Username=postgres;Password=postgres");
             }
         }
 
@@ -69,11 +68,8 @@ namespace Service
             {
                 entity.ToTable("t_Deals");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Count)
-                    .IsRequired()
-                    .HasColumnType("character varying");
+                entity.HasKey(e => new { e.IdBuyers, e.IdProduct })
+                    .HasName("t_RecGameSysReq_pkey");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
@@ -90,17 +86,7 @@ namespace Service
                     .HasConstraintName("t_Deals_IdProduct_fkey");
             });
 
-            modelBuilder.Entity<TOnlineUsers>(entity =>
-            {
-                entity.ToTable("t_OnlineUsers");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.HasOne(d => d.IdUsersNavigation)
-                   .WithMany(p => p.TOnlineUsers)
-                   .HasForeignKey(d => d.Id)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("t_OnlineUsers_IdUser_fkey");
-            });
 
             modelBuilder.Entity<TDeveloper>(entity =>
             {
@@ -111,12 +97,6 @@ namespace Service
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.TDeveloper)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Developer_IdUser_fkey");
             });
 
             modelBuilder.Entity<TGameGenre>(entity =>
@@ -166,11 +146,10 @@ namespace Service
                     .HasColumnName("password")
                     .HasColumnType("character varying");
 
-                entity.HasOne(d => d.IdOwnerNavigation)
+                entity.HasOne(d => d.IdNavigation)
                     .WithMany(p => p.TLogin)
-                    .HasForeignKey(d => d.IdOwner)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Login_IdOwner_fkey");
+                    .HasForeignKey(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<TMinGameSysReq>(entity =>
@@ -284,12 +263,6 @@ namespace Service
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnType("character varying");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.TPublisher)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_Publisher_IdUser_fkey");
             });
 
             modelBuilder.Entity<TRecGameSysReq>(entity =>

@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Drawing;
 using System.IO;
 using System.Configuration;
+using System.ServiceModel;
 
 namespace Client
 {
@@ -22,31 +23,36 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-        public static Service.WCFServiceClient client = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
+        static public ShopWindows shopWindows;
         DataProvider dp = new DataProvider();
         public MainWindow()
-        {          
+        {
             InitializeComponent();
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
             tbLogin.Text = "admin";
-            tbPassword.Text = "admin";         
+            tbPassword.Text = "admin";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            Service.Profile profile = client.Connect(tbLogin.Text, dp.HashPassword(tbPassword.Text));
-            if (profile == null)
+            try
             {
-                MessageBox.Show("Error");
-                return;
+
+                shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+                shopWindows.Show();
+                Close();
             }
-            ShopWindows shopWindows = new ShopWindows(profile);
-            shopWindows.Show();
-            this.Close();
+            catch (FaultException ex)
+            {
+                MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message), "ERROR", MessageBoxButton.OK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ERROR", MessageBoxButton.OK);
+            }
         }
 
         private void Register_Click(object sender, RoutedEventArgs e)
@@ -58,7 +64,7 @@ namespace Client
         }
 
         private void TbExit_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             this.Close();
         }
 
@@ -69,8 +75,9 @@ namespace Client
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
+
         }
 
-  
+
     }
 }
