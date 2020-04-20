@@ -13,21 +13,13 @@ namespace Host
     {
         static void Main(string[] args)
         {
-            try
+            using (var host = new ServiceHost(typeof(WCFService)))
             {
-                using (var host = new ServiceHost(typeof(WCFService)))
-                {
-                    host.Description.Behaviors.Add(new MainErrorHandlerBehaviour());
-                    host.Open();
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}: Server start!");
-                    Console.ReadLine();
-                }
-            }
-            catch(Exception ex)
-            {
-                throw ex;
+                host.Description.Behaviors.Add(new MainErrorHandlerBehaviour());
+                host.Open();
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}: Server start!");
+                Console.ReadLine();
             }
         }
-        
     }
 }

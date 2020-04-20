@@ -448,7 +448,7 @@ namespace Service
 
 
         /// <summary>
-        /// Мето для смены пароля
+        /// Метод для смены пароля
         /// </summary>
         /// <param name="idUser">ID пользователя</param>
         /// <param name="password">пароль в хэшшированом виде</param>
