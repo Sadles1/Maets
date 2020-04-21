@@ -52,15 +52,18 @@ namespace Service
             }
         }
 
-        public TDeals FormTDeal(int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
+        public TDeals FormTDeal(int idDeal,int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
         {
             TDeals deal = new TDeals();
+
+            deal.Id = idDeal;
             deal.Date = DateTime.Now.Date;
             deal.IdBuyers = idProfile;
             deal.IdProduct = pr.Id;
             deal.BuyingPrice = Wholesale == true ? pr.WholesalePrice : pr.RetailPrice;
             deal.Count = Count;
             deal.Wholesale = Wholesale;
+
             return deal;
         }
 
@@ -88,7 +91,7 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 profile.Games = new List<Product>();
-                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == profile.ID).Select(u => u.IdProduct).ToList();
+                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == profile.ID && u.Wholesale == false).Select(u => u.IdProduct).ToList();
                 if (idGames.Count != 0)
                 {
                     List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();

@@ -6,6 +6,7 @@ namespace Service
 {
     public partial class TDeals
     {
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public int IdBuyers { get; set; }
         public int IdProduct { get; set; }

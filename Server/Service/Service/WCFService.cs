@@ -27,16 +27,22 @@ namespace Service
                 //Находим пользователя совершившего покупку
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
 
+                //Определяем id
+                int idDeal = TDeals.Count > 0 ? (TDeals.Max(u=>u.Id)+1) : 1;
+
                 //Записываем все сделки в БД
                 foreach (int id in Cart)
                 {
+
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == id);
                     Product pr = new Product { Id = product.Id, RetailPrice = product.RetailPrice };
 
-                    TDeals deal = dp.FormTDeal(idProfile, pr, 1, false);
+                    TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, 1, false);
                     context.TDeals.Add(deal);
                     profile.Money -= pr.RetailPrice * (1 - profile.PersonalDiscount);
                     profile.TotalSpentMoney += pr.RetailPrice * (1 - profile.PersonalDiscount);
+
+                    idDeal++;
                 }
 
                 //Обновляем данные о пользователе в БД
@@ -60,18 +66,24 @@ namespace Service
                 //Находим пользователя совершившего покупку
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
 
+                int idDeal = TDeals.Count > 0 ? (TDeals.Max(u => u.Id)+1) : 1;
+
                 //Записываем все сделки в БД
                 foreach (Tuple<int, int> tuple in Cart)
                 {
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == tuple.Item1);
                     Product pr = new Product { Id = product.Id, WholesalePrice = product.WholesalePrice };
 
-                    TDeals deal = dp.FormTDeal(idProfile, pr, tuple.Item2, true);
+                    TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, tuple.Item2, true);
                     context.TDeals.Add(deal);
                     profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
                     profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+
+                    idDeal++;
                 }
 
+                //Обновляем данные о пользователе в БД
+                context.TUsers.Update(profile);
                 //Сохраняем БД
                 context.SaveChanges();
             }
@@ -577,13 +589,13 @@ namespace Service
                 TLogin login = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Id == profile.ID);
 
                 //Обновляем только те данные которые необходимо обновить
-                if (profile.Login != "")
+                if (profile.Login != null)
                     login.Login = profile.Login;
-                if (profile.Name != "")
+                if (profile.Name != null)
                     login.IdNavigation.Name = profile.Name;
-                if (profile.Mail != "")
+                if (profile.Mail != null)
                     login.IdNavigation.Mail = profile.Mail;
-                if (profile.Telephone != "")
+                if (profile.Telephone != null)
                     login.IdNavigation.Telephone = profile.Telephone;
 
                 //Добавляем изменения в БД

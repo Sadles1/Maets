@@ -68,8 +68,7 @@ namespace Service
             {
                 entity.ToTable("t_Deals");
 
-                entity.HasKey(e => new { e.IdBuyers, e.IdProduct })
-                    .HasName("t_RecGameSysReq_pkey");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
