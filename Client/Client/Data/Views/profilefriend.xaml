@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="profilefriend" Height="470" Width="835.5"  ResizeMode="NoResize" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -55,10 +55,13 @@
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="5*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="tbFriendUser" Margin="5" Grid.Row="0" Height="30"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
-                <ListView x:Name="Lv" Grid.Row="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
+                <Button x:Name="btnChat"  Grid.Row="0" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
+
+                <TextBlock x:Name="tbFriendUser" Margin="5" Grid.Row="1" Height="30"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
+                <ListView x:Name="Lv" Grid.Row="2" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
                     <ListView.ItemTemplate>
                         <DataTemplate x:Name="DT">
                             <WrapPanel Orientation="Horizontal">

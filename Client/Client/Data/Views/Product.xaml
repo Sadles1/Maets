@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="Product" Height="470" Width="835.5"  ResizeMode="NoResize" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -45,7 +45,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Описание:" Margin="5,0,0,0" FontSize="18"></TextBlock>
                     <TextBlock x:Name="tbDescription" Grid.Column="0" Grid.Row="1" Text="{Binding Description}" TextWrapping="Wrap" FontSize="14" ></TextBlock>
-                    
+
                 </Grid>
                 <Grid Grid.Column="0" Grid.Row="2">
                     <Grid.ColumnDefinitions>
@@ -54,7 +54,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Разработчик:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18"></TextBlock>
                     <TextBlock x:Name="tbDeveloper" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18"></TextBlock>
-                </Grid> 
+                </Grid>
                 <Grid Grid.Column="0" Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"></ColumnDefinition>

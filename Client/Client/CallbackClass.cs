@@ -1,4 +1,5 @@
-﻿using Client.Service;
+﻿using Client.Data.Views;
+using Client.Service;
 using System;
 using System.Windows;
 
@@ -7,6 +8,11 @@ namespace Client
     public class CallbackClass : IWCFServiceCallback
     {
         private ShopWindows shopWindows;
+
+        public CallbackClass()
+        {
+        }
+
         public CallbackClass(ShopWindows shopWindows)
         {
             this.shopWindows = shopWindows;
@@ -20,6 +26,11 @@ namespace Client
             ShopWindows.client.Disconnect(shopWindows.profile.ID);
             shopWindows.Close();
             MessageBox.Show(string.Format("Connection from another device\nYou have been kicked"), "ERROR");
+        }
+
+        public void FriendOnline(int idUser)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -38,6 +49,7 @@ namespace Client
         public void GetMessage(UserMessage msg)
         {
 
+            Chat.chatnow.tbChat.Text+=msg.message;
         }
     }
 }

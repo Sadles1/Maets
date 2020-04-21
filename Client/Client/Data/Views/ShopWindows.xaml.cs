@@ -1,4 +1,6 @@
-﻿using Client.Service;
+﻿using Client.Data;
+using Client.Data.ViewModels;
+using Client.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,21 +56,32 @@ namespace Client
         {
 
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
-            lbLogin.Content = profile.Login;
+            tbLogin.Content = profile.Login;
             lbName.Content = profile.Name;
-            Lv.ItemsSource = profile.Friends;
+            Lvfriend.ItemsSource = profile.Friends;
             Back.IsEnabled = false;
-
+            ProductOne.DataContext = products[ishop];
             ProductOne.Items.Add(products[ishop]);
             ProductTwo.Items.Add(products[ishop + 1]);
             ProductFree.Items.Add(products[ishop + 2]);
-            //.ItemsSource = profile.Games;
+            Lvmylibrary.ItemsSource = profile.Games;
             btnMoney.Content = Convert.ToString(profile.Money) + " р";
             // lbLogin.Content = profile.AccessRight;
 
 
         }
+        private void refresh(Service.Profile pr)
+        {
+            imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
+            tbLogin.Content = pr.Login;
+            lbName.Content = pr.Name;
+            Lvfriend.ItemsSource = pr.Friends;
+            Back.IsEnabled = false;
+           Lvmylibrary.ItemsSource = pr.Games;
+            btnMoney.Content = Convert.ToString(pr.Money) + " р";
+            profile = pr;
 
+        }
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
             MainWindow window = new MainWindow();
@@ -92,13 +105,18 @@ namespace Client
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new ProductViewModel();
-            Lvm.Visibility = Visibility.Hidden;
+           Lvmylibrary.DataContext = new ProfileViewModel();
+            //tbLogin.DataContext = new MyProfileVieModel(profile);
+           // DataContext = new MyProfileViewModel();
+           Lvm.DataContext = new ProductViewModel();
+           Lvm.Visibility = Visibility.Hidden;
 
         }
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
             buyProduct = new Korzina(profile);
+            buyProduct.Left = this.Left;
+            buyProduct.Top = this.Top;
             buyProduct.Show();
         }
 
@@ -123,37 +141,52 @@ namespace Client
             {
                 //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
                 Product Pr = new Product(products[i], profile);
+                Pr.Left = this.Left;
+                Pr.Top = this.Top;
                 Pr.Show();
+                MainWindow.shopWindows.Visibility = Visibility.Hidden;
             }
 
         }
         private void leftmouse1(object sender, EventArgs e)
         {
             Product Pr = new Product(products[ishop], profile);
+            Pr.Left = this.Left;
+            Pr.Top = this.Top;
             Pr.Show();
+            MainWindow.shopWindows.Visibility = Visibility.Hidden;
         }
         private void leftmouse2(object sender, EventArgs e)
         {
             Product Pr = new Product(products[ishop + 1], profile);
+            Pr.Left = this.Left;
+            Pr.Top = this.Top;
             Pr.Show();
+            MainWindow.shopWindows.Visibility = Visibility.Hidden;
         }
         private void leftmouse3(object sender, EventArgs e)
         {
             Product Pr = new Product(products[ishop + 2], profile);
+            Pr.Left = this.Left;
+            Pr.Top = this.Top;
             Pr.Show();
-
+            MainWindow.shopWindows.Visibility = Visibility.Hidden;
         }
         private void leftmousefriend(object sender, EventArgs e)
         {
             List<Service.Profile> fr = profile.Friends.ToList();
 
-            int i = Lv.SelectedIndex;
+            int i = Lvfriend.SelectedIndex;
             //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
             if (i != -1)
             {
-
-                profilefriend r = new profilefriend(ShopWindows.client.CheckFriend(fr[i].ID));
+               // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                profilefriend r = new profilefriend(ShopWindows.client.CheckProfile(fr[i].ID));
+                r.Left = this.Left;
+                r.Top = this.Top;
                 r.Show();
+                MainWindow.shopWindows.Visibility = Visibility.Hidden;
             }
 
         }
@@ -245,6 +278,14 @@ namespace Client
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             client.Disconnect(profile.ID);
+            client.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+          refresh(ShopWindows.client.CheckProfile(profile.ID));
+          //  MyProfileVieModel phone = (MyProfileVieModel)this.Resources["nexusPhone"];
+           // phone.Company = "LG"; // Меняем с Google на LG
         }
     }
 }

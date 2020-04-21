@@ -22,7 +22,8 @@ namespace Client
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {      
+    {
+        static public ShopWindows shopWindows;
         DataProvider dp = new DataProvider();
         public MainWindow()
         {
@@ -39,15 +40,16 @@ namespace Client
         {
             try
             {
-                ShopWindows shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+
+                shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Text));
                 shopWindows.Show();
                 Close();
             }
             catch (FaultException ex)
             {
-                MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message),"ERROR",MessageBoxButton.OK);
+                MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message), "ERROR", MessageBoxButton.OK);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButton.OK);
             }
@@ -73,6 +75,7 @@ namespace Client
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
+
         }
 
 

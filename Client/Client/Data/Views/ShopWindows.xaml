@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        xmlns:local="clr-namespace:Client"
+        xmlns:model="clr-namespace:Client.Data.ViewModels"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         WindowStartupLocation="CenterScreen"
         Title="ShopWindows" Height="470" Width="835.5" Initialized="Window_Initialized" ResizeMode="NoResize" WindowStyle="None" Closing="Window_Closing">
@@ -36,6 +38,8 @@
                 </Grid>
             </Viewbox>
         </Button>
+        <Button Click="Button_Click_1"></Button>
+        <Label Content="{Binding Name}" HorizontalAlignment="Center"></Label>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <TabControl x:Name="mainTab">
                 <TabItem Padding="15,0,15,0" Header="Магазин"  Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
@@ -93,7 +97,7 @@
                             <Button Panel.ZIndex="1" x:Name="Back" Click="Back_Click" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Left" Height="75" Width="30"  Margin="15,0,0,0" FontSize="50" Content="&lt;"></Button>
                             <Button Panel.ZIndex="1" x:Name="Next" Click="Next_Click"  Grid.ColumnSpan="2" Grid.Column="5" Grid.Row="1" HorizontalAlignment="Right" Height="75" Width="30"  Margin="0,0,15,0" FontSize="50" Content=">"></Button>
                             <StackPanel  Orientation="Vertical" Grid.Column="1" Grid.Row="1" >
-                                <ListView x:Name="ProductOne" MouseLeftButtonUp="leftmouse1" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"  >
+                                <ListView x:Name="ProductOne" ItemsSource="{Binding Items}" MouseLeftButtonUp="leftmouse1" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"  >
                                     <ListView.ItemTemplate >
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical">
@@ -107,7 +111,7 @@
                                 </ListView>
                             </StackPanel>
                             <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="1">
-                                <ListView x:Name="ProductTwo" MouseLeftButtonUp="leftmouse2" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center">
+                                <ListView x:Name="ProductTwo" MouseLeftButtonUp="leftmouse2" ItemsSource="{Binding Items}" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center">
                                     <ListView.ItemTemplate >
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical">
@@ -119,7 +123,7 @@
                                 </ListView>
                             </StackPanel>
                             <StackPanel Orientation="Vertical" Grid.Column="5" Grid.Row="1">
-                                <ListView x:Name="ProductFree" MouseLeftButtonUp="leftmouse3" Grid.Column="5" Grid.Row="1" HorizontalAlignment="Center">
+                                <ListView x:Name="ProductFree" MouseLeftButtonUp="leftmouse3"  Grid.Column="5" Grid.Row="1" HorizontalAlignment="Center">
                                     <ListView.ItemTemplate >
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical">
@@ -148,17 +152,17 @@
                             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"  >
                                 <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Margin="5" Width="200"/>
                             </StackPanel>
-                            <!--<ListView x:Name="Lvmylibrary" MouseLeftButtonUp="leftmouse_mylibrary" ItemsSource="{Binding Items}" Margin="5" Grid.Row ="1" >
+                            <ListView x:Name="Lvmylibrary" MouseLeftButtonUp="leftmouse_mylibrary" ItemsSource="{Binding Items1}" Margin="5" Grid.Row ="1" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding Image}" Width="100" Height="100"/>
-                                            <TextBlock Text="{Binding Name}" Margin="5"/>
-                                            <TextBlock Text="{Binding Description}" Margin="5"/>
+                                            <Image Source="{Binding MainImage}" Width="50" Height="50"/>
+                                            <TextBlock Text="{Binding Name}" Margin="10,5,5,5"/>
+
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
-                            </ListView>-->
+                            </ListView>
                         </Grid>
                         <Grid Grid.Column="1">
                             <Grid.RowDefinitions>
@@ -224,7 +228,8 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label x:Name="lbLogin" Grid.ColumnSpan="2" Grid.Row="0" Content="Login" FontSize="20"/>
+                            
+                            <Label x:Name="tbLogin"  Grid.ColumnSpan="2" Grid.Row="0" Content="{Binding Login}" FontSize="20"/>
                             <Label x:Name="lbStatus" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
                             <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" Content="Name" VerticalAlignment="Center" FontSize="10"/>
@@ -240,15 +245,11 @@
                                 <RowDefinition Height="5*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Text="Ваши друзья" TextAlignment="Center"></TextBlock>
-                            <ListView x:Name="Lv" Grid.Row="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
+                            <ListView x:Name="Lvfriend" Grid.Row="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Items1}" Margin="5" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:Name="DT">
                                         <WrapPanel Orientation="Horizontal">
-                                            <Image x:Name="Image2"  Height="50" Width="50" >
-                                                <Image.Source >
-                                                    <CroppedBitmap Source="{Binding MainImage}" ></CroppedBitmap>
-
-                                                </Image.Source>
+                                            <Image x:Name="Image2" Source="{Binding MainImage}" Height="50" Width="50">
                                             </Image>
                                             <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
                                             <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>

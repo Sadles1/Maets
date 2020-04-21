@@ -23,6 +23,17 @@ namespace Client
         public static Korzina buyProduct;
         public Service.Product tv1 = new Service.Product();
         DataProvider dp = new DataProvider();
+        public bool check(Service.Product pr)
+        {
+            List<Service.Product> listpr = MainWindow.shopWindows.profile.Games.ToList();
+            int q=0;
+            for( int i=0; i< listpr.Count;i++)
+            {
+                if (listpr[i].Id == pr.Id) q++;
+            }
+            if (q != 0) return true;
+            else return false;
+        }
         public Product(Service.Product tv, Service.Profile profile)
         {
             tv1 = tv;
@@ -43,6 +54,16 @@ namespace Client
                     btnkorzina.Visibility = Visibility.Visible;
                 }
             }
+            if (check(tv))
+            {
+                btnBuy.ToolTip = "Этот товар уже есть в вашей библиотеке!)";
+                btnBuy.IsEnabled = false;
+                
+            }
+        }
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
         private void Inicialize(Service.Product productnow)
         {
@@ -58,6 +79,7 @@ namespace Client
         }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.shopWindows.Visibility = Visibility.Visible;
             this.Close();
         }
 
@@ -71,6 +93,8 @@ namespace Client
         private void Btnkorzina_Click(object sender, RoutedEventArgs e)
         {
             buyProduct = new Korzina(prof);
+            buyProduct.Left = this.Left;
+            buyProduct.Top = this.Top;
             buyProduct.Show();
             this.Close();
         }

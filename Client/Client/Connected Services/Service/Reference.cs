@@ -296,7 +296,7 @@ namespace Client.Service {
         private byte[][] ScreenshotsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<double> WholesalePriceField;
+        private double WholesalePriceField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -465,7 +465,7 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<double> WholesalePrice {
+        public double WholesalePrice {
             get {
                 return this.WholesalePriceField;
             }
@@ -654,11 +654,11 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
         System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
-        Client.Service.Profile CheckFriend(int id);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
+        bool CheckBlacklist(int IdMainUser, int IdSeconUser);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckFriend", ReplyAction="http://tempuri.org/IWCFService/CheckFriendResponse")]
-        System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
+        System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
         void AddModerationProduct(Client.Service.Product product);
@@ -690,12 +690,6 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SendMsg")]
         System.Threading.Tasks.Task SendMsgAsync(Client.Service.UserMessage msg);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
-        void DownloadProduct(Client.Service.Product pr);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/DownloadProduct", ReplyAction="http://tempuri.org/IWCFService/DownloadProductResponse")]
-        System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr);
-        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SaveCart")]
         void SaveCart(int idUser, Client.Service.Product[] Cart);
         
@@ -713,6 +707,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckProfile", ReplyAction="http://tempuri.org/IWCFService/CheckProfileResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllUsers", ReplyAction="http://tempuri.org/IWCFService/GetAllUsersResponse")]
+        Client.Service.Profile[] GetAllUsers();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllUsers", ReplyAction="http://tempuri.org/IWCFService/GetAllUsersResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -726,6 +726,9 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetFriendRequest")]
         void GetFriendRequest(int idSender);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/FriendOnline")]
+        void FriendOnline(int idUser);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -828,12 +831,12 @@ namespace Client.Service {
             return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
         }
         
-        public Client.Service.Profile CheckFriend(int id) {
-            return base.Channel.CheckFriend(id);
+        public bool CheckBlacklist(int IdMainUser, int IdSeconUser) {
+            return base.Channel.CheckBlacklist(IdMainUser, IdSeconUser);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Profile> CheckFriendAsync(int id) {
-            return base.Channel.CheckFriendAsync(id);
+        public System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser) {
+            return base.Channel.CheckBlacklistAsync(IdMainUser, IdSeconUser);
         }
         
         public void AddModerationProduct(Client.Service.Product product) {
@@ -876,14 +879,6 @@ namespace Client.Service {
             return base.Channel.SendMsgAsync(msg);
         }
         
-        public void DownloadProduct(Client.Service.Product pr) {
-            base.Channel.DownloadProduct(pr);
-        }
-        
-        public System.Threading.Tasks.Task DownloadProductAsync(Client.Service.Product pr) {
-            return base.Channel.DownloadProductAsync(pr);
-        }
-        
         public void SaveCart(int idUser, Client.Service.Product[] Cart) {
             base.Channel.SaveCart(idUser, Cart);
         }
@@ -906,6 +901,61 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Profile> CheckProfileAsync(int idUser) {
             return base.Channel.CheckProfileAsync(idUser);
+        }
+        
+        public Client.Service.Profile[] GetAllUsers() {
+            return base.Channel.GetAllUsers();
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync() {
+            return base.Channel.GetAllUsersAsync();
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IDownloadService")]
+    public interface IDownloadService {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
+        System.IO.Stream DownloadProduct(int idProduct);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
+        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IDownloadServiceChannel : Client.Service.IDownloadService, System.ServiceModel.IClientChannel {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class DownloadServiceClient : System.ServiceModel.ClientBase<Client.Service.IDownloadService>, Client.Service.IDownloadService {
+        
+        public DownloadServiceClient() {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName) : 
+                base(endpointConfigurationName) {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName, string remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DownloadServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DownloadServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress) {
+        }
+        
+        public System.IO.Stream DownloadProduct(int idProduct) {
+            return base.Channel.DownloadProduct(idProduct);
+        }
+        
+        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct) {
+            return base.Channel.DownloadProductAsync(idProduct);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,7 @@ namespace Client
             {
                 try
                 {
+                    WCFServiceClient client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
                     Service.Profile profile = new Service.Profile();
                     profile.Login = login;
                     profile.Mail = mail;
@@ -41,7 +43,7 @@ namespace Client
                     profile.Telephone = telephone;
                     profile.Name = name;
 
-                    ShopWindows.client.Register(profile, hashpassword);
+                    client.Register(profile, hashpassword);
                     MessageBox.Show("Success");
                     result = true;
                 }

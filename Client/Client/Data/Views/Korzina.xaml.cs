@@ -20,6 +20,7 @@ namespace Client
     public partial class Korzina : Window
     {
         Service.Profile profile;
+        int idx = -1;
         DataProvider dp = new DataProvider();
 
         public Korzina(Service.Profile profile)
@@ -40,9 +41,16 @@ namespace Client
 
         }
 
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID);
+            MainWindow.shopWindows.Visibility = Visibility.Visible;
         }
 
         private void Buy_Click(object sender, RoutedEventArgs e)
@@ -82,6 +90,7 @@ namespace Client
         private void LvProduct_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             double sum = 0;
+            idx = lvProduct.SelectedIndex;
             for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
             {
                 sum += ShopWindows.mainfprofile[i].RetailPrice;
@@ -96,6 +105,32 @@ namespace Client
                 sum += ShopWindows.mainfprofile[i].RetailPrice;
             }
             tbSumm.Text = Convert.ToString(sum);
+        }
+        public void deleteproduct()
+        {
+            if (ShopWindows.mainfprofile.Count != 0)
+            {
+                double sum = 0;
+                for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+                {
+                    sum += ShopWindows.mainfprofile[i].RetailPrice;
+                }
+                tbSumm.Text = Convert.ToString(sum);
+            }
+            else tbSumm.Text = "0";
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
+            int i = lvProduct.SelectedIndex;
+            if (i != -1)
+            {
+                //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
+                lvProduct.Items.RemoveAt(i);
+                ShopWindows.mainfprofile.RemoveAt(i);
+                deleteproduct();
+            }
         }
     }
 }
