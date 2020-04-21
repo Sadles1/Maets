@@ -26,10 +26,7 @@ namespace Client.Service {
         private int AccessRightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private Client.Service.Product[] CartField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<double> DiscountField;
+        private double DiscountField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private Client.Service.Profile[] FriendsField;
@@ -50,7 +47,7 @@ namespace Client.Service {
         private byte[] MainImageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<double> MoneyField;
+        private double MoneyField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
@@ -85,20 +82,7 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Client.Service.Product[] Cart {
-            get {
-                return this.CartField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CartField, value) != true)) {
-                    this.CartField = value;
-                    this.RaisePropertyChanged("Cart");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<double> Discount {
+        public double Discount {
             get {
                 return this.DiscountField;
             }
@@ -189,7 +173,7 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<double> Money {
+        public double Money {
             get {
                 return this.MoneyField;
             }
@@ -678,6 +662,18 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddToBlacklist")]
         System.Threading.Tasks.Task AddToBlacklistAsync(int id, int idUserToBlacklist);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteFriendReqest")]
+        void DeleteFriendReqest(int id, int idRequest);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteFriendReqest")]
+        System.Threading.Tasks.Task DeleteFriendReqestAsync(int id, int idRequest);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteFriend")]
+        void DeleteFriend(int id, int idFriend);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteFriend")]
+        System.Threading.Tasks.Task DeleteFriendAsync(int id, int idFriend);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/RemoveFromBlacklist")]
         void RemoveFromBlacklist(int id, int idUserInBlacklist);
         
@@ -713,6 +709,30 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllUsers", ReplyAction="http://tempuri.org/IWCFService/GetAllUsersResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetNewMessages", ReplyAction="http://tempuri.org/IWCFService/GetNewMessagesResponse")]
+        Client.Service.UserMessage[] GetNewMessages(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetNewMessages", ReplyAction="http://tempuri.org/IWCFService/GetNewMessagesResponse")]
+        System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetNewMessagesAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetFriendRequests", ReplyAction="http://tempuri.org/IWCFService/GetFriendRequestsResponse")]
+        Client.Service.Profile[] GetFriendRequests(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetFriendRequests", ReplyAction="http://tempuri.org/IWCFService/GetFriendRequestsResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile[]> GetFriendRequestsAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetUserGames", ReplyAction="http://tempuri.org/IWCFService/GetUserGamesResponse")]
+        Client.Service.Product[] GetUserGames(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetUserGames", ReplyAction="http://tempuri.org/IWCFService/GetUserGamesResponse")]
+        System.Threading.Tasks.Task<Client.Service.Product[]> GetUserGamesAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckActiveProfile", ReplyAction="http://tempuri.org/IWCFService/CheckActiveProfileResponse")]
+        Client.Service.Profile CheckActiveProfile(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckActiveProfile", ReplyAction="http://tempuri.org/IWCFService/CheckActiveProfileResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> CheckActiveProfileAsync(int idUser);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -863,6 +883,22 @@ namespace Client.Service {
             return base.Channel.AddToBlacklistAsync(id, idUserToBlacklist);
         }
         
+        public void DeleteFriendReqest(int id, int idRequest) {
+            base.Channel.DeleteFriendReqest(id, idRequest);
+        }
+        
+        public System.Threading.Tasks.Task DeleteFriendReqestAsync(int id, int idRequest) {
+            return base.Channel.DeleteFriendReqestAsync(id, idRequest);
+        }
+        
+        public void DeleteFriend(int id, int idFriend) {
+            base.Channel.DeleteFriend(id, idFriend);
+        }
+        
+        public System.Threading.Tasks.Task DeleteFriendAsync(int id, int idFriend) {
+            return base.Channel.DeleteFriendAsync(id, idFriend);
+        }
+        
         public void RemoveFromBlacklist(int id, int idUserInBlacklist) {
             base.Channel.RemoveFromBlacklist(id, idUserInBlacklist);
         }
@@ -909,6 +945,38 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Profile[]> GetAllUsersAsync() {
             return base.Channel.GetAllUsersAsync();
+        }
+        
+        public Client.Service.UserMessage[] GetNewMessages(int id) {
+            return base.Channel.GetNewMessages(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetNewMessagesAsync(int id) {
+            return base.Channel.GetNewMessagesAsync(id);
+        }
+        
+        public Client.Service.Profile[] GetFriendRequests(int id) {
+            return base.Channel.GetFriendRequests(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile[]> GetFriendRequestsAsync(int id) {
+            return base.Channel.GetFriendRequestsAsync(id);
+        }
+        
+        public Client.Service.Product[] GetUserGames(int id) {
+            return base.Channel.GetUserGames(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Product[]> GetUserGamesAsync(int id) {
+            return base.Channel.GetUserGamesAsync(id);
+        }
+        
+        public Client.Service.Profile CheckActiveProfile(int idUser) {
+            return base.Channel.CheckActiveProfile(idUser);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> CheckActiveProfileAsync(int idUser) {
+            return base.Channel.CheckActiveProfileAsync(idUser);
         }
     }
     

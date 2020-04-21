@@ -20,7 +20,6 @@ namespace Client.Data.Models
             modelProfile.ID = profile.ID;
             modelProfile.Login = profile.Login;
             modelProfile.Friends = profile.Friends;
-            modelProfile.Cart = profile.Cart;
             modelProfile.Games = profile.Games;
             modelProfile.AccessRight = profile.AccessRight;
             modelProfile.Telephone = profile.Telephone;

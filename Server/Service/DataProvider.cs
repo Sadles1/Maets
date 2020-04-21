@@ -52,6 +52,7 @@ namespace Service
             }
         }
 
+
         public TDeals FormTDeal(int idDeal, int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
         {
             TDeals deal = new TDeals();
@@ -67,61 +68,39 @@ namespace Service
             return deal;
         }
 
+        public Profile FormActiveUser(TLogin Tlogin)
+        {
+            Profile profile = FormProfile(Tlogin);
+
+            profile.Money = Tlogin.IdNavigation.Money;
+            profile.AccessRight = Tlogin.IdNavigation.AccessRight;
+
+            //Формируем список игр
+            profile.Games = GetUserGames(profile.ID);
+
+            return profile;
+        }
+
         public Profile FormProfile(TLogin Tlogin)//Формируем профиль используя таблицу login и связанные с ней таблицы
         {
-            Profile profile = new Profile();
-
-            profile.ID = Tlogin.Id;
-            profile.Login = Tlogin.Login;
+            Profile profile = SimpleFormProfile(Tlogin);
 
             //Все данные получем через связанную таблицу
             profile.Mail = Tlogin.IdNavigation.Mail;
-            profile.Name = Tlogin.IdNavigation.Name;
-            profile.Money = Tlogin.IdNavigation.Money;
-            profile.Telephone = Tlogin.IdNavigation.Telephone;
-            profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
-            profile.AccessRight = Tlogin.IdNavigation.AccessRight;
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
+            profile.Name = Tlogin.IdNavigation.Name;          
+            profile.Telephone = Tlogin.IdNavigation.Telephone;          
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;     
 
-            //Заполенение корзины
-            string pathToCart = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Cart.json";
-            profile.Cart = File.Exists(pathToCart) ? JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(pathToCart)) : new List<Product>();
-
-            //Формируем список игр
-            using (postgresContext context = new postgresContext())
-            {
-                profile.Games = new List<Product>();
-                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == profile.ID && u.Wholesale == false).Select(u => u.IdProduct).ToList();
-                if (idGames.Count != 0)
-                {
-                    List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
-                    foreach (int id in idGames)
-                        profile.Games.Add(FormProduct(TProducts.FirstOrDefault(u => u.Id == id)));
-                }
-            }
+            //Определяем путь
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
 
             profile.Friends = new List<Profile>();
-            profile.FriendReqests = new List<Profile>();
 
             using (postgresContext context = new postgresContext())
             {
-                //Определяем путь
-                string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
-
                 //Загружаем таблицу TLogins
-                List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
-
-                //Формируем список заявок в друзья
-                if (File.Exists($@"{path}FriendRequests.json"))
-                {
-                    List<int> IdFriendsReq = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}FriendRequests.json"));
-                    foreach (int id in IdFriendsReq)
-                    {
-                        Profile friendReq = SimpleFormProfile(TLogins.FirstOrDefault(u => u.Id == id));
-                        if (friendReq != null)
-                            profile.FriendReqests.Add(friendReq);
-                    }
-                }
+                List<TLogin> TLogins = context.TLogin.ToList();
+                
                 //Формируем список друзей
                 if (File.Exists($@"{path}Friends.json"))
                 {
@@ -133,15 +112,6 @@ namespace Service
                             profile.Friends.Add(friend);
                     }
                 }
-            }
-            //Определяем статус подключения
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
-
-            //Получем основное изображение профиля
-            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
-            {
-                profile.MainImage = new byte[fstream.Length];
-                fstream.Read(profile.MainImage, 0, profile.MainImage.Length);
             }
 
             return profile;
@@ -286,6 +256,22 @@ namespace Service
 
                 return TProduct;
             }
+        }
+
+        public List<Product> GetUserGames(int id)
+        {
+            List<Product> Games = new List<Product>(); 
+            using (postgresContext context = new postgresContext())
+            {
+                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == id && u.Wholesale == false).Select(u => u.IdProduct).ToList();
+                if (idGames.Count != 0)
+                {
+                    List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
+                    foreach (int Id in idGames)
+                        Games.Add(FormProduct(TProducts.FirstOrDefault(u => u.Id == Id)));
+                }
+            }
+            return Games;
         }
     }
 }

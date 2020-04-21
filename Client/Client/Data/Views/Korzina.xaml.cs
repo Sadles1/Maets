@@ -48,8 +48,8 @@ namespace Client
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.shopWindows.Refresh.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Close();
-            ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID);
             MainWindow.shopWindows.Visibility = Visibility.Visible;
         }
 
@@ -67,13 +67,12 @@ namespace Client
                         profile.Money -= Convert.ToDouble(tbSumm.Text);
 
                         List<int> Cart = new List<int>();
-                        foreach(Service.Product pr in ShopWindows.mainfprofile)
+                        foreach (Service.Product pr in ShopWindows.mainfprofile)
                         {
                             Cart.Add(pr.Id);
                         }
 
-                        ShopWindows.client.BuyProduct(Cart.ToArray(), profile.ID);
-                        ShopWindows.client.CheckProfile(profile.ID);
+                        ShopWindows.client.BuyProduct(Cart.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
                         //Тут будет добавление самой игры на аккаунт
                         MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
                         ShopWindows.mainfprofile.Clear();

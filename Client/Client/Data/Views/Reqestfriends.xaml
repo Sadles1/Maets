@@ -1,0 +1,35 @@
+﻿<Window x:Class="Client.Reqestfriends"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Reqestfriends" Height="300" Width="300" WindowStyle="None">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="13*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="btnExit" Click="BtnExit_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0" Padding="0" HorizontalAlignment="Right" Height="20" Width="20" FontWeight="Bold" Grid.RowSpan="2">
+            <Viewbox Width="10" Height="10">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                </Grid>
+            </Viewbox>
+        </Button>
+        <ListView x:Name="Lvfriendnew" Grid.Row="1" MouseLeftButtonUp="leftmousefriend"  Margin="5" >
+            <ListView.ItemTemplate>
+                <DataTemplate x:Name="DT">
+                    <WrapPanel Orientation="Horizontal">
+                        <Image x:Name="Image2" Source="{Binding MainImage}" Height="50" Width="50">
+                        </Image>
+                        <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
+                        <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Window>

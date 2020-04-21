@@ -4,27 +4,6 @@
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
-        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy>
-            <sp:TransportToken>
-              <wsp:Policy>
-                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
-                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
-                </msf:WindowsTransportSecurity>
-              </wsp:Policy>
-            </sp:TransportToken>
-            <sp:AlgorithmSuite>
-              <wsp:Policy>
-                <sp:Basic256 />
-              </wsp:Policy>
-            </sp:AlgorithmSuite>
-            <sp:Layout>
-              <wsp:Policy>
-                <sp:Strict />
-              </wsp:Policy>
-            </sp:Layout>
-          </wsp:Policy>
-        </sp:TransportBinding>
         <wsaw:UsingAddressing />
       </wsp:All>
     </wsp:ExactlyOne>
@@ -33,27 +12,6 @@
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
-        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy>
-            <sp:TransportToken>
-              <wsp:Policy>
-                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
-                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
-                </msf:WindowsTransportSecurity>
-              </wsp:Policy>
-            </sp:TransportToken>
-            <sp:AlgorithmSuite>
-              <wsp:Policy>
-                <sp:Basic256 />
-              </wsp:Policy>
-            </sp:AlgorithmSuite>
-            <sp:Layout>
-              <wsp:Policy>
-                <sp:Strict />
-              </wsp:Policy>
-            </sp:Layout>
-          </wsp:Policy>
-        </sp:TransportBinding>
         <msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy" />
         <wsaw:UsingAddressing />
       </wsp:All>
@@ -61,12 +19,12 @@
   </wsp:Policy>
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Service" />
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
-      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd5" namespace="http://schemas.microsoft.com/Message" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Service" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd5" namespace="http://schemas.microsoft.com/Message" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IWCFService_Connect_InputMessage">
@@ -123,6 +81,12 @@
   <wsdl:message name="IWCFService_AddToBlacklist_InputMessage">
     <wsdl:part name="parameters" element="tns:AddToBlacklist" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_DeleteFriendReqest_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFriendReqest" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_DeleteFriend_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFriend" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_RemoveFromBlacklist_InputMessage">
     <wsdl:part name="parameters" element="tns:RemoveFromBlacklist" />
   </wsdl:message>
@@ -146,6 +110,30 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_GetAllUsers_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetAllUsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetNewMessages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNewMessages" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetNewMessages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNewMessagesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetFriendRequests_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFriendRequests" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetFriendRequests_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFriendRequestsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetUserGames_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserGames" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetUserGames_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserGamesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_CheckActiveProfile_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckActiveProfile" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_CheckActiveProfile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckActiveProfileResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
@@ -210,6 +198,12 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddToBlacklist">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddToBlacklist" message="tns:IWCFService_AddToBlacklist_InputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteFriendReqest">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/DeleteFriendReqest" message="tns:IWCFService_DeleteFriendReqest_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteFriend">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/DeleteFriend" message="tns:IWCFService_DeleteFriend_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RemoveFromBlacklist">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/RemoveFromBlacklist" message="tns:IWCFService_RemoveFromBlacklist_InputMessage" />
     </wsdl:operation>
@@ -229,6 +223,22 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllUsers">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetAllUsers" message="tns:IWCFService_GetAllUsers_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetAllUsersResponse" message="tns:IWCFService_GetAllUsers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetNewMessages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetNewMessages" message="tns:IWCFService_GetNewMessages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetNewMessagesResponse" message="tns:IWCFService_GetNewMessages_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetFriendRequests">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetFriendRequests" message="tns:IWCFService_GetFriendRequests_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetFriendRequestsResponse" message="tns:IWCFService_GetFriendRequests_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetUserGames">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetUserGames" message="tns:IWCFService_GetUserGames_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetUserGamesResponse" message="tns:IWCFService_GetUserGames_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckActiveProfile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckActiveProfile" message="tns:IWCFService_CheckActiveProfile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckActiveProfileResponse" message="tns:IWCFService_CheckActiveProfile_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
@@ -345,6 +355,18 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
+    <wsdl:operation name="DeleteFriendReqest">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/DeleteFriendReqest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteFriend">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/DeleteFriend" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="RemoveFromBlacklist">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/RemoveFromBlacklist" style="document" />
       <wsdl:input>
@@ -380,6 +402,42 @@
     </wsdl:operation>
     <wsdl:operation name="GetAllUsers">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetAllUsers" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNewMessages">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetNewMessages" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFriendRequests">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetFriendRequests" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserGames">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetUserGames" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckActiveProfile">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckActiveProfile" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -427,21 +485,15 @@
   </wsdl:binding>
   <wsdl:service name="WCFService">
     <wsdl:port name="NetTcpBinding_IWCFService" binding="tns:NetTcpBinding_IWCFService">
-      <soap12:address location="net.tcp://localhost:904/1" />
+      <soap12:address location="net.tcp://25.78.76.9:904/1" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:904/1</wsa10:Address>
-        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>DESKTOP-3Q9LTDF\snayp</Upn>
-        </Identity>
+        <wsa10:Address>net.tcp://25.78.76.9:904/1</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
     <wsdl:port name="NetTcpBinding_IDownloadService" binding="tns:NetTcpBinding_IDownloadService">
-      <soap12:address location="net.tcp://localhost:904/2" />
+      <soap12:address location="net.tcp://25.78.76.9:904/2" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:904/2</wsa10:Address>
-        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>DESKTOP-3Q9LTDF\snayp</Upn>
-        </Identity>
+        <wsa10:Address>net.tcp://25.78.76.9:904/2</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

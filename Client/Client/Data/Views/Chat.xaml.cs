@@ -23,7 +23,7 @@ namespace Client.Data.Views
         public List<Service.UserMessage> chat;
         Service.Profile Senderg;
         Service.Profile Resiverg;
-
+        DataProvider dp = new DataProvider();
         public Chat(Service.Profile Sender, Service.Profile Resiver)
         {
             Senderg = Sender;
@@ -33,14 +33,25 @@ namespace Client.Data.Views
             Lvfriend.Items.Add( Resiver);
             chatnow = this;
              chat = ShopWindows.client.GetChat(Sender.ID, Resiver.ID).ToList();
+            scrl.ScrollToVerticalOffset(int.MaxValue);
             foreach (Service.UserMessage msg in chat)
             {
-                
-                    tbChat.Text += msg.message;
-                    tbChat.Text += "\n";
+                if (msg.IDSender == Senderg.ID)
+                {
+                   // msg.message.PadRight(100);
+                    tbChat.Text += Senderg.Login + " " + msg.date + ": ";
+                }
+                else if (msg.IDSender == Resiverg.ID)
+                {
+                   // msg.message.PadLeft(100);
+                    tbChat.Text += Resiverg.Login + " " + msg.date + ": ";
+                }
+
+                tbChat.Text += msg.message;
+                tbChat.Text += "\n";
             }
-           
-            scrl.ScrollToVerticalOffset(279);
+
+            scrl.ScrollToVerticalOffset(int.MaxValue);
         }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
@@ -52,6 +63,14 @@ namespace Client.Data.Views
         {
             this.DragMove();
         }
+        public string get_user(int id, DateTime msg)
+        { 
+            if (id == Senderg.ID)
+                return tbChat.Text += Senderg.Login + " " + msg + ": ";
+            else 
+                return tbChat.Text += Resiverg.Login + " " + msg + ": ";
+
+        }
 
         private void Btngo_Click(object sender, RoutedEventArgs e)
         {
@@ -61,25 +80,32 @@ namespace Client.Data.Views
             chat1.IDSender = Senderg.ID;
             ShopWindows.client.SendMsg(chat1);
             chat.Clear();
+            tbChat.Text = null;
+            tbChatnew.Clear();
             chat = ShopWindows.client.GetChat(ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID).ID, Resiverg.ID).ToList();
             foreach (Service.UserMessage msg in chat)
             {
-                if (ShopWindows.client.CheckProfile(Senderg.ID).ID == msg.IDSender)
+                if (msg.IDSender == Senderg.ID)
                 {
-                    tbChat.TextAlignment = TextAlignment.Right;
-                    tbChat.Text += msg.message;
-
+                   // msg.message.PadRight(100);
+                    tbChat.Text += Senderg.Login + " " + msg.date + ": ";
                 }
-                else tbChat.Text += msg.message;
+                else if (msg.IDSender == Resiverg.ID)
+                {
+                   // msg.message.PadLeft(100);
+                    tbChat.Text += Resiverg.Login + " " + msg.date + ": ";
+                }
+                tbChat.Text += msg.message;
+                
                 tbChat.Text += "\n";
             }
-           
-            tbChat.Text += "\n";
+
+
             scrl.ScrollToVerticalOffset(int.MaxValue);
-            tbChatnew.Clear();
+
         }
- 
-        
+
+
         private void Lvfriend_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             
@@ -87,14 +113,17 @@ namespace Client.Data.Views
             //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
             if (i != -1)
             {
-                Lvfriend.Items.Clear();
-                profilefriend r = new profilefriend(ShopWindows.client.CheckProfile(Resiverg.ID));
-                r.Left = this.Left;
-                r.Top = this.Top;
-                r.Visibility = Visibility.Visible;
-                r.Focus();
+                
                 this.Close();
             }
+
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter) Btngo_Click(btngo, null);
+
+
 
         }
     }

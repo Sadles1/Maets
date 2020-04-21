@@ -27,6 +27,7 @@ namespace Client
         Service.Profile Resiver = new Service.Profile();
         Service.Profile Sender = new Service.Profile();
         DataProvider dp = new DataProvider();
+        
         public profilefriend(Service.Profile tv1)
         {
             Sender = MainWindow.shopWindows.profile;
@@ -34,12 +35,49 @@ namespace Client
             tv = tv1;
             Service.Profile productnow = tv1;
             InitializeComponent();
-
-            // Lv.ItemsSource = tv.Friends.ToList() ;
-            Inicialize(productnow);
-
-            Loaded += Window_Loaded;
-            ShopWindows.client.CheckProfile(tv1.ID);
+            if (ShopWindows.client.CheckBlacklist(Sender.ID, Resiver.ID))
+            {
+                imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
+                lbLogin.Content = productnow.Login;
+                if (tv.status)
+                    lbStatus.Content = "Online";
+                else lbStatus.Content = "Offline";
+                lbName.Content = "Этот пользователь добавил вас в Чёрный список";
+            }
+            else
+            {
+                // Lv.ItemsSource = tv.Friends.ToList() ;
+                Inicialize(productnow);
+                blacklistgo.Content = "Дoбавить пользователя \n в Чёрный список";
+                Loaded += Window_Loaded;
+                ShopWindows.client.CheckProfile(tv1.ID);
+            }
+            
+        }
+        public bool checkfriends()
+        {  
+            List<Service.Profile> myfriends = MainWindow.shopWindows.profile.Friends.ToList();
+            int i = 0;
+            int cnt = 0;
+            for(i=0;i<myfriends.Count;i++)
+            {
+                if (tv.ID == myfriends[i].ID) cnt++;
+            }
+            if (cnt != 0) return true;
+            else return false;
+        }
+      
+        public bool checkfriendsrequest()
+        {
+            List<Service.Profile> myfriends = ShopWindows.client.GetFriendRequests(Sender.ID).ToList() ;
+            int i = 0;
+            int cnt = 0;
+            for(i=0;i<myfriends.Count;i++)
+            {
+                if (tv.ID == myfriends[i].ID) cnt++;
+            }
+            if (cnt != 0) return true;
+            else return false;
         }
         private void Inicialize(Service.Profile productnow)
         {
@@ -52,11 +90,40 @@ namespace Client
             imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
             lbLogin.Content = productnow.Login;
             tbmail.Text = productnow.Mail;
+            if (tv.status)
+                lbStatus.Content = "Online";
+            else lbStatus.Content = "Offline";
             tbName.Text = productnow.Name;
             tbPhone.Text = productnow.Telephone;
             Lv.ItemsSource = productnow.Friends;
-            
-              //  tbChat.Text = chat.ToList()[0].message;
+
+            if (MainWindow.shopWindows.profile.ID != tv.ID)
+            {
+                if (checkfriendsrequest())
+                {
+                    FriendYN.Visibility = Visibility.Visible;
+                }
+                if (checkfriends())
+                {
+                    btndelfriend.Visibility = Visibility.Visible;
+                    btnnewfriend.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    btnnewfriend.Visibility = Visibility.Visible;
+                    btndelfriend.Visibility = Visibility.Hidden;
+
+                }
+            }
+            else
+            {
+                btnnewfriend.Visibility = Visibility.Hidden;
+                btndelfriend.Visibility = Visibility.Hidden;
+
+
+            }
+
+            //  tbChat.Text = chat.ToList()[0].message;
             // Screenshoot.Source = dp.GetImageFromByte(tv.MainImage);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -85,9 +152,10 @@ namespace Client
         }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.shopWindows.Refresh.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-            this.Close();
             MainWindow.shopWindows.Visibility = Visibility.Visible;
+            this.Close();
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -100,6 +168,52 @@ namespace Client
             chat.Left = Left;
             chat.Top = Top;
             chat.Show();
+        }
+
+        private void Btnnewfriend_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.SendFriendRequest(Sender.ID,Resiver.ID);
+
+        }
+
+        private void Btndelfriend_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.DeleteFriend(Sender.ID, Resiver.ID);
+        }
+
+        private void Btnnewfriendyes_Click(object sender, RoutedEventArgs e)
+        {
+            btndelfriend.Visibility = Visibility.Visible;
+            FriendYN.Visibility = Visibility.Hidden;
+            ShopWindows.client.DeleteFriendReqest(Sender.ID, Resiver.ID);
+            ShopWindows.client.AddFriend(Sender.ID, Resiver.ID);
+        }
+
+
+        private void Btnnewlfriendno_Click(object sender, RoutedEventArgs e)
+        {
+            btnnewfriend.Visibility = Visibility.Visible;
+            FriendYN.Visibility = Visibility.Hidden;
+            ShopWindows.client.DeleteFriendReqest(Sender.ID, Resiver.ID);
+
+            //ShopWindows.client.AddFriend(Sender.ID, Resiver.ID);
+        }
+
+
+        private void Blacklistgo_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.AddToBlacklist(Sender.ID, Resiver.ID);
+            blacklistgo.Visibility = Visibility.Hidden;
+            blacklistout.Visibility = Visibility.Visible;
+            blacklistout.Content = "Удалить из \n из Чёрного списка";
+        }
+
+        private void Blacklistout_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.AddToBlacklist(Sender.ID, Resiver.ID);
+            blacklistgo.Visibility = Visibility.Visible;
+            blacklistout.Visibility = Visibility.Hidden;
+           // blacklistout.Content = "Удалить из \n из Чёрного списка";
         }
     }
 }

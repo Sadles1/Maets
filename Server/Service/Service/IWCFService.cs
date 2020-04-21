@@ -48,6 +48,13 @@ namespace Service
         void AddToBlacklist(int id, int idUserToBlacklist);
 
         [OperationContract(IsOneWay = true)]
+
+        void DeleteFriendReqest(int id, int idRequest);
+
+        [OperationContract(IsOneWay = true)]
+        void DeleteFriend(int id, int idFriend);
+
+        [OperationContract(IsOneWay = true)]
         void RemoveFromBlacklist(int id, int idUserInBlacklist);
 
         [OperationContract(IsOneWay = true)]
@@ -64,6 +71,18 @@ namespace Service
 
         [OperationContract]
         List<Profile> GetAllUsers();
+
+        [OperationContract]
+        List<UserMessage> GetNewMessages(int id);
+
+        [OperationContract]
+        List<Profile> GetFriendRequests(int id);
+
+        [OperationContract]
+        List<Product> GetUserGames(int id);
+
+        [OperationContract]
+        Profile CheckActiveProfile(int idUser);
     }
 
     public interface IWCFServiceCalbback
@@ -87,12 +106,5 @@ namespace Service
     {
         [OperationContract]
         Stream DownloadProduct(int idProduct);
-    }
-
-    [ServiceContract(SessionMode = SessionMode.Allowed)]
-    public interface IUploadService
-    {
-        [OperationContract]
-        void UploadProduct(Stream product);
     }
 }

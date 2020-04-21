@@ -30,14 +30,6 @@ namespace Client.Data.ViewModels
             public MyProfileViewModel()
             {
             ModelProfile modelProfile = new ModelProfile();
-            new Thread(
-                () =>
-                {
-                    
-                    Name = modelProfile.MakeModelProfile(ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID)).Name;
-                }).Start();
-               
-
             }
 
             private void OnPropertyChanget(string name)

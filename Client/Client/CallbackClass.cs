@@ -30,7 +30,7 @@ namespace Client
 
         public void FriendOnline(int idUser)
         {
-            throw new NotImplementedException();
+           //SendFriendsRequest
         }
 
         /// <summary>
@@ -48,8 +48,9 @@ namespace Client
         /// <param name="msg"></param>
         public void GetMessage(UserMessage msg)
         {
+           // Chat.chatnow.get_user(msg.IDSender,msg.date);
+            Chat.chatnow.tbChat.Text += Chat.chatnow.get_user(msg.IDSender,msg.date) + msg.message;
 
-            Chat.chatnow.tbChat.Text+=msg.message;
         }
     }
 }

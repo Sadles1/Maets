@@ -20,15 +20,23 @@ namespace Client
     /// </summary>
     public partial class Test : Window
     {
+        DataProvider dp = new DataProvider();
         public Test()
         {
             InitializeComponent();
             Loaded += Window_Loaded;
+            ShopWindows shopWindows = new ShopWindows("admin", dp.HashPassword("admin"));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new ProductViewModel();
+            qwe.DataContext = new ProfileViewModel();
+            ewq.DataContext = new ProfileViewModel();
+        }
+        private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.Disconnect(1);
+            ShopWindows.client.Close();
         }
     }
 }

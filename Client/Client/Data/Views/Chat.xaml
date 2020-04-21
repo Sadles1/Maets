@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Client.Data.Views"
         mc:Ignorable="d"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="Chat" Height="470" Width="835.5" WindowStyle="None">
+        Title="Chat" Height="470" Width="835.5" WindowStyle="None" KeyUp="Window_KeyUp" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -21,10 +21,11 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <ScrollViewer x:Name="scrl" Grid.Column="1" Grid.Row="2" >
-            <TextBlock  x:Name="tbChat" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap"></TextBlock>
+            <TextBlock x:Name="tbChat" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" >
+            </TextBlock>
         </ScrollViewer>
-        <TextBox  x:Name="tbChatnew" Grid.Column="1" Grid.Row="3"  Background="Snow" ></TextBox>
-        <Button Content="Go" FontSize="20" Click="Btngo_Click" x:Name="btngo" Height="40" Width="40" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Column="1" Grid.Row="3"   Background="Snow" BorderThickness="0" BorderBrush="Snow" ></Button>
+        <TextBox  TextWrapping="Wrap" x:Name="tbChatnew" Grid.Column="1" Grid.Row="3"  Background="Snow" ></TextBox>
+        <Button Content="Go" FontSize="20" Click="Btngo_Click" x:Name="btngo" Height="40" Width="40" HorizontalAlignment="Right" Margin="0,0,2,0" Grid.Column="1" Grid.Row="3"   Background="Snow" BorderThickness="0" BorderBrush="Snow" ></Button>
         <Button x:Name="btnBack" Grid.ColumnSpan="2" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="-Назад"  Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
         <ListView x:Name="Lvfriend" Grid.Row="1" Grid.Column="1" MouseLeftButtonUp="Lvfriend_MouseLeftButtonUp"  Margin="0" >
             <ListView.ItemTemplate>

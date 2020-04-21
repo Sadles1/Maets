@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Client.Data.ViewModels
+namespace Client
 {
     class ProductViewModel : DependencyObject
     {

@@ -56,7 +56,8 @@ namespace Client
             }
             if (check(tv))
             {
-                btnBuy.ToolTip = "Этот товар уже есть в вашей библиотеке!)";
+                BuyAlready.Visibility = Visibility.Visible;
+                BuyAlready.ToolTip = "Этот товар уже есть в вашей библиотеке!)";
                 btnBuy.IsEnabled = false;
                 
             }
@@ -80,6 +81,7 @@ namespace Client
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.shopWindows.Visibility = Visibility.Visible;
+            MainWindow.shopWindows.Refresh.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Close();
         }
 

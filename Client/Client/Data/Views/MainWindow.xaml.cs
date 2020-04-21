@@ -27,13 +27,14 @@ namespace Client
         DataProvider dp = new DataProvider();
         public MainWindow()
         {
+            
             InitializeComponent();
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
             tbLogin.Text = "admin";
-            tbPassword.Text = "admin";
+            tbPassword.Password = "admin";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -41,7 +42,7 @@ namespace Client
             try
             {
 
-                shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Text));
+                shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Password));
                 shopWindows.Show();
                 Close();
             }

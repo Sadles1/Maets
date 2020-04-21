@@ -11,17 +11,21 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel x:Name="ewq" Orientation="Horizontal">
             <TextBlock Text="Фильтр: " Margin="5"/>
             <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
+            <Button x:Name="btnexitProfile" Click="BtnexitProfile_Click" Background="White" BorderThickness="0"  VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"  Padding="0" HorizontalAlignment="Right" Height="30" Width="60" Content="выйти" Grid.RowSpan="2" Grid.Column="1"/>
+
         </StackPanel>
-        <ListView ItemsSource="{Binding Items}" Margin="5" Grid.Row ="1">
+
+        <ListView x:Name="qwe" ItemsSource="{Binding Items1}" Margin="5" Grid.Row ="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding Image}" Width="100" Height="100"/>
-                        <TextBlock Text="{Binding Name}" Margin="5"/>
-                        <TextBlock Text="{Binding Description}" Margin="5"/>
+                        <!--<TextBlock Text="{Binding Name}" Margin="5"/>
+                        <TextBlock Text="{Binding Description}" Margin="5"/>-->
+                       
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

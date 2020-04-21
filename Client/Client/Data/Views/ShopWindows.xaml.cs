@@ -23,6 +23,8 @@ namespace Client
 
     public partial class ShopWindows : Window
     {
+        static public List<Service.Profile> fr;
+
         public static List<Service.Product> mainfprofile = new List<Service.Product>();
         public static WCFServiceClient client;
         static public Korzina buyProduct;
@@ -37,8 +39,9 @@ namespace Client
         public ShopWindows(string Login, string Password)
         {
             client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass(this)), "NetTcpBinding_IWCFService");
-
+            
             profile = client.Connect(Login, Password);
+
             if (profile != null)
             {
                 products = client.GetProductTable().ToList();
@@ -47,37 +50,75 @@ namespace Client
                 Loaded += Window_Loaded;
 
                 if (profile.AccessRight == 3) Onlyforadmin.Visibility = Visibility.Visible;
+
             }
+
             else
                 throw new Exception("Ошибка подключения");
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            fr = client.GetFriendRequests(profile.ID).ToList();
+            if (fr.Count != 0)
+            {
+                Reaestfriends.Visibility = Visibility.Visible;
+                howmanynewfriends.Text = "+" + fr.Count;
+                
 
+
+            }
+            else Reaestfriends.Visibility = Visibility.Hidden;
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
             tbLogin.Content = profile.Login;
             lbName.Content = profile.Name;
             Lvfriend.ItemsSource = profile.Friends;
             Back.IsEnabled = false;
-            ProductOne.DataContext = products[ishop];
+           // ProductOne.DataContext = products[ishop];
             ProductOne.Items.Add(products[ishop]);
             ProductTwo.Items.Add(products[ishop + 1]);
             ProductFree.Items.Add(products[ishop + 2]);
-            Lvmylibrary.ItemsSource = profile.Games;
+           // Lvmylibrary.ItemsSource = profile.Games;
             btnMoney.Content = Convert.ToString(profile.Money) + " р";
             // lbLogin.Content = profile.AccessRight;
-
+            //DataContext = new ProductViewModel();
+            
 
         }
         private void refresh(Service.Profile pr)
         {
-            imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
-            tbLogin.Content = pr.Login;
-            lbName.Content = pr.Name;
+            // searchproduct.DataContext = new ProductViewModel();
+            //Lvm.DataContext = searchproduct.DataContext;
+            //  searchprofile.DataContext = new ProfileViewModel();
+            // AllUser.DataContext = searchprofile.DataContext;
+            fr = client.GetFriendRequests(profile.ID).ToList();
+            if (fr.Count != 0)
+            {
+                Reaestfriends.Visibility = Visibility.Visible;
+                howmanynewfriends.Text = "+" + fr.Count;
+
+
+            }
+            else Reaestfriends.Visibility = Visibility.Hidden;
+            searchlibrary.DataContext = new LibraryViewModel(pr.Games.ToList());
+            mylibrary.DataContext = searchlibrary.DataContext;
+            if (mainfprofile.Count != 0)
+            {
+                KorzinaCount.Visibility = Visibility.Visible;
+                howmanyproduct.Text = Convert.ToString(mainfprofile.Count);
+            }
+            else
+            {
+                KorzinaCount.Visibility = Visibility.Hidden;
+                howmanyproduct.Text = Convert.ToString(0);
+
+            }
+           // imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
+           // tbLogin.Content = pr.Login;
+          //  lbName.Content = pr.Name;
             Lvfriend.ItemsSource = pr.Friends;
             Back.IsEnabled = false;
-           Lvmylibrary.ItemsSource = pr.Games;
+           // Lvmylibrary.ItemsSource = pr.Games;
             btnMoney.Content = Convert.ToString(pr.Money) + " р";
             profile = pr;
 
@@ -105,11 +146,23 @@ namespace Client
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-           Lvmylibrary.DataContext = new ProfileViewModel();
+            searchproduct.Focus();
+            searchproduct.DataContext = new ProductViewModel();
+            Lvm.DataContext = searchproduct.DataContext;
+            searchprofile.DataContext = new ProfileViewModel();
+            AllUser.DataContext = searchprofile.DataContext;
+            searchlibrary.DataContext = new LibraryViewModel(profile.Games.ToList());
+            mylibrary.DataContext = searchlibrary.DataContext;
+            //searchprofile.DataContext = new ProfileViewModel();
+            //searchproduct.DataContext = new ProductViewModel();
+            //AllUser.DataContext = new ProfileViewModel();
+            //Lvm.DataContext = new ProductViewModel();
+            // DataContext = new ProfileViewModel();
+
             //tbLogin.DataContext = new MyProfileVieModel(profile);
-           // DataContext = new MyProfileViewModel();
-           Lvm.DataContext = new ProductViewModel();
-           Lvm.Visibility = Visibility.Hidden;
+            // Lvmylibrary.DataContext = new MyProfileViewModel();
+
+            Lvm.Visibility = Visibility.Hidden;
 
         }
         private void Buy_Click(object sender, RoutedEventArgs e)
@@ -119,7 +172,13 @@ namespace Client
             buyProduct.Top = this.Top;
             buyProduct.Show();
         }
-
+        private void minirefresh()
+        {
+            searchproduct.DataContext = new ProductViewModel();
+            Lvm.DataContext = searchproduct.DataContext;
+            searchprofile.DataContext = new ProfileViewModel();
+            AllUser.DataContext = searchprofile.DataContext;
+        }
         private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
         {
             MainWindow MF = new MainWindow();
@@ -230,6 +289,7 @@ namespace Client
             Lvm.Visibility = Visibility.Hidden;
             btnSearchBack.Visibility = Visibility.Hidden;
             grMainShop.Visibility = Visibility.Visible;
+            FilterProductText.Text = "";
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
@@ -283,9 +343,61 @@ namespace Client
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-          refresh(ShopWindows.client.CheckProfile(profile.ID));
+          refresh(ShopWindows.client.CheckActiveProfile(profile.ID));
           //  MyProfileVieModel phone = (MyProfileVieModel)this.Resources["nexusPhone"];
            // phone.Company = "LG"; // Меняем с Google на LG
+        }
+
+     
+
+        private void FilterUser_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
+        private void FilterUser_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (FilterUser.Text.Count() !=0) AllUser.Visibility = Visibility.Visible;
+          
+        }
+
+        private void AllUser_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            List<Service.Profile> fr = client.GetAllUsers().ToList() ;
+
+            int i = AllUser.SelectedIndex;
+            //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
+            if (i != -1)
+            { 
+                // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+               // client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                profilefriend r = new profilefriend(ShopWindows.client.CheckProfile(fr[i].ID));
+                r.Left = this.Left;
+                r.Top = this.Top;
+                r.Show();
+                MainWindow.shopWindows.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+           // ShowDialog()
+        }
+
+        private void Newfriendswho_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Reqestfriends rf = new Reqestfriends();
+            rf.Top = Top;
+            rf.Left = Left;
+            rf.Show();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Reqestfriends rf = new Reqestfriends();
+            rf.Top = Top;
+            rf.Left = Left;
+            rf.Show();
         }
     }
 }

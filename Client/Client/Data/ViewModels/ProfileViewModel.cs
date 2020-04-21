@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Client.Data.ViewModels
+namespace Client
 {
     class ProfileViewModel : DependencyObject
     {
@@ -62,7 +62,7 @@ namespace Client.Data.ViewModels
         {
             bool result = true;
             Service.Profile profile = obj as Service.Profile;
-            if (!string.IsNullOrWhiteSpace(FilterText) && profile != null && !profile.Name.Contains(FilterText) && !profile.Login.Contains(FilterText))
+            if (!string.IsNullOrWhiteSpace(FilterText) && profile != null && !profile.Login.Contains(FilterText))
             {
                 result = false;
             }

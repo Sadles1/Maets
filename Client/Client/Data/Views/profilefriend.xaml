@@ -42,6 +42,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
+                
                 <Label x:Name="lbLogin" Grid.ColumnSpan="2" Grid.Row="0" Content="Login" FontSize="20" VerticalAlignment="Center"/>
                 <Label x:Name="lbStatus" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
@@ -54,14 +55,23 @@
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="8*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Button x:Name="btnChat"  Grid.Row="0" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
+                
+                <Button x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
 
-                <TextBlock x:Name="tbFriendUser" Margin="5" Grid.Row="1" Height="30"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
-                <ListView x:Name="Lv" Grid.Row="2" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
+                <Button x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow"></Button>
+                <Button x:Name="btndelfriend" Grid.Row="0" Click="Btndelfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25"  Visibility="Hidden" Content="Удалить из друзей" Background="Snow"></Button>
+                <Grid x:Name="FriendYN" Grid.Row="0" Visibility="Hidden">
+                <Button x:Name="btnnewfriendyes" Click="Btnnewfriendyes_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="0,0,19,0" Content="Да" HorizontalAlignment="Right" Background="Snow"></Button>
+                <Button x:Name="btnnewlfriendno" Click="Btnnewlfriendno_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="18.5,0,0,0" Content="Нет" HorizontalAlignment="Left" Background="Snow"></Button>
+                <TextBlock x:Name="Whonewfriend" Text="Добавить в друзья?" TextAlignment="Center"  VerticalAlignment="Top" Height="21"></TextBlock>
+            </Grid>
+            <TextBlock x:Name="tbFriendUser"  Grid.Row="2" Height="20"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
+                <ListView x:Name="Lv" Grid.Row="3" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
                     <ListView.ItemTemplate>
                         <DataTemplate x:Name="DT">
                             <WrapPanel Orientation="Horizontal">
@@ -79,8 +89,9 @@
                 </ListView>
 
             </Grid>
-
         </Grid>
+        <Button x:Name="blacklistgo" Click="Blacklistgo_Click" Grid.Row="0" Grid.Column="1" Content="Добавить пользователя в Чёрный список"  Background="White" BorderThickness="0" Height="30" VerticalAlignment="Center"></Button>
+        <Button x:Name="blacklistout" Click="Blacklistout_Click" Grid.Row="0" Grid.Column="1" Visibility="Hidden"  Background="White" BorderThickness="0" Height="30" VerticalAlignment="Center"></Button>
 
     </Grid>
 </Window>
