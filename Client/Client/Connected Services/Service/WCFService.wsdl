@@ -29,6 +29,36 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
+  <wsp:Policy wsu:Id="NetTcpBinding_IDownloadService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd0" namespace="http://tempuri.org/" />
@@ -36,6 +66,7 @@
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Service" />
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd5" namespace="http://schemas.microsoft.com/Message" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IWCFService_Connect_InputMessage">
@@ -77,11 +108,11 @@
   <wsdl:message name="IWCFService_BuyProductWholesale_InputMessage">
     <wsdl:part name="parameters" element="tns:BuyProductWholesale" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_CheckFriend_InputMessage">
-    <wsdl:part name="parameters" element="tns:CheckFriend" />
+  <wsdl:message name="IWCFService_CheckBlacklist_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckBlacklist" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_CheckFriend_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CheckFriendResponse" />
+  <wsdl:message name="IWCFService_CheckBlacklist_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckBlacklistResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFService_AddModerationProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:AddModerationProduct" />
@@ -98,12 +129,6 @@
   <wsdl:message name="IWCFService_SendMsg_InputMessage">
     <wsdl:part name="parameters" element="tns:SendMsg" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_DownloadProduct_InputMessage">
-    <wsdl:part name="parameters" element="tns:DownloadProduct" />
-  </wsdl:message>
-  <wsdl:message name="IWCFService_DownloadProduct_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DownloadProductResponse" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_SaveCart_InputMessage">
     <wsdl:part name="parameters" element="tns:SaveCart" />
   </wsdl:message>
@@ -116,6 +141,12 @@
   <wsdl:message name="IWCFService_CheckProfile_OutputMessage">
     <wsdl:part name="parameters" element="tns:CheckProfileResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_GetAllUsers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllUsers" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetAllUsers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllUsersResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
   </wsdl:message>
@@ -124,6 +155,15 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_GetFriendRequest_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetFriendRequest" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_FriendOnline_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:FriendOnline" />
+  </wsdl:message>
+  <wsdl:message name="IDownloadService_DownloadProduct_InputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadProduct" />
+  </wsdl:message>
+  <wsdl:message name="IDownloadService_DownloadProduct_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadProductResponse" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IWCFService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
@@ -157,9 +197,9 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="BuyProductWholesale">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/BuyProductWholesale" message="tns:IWCFService_BuyProductWholesale_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckFriend">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckFriend" message="tns:IWCFService_CheckFriend_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckFriendResponse" message="tns:IWCFService_CheckFriend_OutputMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckBlacklist">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckBlacklist" message="tns:IWCFService_CheckBlacklist_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckBlacklistResponse" message="tns:IWCFService_CheckBlacklist_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddModerationProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddModerationProduct" message="tns:IWCFService_AddModerationProduct_InputMessage" />
@@ -176,10 +216,6 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SendMsg">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/SendMsg" message="tns:IWCFService_SendMsg_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DownloadProduct">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/DownloadProduct" message="tns:IWCFService_DownloadProduct_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/DownloadProductResponse" message="tns:IWCFService_DownloadProduct_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SaveCart">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/SaveCart" message="tns:IWCFService_SaveCart_InputMessage" />
     </wsdl:operation>
@@ -190,6 +226,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckProfile" message="tns:IWCFService_CheckProfile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckProfileResponse" message="tns:IWCFService_CheckProfile_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllUsers">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetAllUsers" message="tns:IWCFService_GetAllUsers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetAllUsersResponse" message="tns:IWCFService_GetAllUsers_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
     </wsdl:operation>
@@ -198,6 +238,15 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetFriendRequest">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetFriendRequest" message="tns:IWCFService_GetFriendRequest_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FriendOnline">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/FriendOnline" message="tns:IWCFService_FriendOnline_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IDownloadService">
+    <wsdl:operation name="DownloadProduct">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDownloadService/DownloadProduct" message="tns:IDownloadService_DownloadProduct_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDownloadService/DownloadProductResponse" message="tns:IDownloadService_DownloadProduct_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IWCFService" type="tns:IWCFService">
@@ -269,8 +318,8 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="CheckFriend">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckFriend" style="document" />
+    <wsdl:operation name="CheckBlacklist">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckBlacklist" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -308,15 +357,6 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="DownloadProduct">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/DownloadProduct" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="SaveCart">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/SaveCart" style="document" />
       <wsdl:input>
@@ -331,6 +371,15 @@
     </wsdl:operation>
     <wsdl:operation name="CheckProfile">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckProfile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllUsers">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetAllUsers" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -356,12 +405,40 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="FriendOnline">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/FriendOnline" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="NetTcpBinding_IDownloadService" type="tns:IDownloadService">
+    <wsp:PolicyReference URI="#NetTcpBinding_IDownloadService_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="DownloadProduct">
+      <soap12:operation soapAction="http://tempuri.org/IDownloadService/DownloadProduct" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="WCFService">
     <wsdl:port name="NetTcpBinding_IWCFService" binding="tns:NetTcpBinding_IWCFService">
-      <soap12:address location="net.tcp://localhost:904/" />
+      <soap12:address location="net.tcp://localhost:904/1" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:904/</wsa10:Address>
+        <wsa10:Address>net.tcp://localhost:904/1</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>DESKTOP-3Q9LTDF\snayp</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="NetTcpBinding_IDownloadService" binding="tns:NetTcpBinding_IDownloadService">
+      <soap12:address location="net.tcp://localhost:904/2" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:904/2</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>DESKTOP-3Q9LTDF\snayp</Upn>
         </Identity>

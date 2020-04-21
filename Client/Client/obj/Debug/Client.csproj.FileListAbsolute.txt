@@ -57,3 +57,5 @@ C:\Users\p4shark\Desktop\MTPProject-master\Client\Client\obj\Debug\Client.exe
 C:\Users\p4shark\Desktop\MTPProject-master\Client\Client\obj\Debug\Client.pdb
 C:\Users\p4shark\Desktop\MTPProject-master\Client\Client\obj\Debug\Data\Views\Chat.g.cs
 C:\Users\p4shark\Desktop\MTPProject-master\Client\Client\obj\Debug\Data\Views\Chat.baml
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Chat.g.cs
+C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Chat.baml

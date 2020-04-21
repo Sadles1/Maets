@@ -9,7 +9,7 @@ using System.ServiceModel;
 namespace Service
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class WCFService : IWCFService
+    public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
         DataProvider dp = new DataProvider();
@@ -17,17 +17,22 @@ namespace Service
         /// <summary>
         /// Метод для покупки товаров
         /// </summary>
-        public void BuyProduct(List<Product> Cart, int idProfile)
+        public void BuyProduct(List<int> Cart, int idProfile)
         {
             using (postgresContext context = new postgresContext())
             {
+                //Получаем таблицу TDeals из БД
                 List<TDeals> TDeals = context.TDeals.ToList();
 
                 //Находим пользователя совершившего покупку
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
+
                 //Записываем все сделки в БД
-                foreach (Product pr in Cart)
+                foreach (int id in Cart)
                 {
+                    TProducts product = context.TProducts.FirstOrDefault(u => u.Id == id);
+                    Product pr = new Product { Id = product.Id, RetailPrice = product.RetailPrice };
+
                     TDeals deal = dp.FormTDeal(idProfile, pr, 1, false);
                     context.TDeals.Add(deal);
                     profile.Money -= pr.RetailPrice * (1 - profile.PersonalDiscount);
@@ -45,26 +50,55 @@ namespace Service
         /// Метод для оптовой покупки товаров
         /// </summary>
         /// <param name="Cart">Необходимо передать пары Product + количество</param>
-        public void BuyProductWholesale(List<Tuple<Product, int>> Cart, int idProfile)
+        public void BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile)
         {
             using (postgresContext context = new postgresContext())
             {
+                //Получаем таблицу TDeals из БД
                 List<TDeals> TDeals = context.TDeals.ToList();
 
                 //Находим пользователя совершившего покупку
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
 
                 //Записываем все сделки в БД
-                foreach (Tuple<Product, int> tuple in Cart)
+                foreach (Tuple<int, int> tuple in Cart)
                 {
-                    TDeals deal = dp.FormTDeal(idProfile, tuple.Item1, tuple.Item2, true);
+                    TProducts product = context.TProducts.FirstOrDefault(u => u.Id == tuple.Item1);
+                    Product pr = new Product { Id = product.Id, WholesalePrice = product.WholesalePrice };
+
+                    TDeals deal = dp.FormTDeal(idProfile, pr, tuple.Item2, true);
                     context.TDeals.Add(deal);
-                    profile.Money -= tuple.Item1.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
-                    profile.TotalSpentMoney += tuple.Item1.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+                    profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+                    profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
                 }
 
                 //Сохраняем БД
                 context.SaveChanges();
+            }
+        }
+
+
+        /// <summary>
+        /// Метод для получения изображений игры
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<byte[]> GetGameImages(int id)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                List<byte[]> Images = new List<byte[]>();
+                DirectoryInfo dir = new DirectoryInfo($@"{BaseSettings.Default.SourcePath}\Products\{id}\Images");
+                foreach (FileInfo file in dir.EnumerateFiles("*.encr"))
+                {
+                    using (FileStream fstream = file.OpenRead())
+                    {
+                        byte[] image = new byte[fstream.Length];
+                        fstream.Read(image, 0, image.Length);
+                        Images.Add(image);
+                    }
+                }
+                return Images;
             }
         }
 
@@ -75,7 +109,10 @@ namespace Service
         {
             using (postgresContext context = new postgresContext())
             {
+                //Получаем таблицу TProducts из бд
                 List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
+
+                //Создаём общий список товаров
                 List<Product> products = new List<Product>();
 
                 //Формируем каждый продукт и добавляем его в общий список
@@ -180,9 +217,16 @@ namespace Service
         /// <param name="idUserToBlacklist">ID пользователя которого добавили в чёрный список</param>
         public void AddToBlacklist(int id, int idUserToBlacklist)
         {
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            //Указываем путь
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
+
+            //Если файл существует десериализуем его, если нет то создаём новый список
             List<int> Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
+
+            //Добавляем к текущему списку нового пользователя
             Blacklist.Add(idUserToBlacklist);
+
+            //Сериализуем список
             File.WriteAllText(path, JsonConvert.SerializeObject(Blacklist));
         }
 
@@ -192,7 +236,7 @@ namespace Service
         public void AddFriend(int id, int idFriend)
         {
             //Обновляем файл с друзьями у одного аккаунта
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";
             List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Add(idFriend);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
@@ -216,15 +260,17 @@ namespace Service
         {
             using (postgresContext context = new postgresContext())
             {
-
+                //Создаём таблицы TUser и TLogin
                 TUsers TUser = new TUsers();
                 TLogin Tlogin = new TLogin();
 
+                //Т.к имя и телефон можно не указывать, необходимо прировнять их к null
                 if (profile.Name == "")
                     profile.Name = null;
                 if (profile.Telephone == "")
                     profile.Telephone = null;
 
+                //Формируем таблицы TUser и TLogin
                 dp.FormTableUser(profile, Password, ref TUser, ref Tlogin);
 
                 //Создаём папку для нового пользователя
@@ -289,23 +335,27 @@ namespace Service
                         ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
                         onlineUsers.Remove(ActiveUser);
                     }
-                    onlineUsers.Add(new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current });
+                    ActiveUser = new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current };
+                    onlineUsers.Add(ActiveUser);
 
-                    //Отсылаем уведомления друзья в онлайне
-                    if (profile.Friends != null)
-                    {
-                        foreach (Profile friend in profile.Friends)
-                        {
-                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
-                            if (OnlineFriend != null)
-                                ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
-                        }
-                    }
 
+                    //Отсылаем уведомления друзьям находящимся в онлайне
+                    //if (profile.Friends != null)
+                    //{
+                    //    foreach (Profile friend in profile.Friends)
+                    //    {
+
+                    //        OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
+
+                    //        if (OnlineFriend != null)
+                    //            ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
+
+                    //    }
+                    //}
 
                     //Сохраняем изменения в БД
                     context.SaveChanges();
-
+                    Console.WriteLine("Test8");
                     //Выводим сообщение в серверную консоль
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
@@ -351,13 +401,13 @@ namespace Service
             msg.isRead = false;
 
             //Добавляем сообщения для одного пользователя
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDSender}\Messages.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDSender}\Messages.json";
             List<UserMessage> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)) : new List<UserMessage>();
             messages.Add(msg);
             File.WriteAllText(path, JsonConvert.SerializeObject(messages));
 
             //Добавляем сообщения для второго пользователя
-            path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDReceiver}\Messages.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDReceiver}\Messages.json";
             messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)) : new List<UserMessage>();
             messages.Add(msg);
             File.WriteAllText(path, JsonConvert.SerializeObject(messages));
@@ -371,10 +421,19 @@ namespace Service
         /// <summary>
         /// Метод для загрузки продукта
         /// </summary>
-        public void DownloadProduct(Product pr)
+        public Stream DownloadProduct(int idProduct)
         {
+            //Указываем путь
+            string path = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
 
+            //Записываем файл в массив байтов
+            byte[] buffer = File.ReadAllBytes(path);
+
+            //Передаём его через поток
+            Stream stream = new MemoryStream(buffer);
+            return stream;
         }
+
 
         /// <summary>
         /// Вызываеться для отключения от сервера
@@ -382,12 +441,44 @@ namespace Service
         /// <param name="Id"></param>
         public void Disconnect(int Id)
         {
+            //Находим пользователя которого необходимо отключить
             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
+
             if (User != null)
             {
+                //Получаем id сессии
                 string sessionId = (OperationContext.Current.SessionId);
+                string Name = User.UserProfile.Login;
+                //Выводим сообщение в серверную консоль
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}:{Name} with Session Id {sessionId} disconnect");
+
+                //Удаляем пользователя из списка активных пользователей
                 onlineUsers.Remove(User);
-                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {User.UserProfile.Name} with Session Id {sessionId} disconnect");
+            }
+        }
+
+        /// <summary>
+        /// Метод для получения списка всех пользователей
+        /// </summary>
+        public List<Profile> GetAllUsers()
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Получаем всех пользователей из БД
+                List<TLogin> AllUsers = context.TLogin.Include(u => u.IdNavigation).ToList();
+
+                //Создаём пустой список в который будем записывать всех пользователей
+                List<Profile> AllProfile = new List<Profile>();
+
+                //Для каждого пользователя формируем профиль
+                foreach (TLogin user in AllUsers)
+                {
+                    Profile pr = dp.FormProfile(user);
+
+                    //Добавляем сформированный профиль в общий список
+                    AllProfile.Add(pr);
+                }
+                return AllProfile;
             }
         }
 
@@ -398,7 +489,10 @@ namespace Service
         /// <param name="Cart">Данные корзины</param>
         public void SaveCart(int idUser, List<Product> Cart)
         {
+            //Указываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\Cart.json";
+
+            //Сериализуем корзину с товарами
             File.WriteAllText(path, JsonConvert.SerializeObject(Cart));
         }
 
@@ -410,7 +504,7 @@ namespace Service
         public void SendFriendRequest(int idSender, int idReceiver)
         {
             //Обновляем файл с запросами в друзьями у одного аккаунта
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{idSender}\FriendRequests.json";//Сначала обновляем файл с друзьями у одного аккаунта
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{idSender}\FriendRequests.json";
             List<Tuple<int, int>> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<Tuple<int, int>>>(File.ReadAllText(path)) : new List<Tuple<int, int>>();
             friends.Add(new Tuple<int, int>(idSender, idReceiver));
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
@@ -464,6 +558,7 @@ namespace Service
 
                 //Добавляем изменения в БД
                 context.TLogin.Update(login);
+
                 //Сохраняем изменения в БД
                 context.SaveChanges();
             }
@@ -493,6 +588,7 @@ namespace Service
 
                 //Добавляем изменения в БД
                 context.TLogin.Update(login);
+
                 //Сохраняем изменения в БД
                 context.SaveChanges();
             }

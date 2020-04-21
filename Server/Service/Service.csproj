@@ -157,7 +157,6 @@
     <Compile Include="DataModels\Profile.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="DataBases\postgresContext.cs" />
-    <Compile Include="DownloadFile.cs" />
     <Compile Include="Dispatchers\MainErrorHandler.cs" />
     <Compile Include="Dispatchers\MainErrorHandlerBehaviour.cs" />
     <Compile Include="Service\IWCFService.cs" />

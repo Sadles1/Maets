@@ -643,16 +643,16 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.UserMessage[]> GetChatAsync(int idMain, int idComrade);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
-        void BuyProduct(Client.Service.Product[] Cart, int idProfile);
+        void BuyProduct(int[] Cart, int idProfile);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
-        System.Threading.Tasks.Task BuyProductAsync(Client.Service.Product[] Cart, int idProfile);
+        System.Threading.Tasks.Task BuyProductAsync(int[] Cart, int idProfile);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
-        void BuyProductWholesale(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
+        void BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
-        System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile);
+        System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
         bool CheckBlacklist(int IdMainUser, int IdSeconUser);
@@ -815,19 +815,19 @@ namespace Client.Service {
             return base.Channel.GetChatAsync(idMain, idComrade);
         }
         
-        public void BuyProduct(Client.Service.Product[] Cart, int idProfile) {
+        public void BuyProduct(int[] Cart, int idProfile) {
             base.Channel.BuyProduct(Cart, idProfile);
         }
         
-        public System.Threading.Tasks.Task BuyProductAsync(Client.Service.Product[] Cart, int idProfile) {
+        public System.Threading.Tasks.Task BuyProductAsync(int[] Cart, int idProfile) {
             return base.Channel.BuyProductAsync(Cart, idProfile);
         }
         
-        public void BuyProductWholesale(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile) {
+        public void BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile) {
             base.Channel.BuyProductWholesale(Cart, idProfile);
         }
         
-        public System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<Client.Service.Product, int>[] Cart, int idProfile) {
+        public System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile) {
             return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
         }
         

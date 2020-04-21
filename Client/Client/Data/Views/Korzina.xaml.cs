@@ -66,7 +66,13 @@ namespace Client
 
                         profile.Money -= Convert.ToDouble(tbSumm.Text);
 
-                        ShopWindows.client.BuyProduct(ShopWindows.mainfprofile.ToArray(), profile.ID);
+                        List<int> Cart = new List<int>();
+                        foreach(Service.Product pr in ShopWindows.mainfprofile)
+                        {
+                            Cart.Add(pr.Id);
+                        }
+
+                        ShopWindows.client.BuyProduct(Cart.ToArray(), profile.ID);
                         ShopWindows.client.CheckProfile(profile.ID);
                         //Тут будет добавление самой игры на аккаунт
                         MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);

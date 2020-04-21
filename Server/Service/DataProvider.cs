@@ -58,7 +58,7 @@ namespace Service
             deal.Date = DateTime.Now.Date;
             deal.IdBuyers = idProfile;
             deal.IdProduct = pr.Id;
-            deal.BuyingPrice = pr.RetailPrice;
+            deal.BuyingPrice = Wholesale == true ? pr.WholesalePrice : pr.RetailPrice;
             deal.Count = Count;
             deal.Wholesale = Wholesale;
             return deal;
@@ -78,7 +78,7 @@ namespace Service
             profile.Telephone = Tlogin.IdNavigation.Telephone;
             profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
             profile.AccessRight = Tlogin.IdNavigation.AccessRight;
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;           
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             //Заполенение корзины
             string pathToCart = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Cart.json";
@@ -91,7 +91,7 @@ namespace Service
                 List<int> idGames = context.TDeals.Where(u => u.IdBuyers == profile.ID).Select(u => u.IdProduct).ToList();
                 if (idGames.Count != 0)
                 {
-                    List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList(); 
+                    List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
                     foreach (int id in idGames)
                     {
                         profile.Games.Add(FormProduct(TProducts.FirstOrDefault(u => u.Id == id)));
@@ -107,7 +107,7 @@ namespace Service
                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
                 if (File.Exists($@"{path}Friends.json"))
                 {
-                    List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();                   
+                    List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
                     foreach (int id in IdFriends)
                     {
@@ -117,11 +117,11 @@ namespace Service
                     }
                 }
                 //Определяем статус подключения
-               
+                profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             }
             //Получем основное изображение профиля
-            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))
+            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
             {
                 profile.MainImage = new byte[fstream.Length];
                 fstream.Read(profile.MainImage, 0, profile.MainImage.Length);
@@ -140,7 +140,7 @@ namespace Service
             profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             //Получем основное изображение
-            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\Images\MainImage.encr"))
+            using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
             {
                 profile.MainImage = new byte[fstream.Length];
                 fstream.Read(profile.MainImage, 0, profile.MainImage.Length);
@@ -179,13 +179,13 @@ namespace Service
                 foreach (TRecGameSysReq req in recGameSysReq)
                     product.RecGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
 
-
-                using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Products\{product.Id}\Images\MainImage.encr"))
+                //Получаем основное изображение игры
+                using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Products\{product.Id}\MainImage.encr"))
                 {
                     product.MainImage = new byte[fstream.Length];
                     fstream.Read(product.MainImage, 0, product.MainImage.Length);
                 }
-
+                
                 return product;
             }
         }
@@ -269,20 +269,6 @@ namespace Service
 
                 return TProduct;
             }
-        }
-
-
-        public byte[] GetByteImage(BitmapFrame image)//Преобразуем изображение в массив байтов
-        {
-            byte[] data;
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(image);
-            using (MemoryStream ms = new MemoryStream())
-            {
-                encoder.Save(ms);
-                data = ms.ToArray();
-            }
-            return data;
-        }
+        }   
     }
 }

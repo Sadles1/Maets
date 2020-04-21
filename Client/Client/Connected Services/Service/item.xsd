@@ -39,7 +39,7 @@
       <xs:element minOccurs="0" name="ReleaseDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="RetailPrice" type="xs:double" />
       <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Screenshots" nillable="true" type="q4:ArrayOfbase64Binary" />
-      <xs:element minOccurs="0" name="WholesalePrice" nillable="true" type="xs:double" />
+      <xs:element minOccurs="0" name="WholesalePrice" type="xs:double" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Product" nillable="true" type="tns:Product" />

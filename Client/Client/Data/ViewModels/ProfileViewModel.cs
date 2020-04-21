@@ -48,14 +48,14 @@ namespace Client.Data.ViewModels
         public ProfileViewModel()
         {
             List<ModelProfile> modelProfiles = new List<ModelProfile>();
-            List<Service.Profile> profiles = ShopWindows.client.GetAllUsers().ToList();
-            foreach (Service.Profile profile in profiles)
-            {
-                ModelProfile modelProfile = new ModelProfile();
-                modelProfiles.Add(modelProfile.MakeModelProfile(profile));
-            }
-            Items1 = CollectionViewSource.GetDefaultView(modelProfiles);
-            Items1.Filter = FilterProfile;
+            //List<Service.Profile> profiles = ShopWindows.client.GetAllUsers().ToList();
+            //foreach (Service.Profile profile in profiles)
+            //{
+            //    ModelProfile modelProfile = new ModelProfile();
+            //    modelProfiles.Add(modelProfile.MakeModelProfile(profile));
+            //}
+            //Items1 = CollectionViewSource.GetDefaultView(modelProfiles);
+            //Items1.Filter = FilterProfile;
         }
 
         private bool FilterProfile(object obj)
