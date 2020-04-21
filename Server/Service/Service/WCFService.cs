@@ -341,7 +341,7 @@ namespace Service
                     profile.status = true;
 
                     //Записываем подключеного пользователя
-                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
+                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile == profile);
                     if (ActiveUser != null)
                     {
                         ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
@@ -365,6 +365,9 @@ namespace Service
                         }
                     }
 
+                    IContextChannel objClientHandle = OperationContext.Current.Channel;
+                    objClientHandle.Faulted += new EventHandler(ClientFault);
+
                     //Сохраняем изменения в БД
                     context.SaveChanges();
 
@@ -375,6 +378,24 @@ namespace Service
                 }
                 else
                     throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
+            }
+        }
+
+        private void ClientFault(object sender, EventArgs e)
+        {
+            //Находим пользователя которого необходимо отключить
+            OnlineUser User = onlineUsers.FirstOrDefault(u => u.operationContext == (OperationContext)sender);
+
+            if (User != null)
+            {
+                //Получаем id сессии
+                string sessionId = User.operationContext.SessionId;
+                string Login = User.UserProfile.Login;
+                //Выводим сообщение в серверную консоль
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} faulted");
+
+                //Удаляем пользователя из списка активных пользователей
+                onlineUsers.Remove(User);
             }
         }
 
@@ -460,9 +481,9 @@ namespace Service
             {
                 //Получаем id сессии
                 string sessionId = (OperationContext.Current.SessionId);
-                string Name = User.UserProfile.Login;
+                string Login = User.UserProfile.Login;
                 //Выводим сообщение в серверную консоль
-                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}:{Name} with Session Id {sessionId} disconnect");
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} disconnect");
 
                 //Удаляем пользователя из списка активных пользователей
                 onlineUsers.Remove(User);
