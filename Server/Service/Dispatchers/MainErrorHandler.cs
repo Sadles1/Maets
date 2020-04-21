@@ -13,7 +13,8 @@ namespace Service
     {
         public bool HandleError(Exception error)
         {
-            Console.WriteLine(error.Message);
+            //OnlineUser ActiveUser = WCFService.onlineUsers.FirstOrDefault(u => u.operationContext == OperationContext.Current);
+            Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {error.Message}");
             return true;
         }
 

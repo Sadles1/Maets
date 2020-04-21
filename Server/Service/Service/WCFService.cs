@@ -8,7 +8,7 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
@@ -44,6 +44,8 @@ namespace Service
 
                     idDeal++;
                 }
+
+
 
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
@@ -178,6 +180,10 @@ namespace Service
 
             //Десериализуем файл, если файла нет то создаём пустой список
             List<UserMessage> messages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.IDReceiver == idComrade || u.IDSender == idComrade).ToList() : new List<UserMessage>();
+            foreach(UserMessage msg in messages)
+            {
+                msg.message = Crypt.DeShifrovka(msg.message, "WEFQTG234WFGX2");
+            }
             return messages;
         }
 
@@ -341,14 +347,19 @@ namespace Service
                     profile.status = true;
 
                     //Записываем подключеного пользователя
-                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile == profile);
+                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
                     if (ActiveUser != null)
                     {
                         ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
                         onlineUsers.Remove(ActiveUser);
                     }
+
                     ActiveUser = new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current };
+                    ActiveUser.sessionID = OperationContext.Current.Channel;
+                    ActiveUser.sessionID.Faulted += new EventHandler(ClientFault);
+
                     onlineUsers.Add(ActiveUser);
+
 
 
                     //Отсылаем уведомления друзьям находящимся в онлайне
@@ -364,9 +375,6 @@ namespace Service
 
                         }
                     }
-
-                    IContextChannel objClientHandle = OperationContext.Current.Channel;
-                    objClientHandle.Faulted += new EventHandler(ClientFault);
 
                     //Сохраняем изменения в БД
                     context.SaveChanges();
@@ -384,13 +392,14 @@ namespace Service
         private void ClientFault(object sender, EventArgs e)
         {
             //Находим пользователя которого необходимо отключить
-            OnlineUser User = onlineUsers.FirstOrDefault(u => u.operationContext == (OperationContext)sender);
+            OnlineUser User = onlineUsers.FirstOrDefault(u => u.sessionID == (IClientChannel)sender);
 
             if (User != null)
             {
                 //Получаем id сессии
                 string sessionId = User.operationContext.SessionId;
                 string Login = User.UserProfile.Login;
+
                 //Выводим сообщение в серверную консоль
                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} faulted");
 
@@ -432,6 +441,7 @@ namespace Service
         {
             msg.date = DateTime.Now;
             msg.isRead = false;
+            msg.message = Crypt.Shifrovka(msg.message,"WEFQTG234WFGX2");
 
             //Добавляем сообщения для одного пользователя
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{msg.IDSender}\Messages.json";

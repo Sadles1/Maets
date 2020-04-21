@@ -151,6 +151,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>BaseSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Crypt.cs" />
     <Compile Include="DataModels\Message.cs" />
     <Compile Include="DataModels\OnlineUser.cs" />
     <Compile Include="DataModels\Product.cs" />

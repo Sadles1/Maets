@@ -11,5 +11,6 @@ namespace Service
     {
         public Profile UserProfile { get; set; }
         public OperationContext operationContext { get; set; }
+        public IContextChannel sessionID { get; set; }
     }
 }

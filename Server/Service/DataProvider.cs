@@ -52,7 +52,7 @@ namespace Service
             }
         }
 
-        public TDeals FormTDeal(int idDeal,int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
+        public TDeals FormTDeal(int idDeal, int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
         {
             TDeals deal = new TDeals();
 
@@ -100,15 +100,31 @@ namespace Service
                 }
             }
 
-
             profile.Friends = new List<Profile>();
+            profile.FriendReqests = new List<Profile>();
+
             using (postgresContext context = new postgresContext())
             {
-                //Формируем список друзей
+                //Определяем путь
                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
+
+                //Загружаем таблицу TLogins
+                List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
+
+                //Формируем список заявок в друзья
+                if (File.Exists($@"{path}FriendRequests.json"))
+                {
+                    List<int> IdFriendsReq = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}FriendRequests.json"));
+                    foreach (int id in IdFriendsReq)
+                    {
+                        Profile friendReq = SimpleFormProfile(TLogins.FirstOrDefault(u => u.Id == id));
+                        if (friendReq != null)
+                            profile.FriendReqests.Add(friendReq);
+                    }
+                }
+                //Формируем список друзей
                 if (File.Exists($@"{path}Friends.json"))
                 {
-                    List<TLogin> TLogins = context.TLogin.Include(u => u.IdNavigation).ToList();
                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
                     foreach (int id in IdFriends)
                     {
@@ -117,11 +133,9 @@ namespace Service
                             profile.Friends.Add(friend);
                     }
                 }
-
-                //Определяем статус подключения
-                profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
-
             }
+            //Определяем статус подключения
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
@@ -188,7 +202,7 @@ namespace Service
                     product.MainImage = new byte[fstream.Length];
                     fstream.Read(product.MainImage, 0, product.MainImage.Length);
                 }
-                
+
                 return product;
             }
         }
@@ -210,9 +224,9 @@ namespace Service
                 TModerateProduct.WholesalePrice = product?.WholesalePrice;
 
                 //Выбираем двух случаных модераторов для модерирования
-                List<int> Moderators = context.TUsers.Where(u => u.AccessRight == 3).Select(u=>u.Id).ToList();//Список всех id модераторов
+                List<int> Moderators = context.TUsers.Where(u => u.AccessRight == 3).Select(u => u.Id).ToList();//Список всех id модераторов
 
-                Random rnd = new Random();             
+                Random rnd = new Random();
                 int rnd1 = rnd.Next(0, Moderators.Count);
                 int rnd2 = rnd.Next(0, Moderators.Count);
                 while (rnd2 == rnd1)
@@ -272,6 +286,6 @@ namespace Service
 
                 return TProduct;
             }
-        }   
+        }
     }
 }
