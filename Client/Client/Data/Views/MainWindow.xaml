@@ -6,7 +6,7 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="MainWindow" Height="220" Width="450" Initialized="Window_Initialized" ResizeMode="NoResize" ShowInTaskbar="False" WindowStyle="None">
+        Title="MainWindow" Height="220" Width="450" Initialized="Window_Initialized" ResizeMode="NoResize" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" ></ColumnDefinition>

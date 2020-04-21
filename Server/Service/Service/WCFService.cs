@@ -340,22 +340,22 @@ namespace Service
 
 
                     //Отсылаем уведомления друзьям находящимся в онлайне
-                    //if (profile.Friends != null)
-                    //{
-                    //    foreach (Profile friend in profile.Friends)
-                    //    {
+                    if (profile.Friends != null)
+                    {
+                        foreach (Profile friend in profile.Friends)
+                        {
 
-                    //        OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
+                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile == friend);
 
-                    //        if (OnlineFriend != null)
-                    //            ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
+                            if (OnlineFriend != null)
+                                ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
 
-                    //    }
-                    //}
+                        }
+                    }
 
                     //Сохраняем изменения в БД
                     context.SaveChanges();
-                    Console.WriteLine("Test8");
+
                     //Выводим сообщение в серверную консоль
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
@@ -473,7 +473,7 @@ namespace Service
                 //Для каждого пользователя формируем профиль
                 foreach (TLogin user in AllUsers)
                 {
-                    Profile pr = dp.FormProfile(user);
+                    Profile pr = dp.SimpleFormProfile(user);
 
                     //Добавляем сформированный профиль в общий список
                     AllProfile.Add(pr);

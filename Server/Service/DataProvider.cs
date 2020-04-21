@@ -93,9 +93,7 @@ namespace Service
                 {
                     List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();
                     foreach (int id in idGames)
-                    {
                         profile.Games.Add(FormProduct(TProducts.FirstOrDefault(u => u.Id == id)));
-                    }
                 }
             }
 
@@ -116,10 +114,12 @@ namespace Service
                             profile.Friends.Add(friend);
                     }
                 }
+
                 //Определяем статус подключения
                 profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
             }
+
             //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
             {
@@ -130,7 +130,7 @@ namespace Service
             return profile;
         }
 
-        private Profile SimpleFormProfile(TLogin Tlogin)//Упрощённое формирования профиля для друзей
+        public Profile SimpleFormProfile(TLogin Tlogin)//Упрощённое формирования профиля
         {
             Profile profile = new Profile();
 
@@ -139,7 +139,7 @@ namespace Service
 
             profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
 
-            //Получем основное изображение
+            //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
             {
                 profile.MainImage = new byte[fstream.Length];
