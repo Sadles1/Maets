@@ -52,7 +52,6 @@ namespace Service
             }
         }
 
-
         public TDeals FormTDeal(int idDeal, int idProfile, Product pr, int Count, bool Wholesale)//Формирует таблицу сделок
         {
             TDeals deal = new TDeals();
@@ -74,6 +73,7 @@ namespace Service
 
             profile.Money = Tlogin.IdNavigation.Money;
             profile.AccessRight = Tlogin.IdNavigation.AccessRight;
+            profile.Discount = Tlogin.IdNavigation.PersonalDiscount;
 
             //Формируем список игр
             profile.Games = GetUserGames(profile.ID);
@@ -88,9 +88,8 @@ namespace Service
             //Все данные получем через связанную таблицу
             profile.Mail = Tlogin.IdNavigation.Mail;
             profile.Name = Tlogin.IdNavigation.Name;          
-            profile.Telephone = Tlogin.IdNavigation.Telephone;          
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;     
-
+            profile.Telephone = Tlogin.IdNavigation.Telephone;             
+            
             //Определяем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
 
@@ -177,87 +176,6 @@ namespace Service
             }
         }
 
-        public TModerateProducts FormModerateProduct(Product product)//Метод для формирования таблицы TModerateProduct
-        {
-            using (postgresContext context = new postgresContext())
-            {
-                TModerateProducts TModerateProduct = new TModerateProducts();
-
-                //Формируем продукт
-                TModerateProduct.Id = product.Id;
-                TModerateProduct.Name = product.Name;
-                TModerateProduct.Description = product.Description;
-                TModerateProduct.IdDeveloper = context.TDeveloper.FirstOrDefault(u => u.Name == product.Developer).Id;
-                TModerateProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
-                TModerateProduct.RequestDate = product.ReleaseDate;
-                TModerateProduct.RetailPrice = product.RetailPrice;
-                TModerateProduct.WholesalePrice = product?.WholesalePrice;
-
-                //Выбираем двух случаных модераторов для модерирования
-                List<int> Moderators = context.TUsers.Where(u => u.AccessRight == 3).Select(u => u.Id).ToList();//Список всех id модераторов
-
-                Random rnd = new Random();
-                int rnd1 = rnd.Next(0, Moderators.Count);
-                int rnd2 = rnd.Next(0, Moderators.Count);
-                while (rnd2 == rnd1)
-                    rnd2 = rnd.Next(0, Moderators.Count);
-                int moderator1 = Moderators[rnd1];
-                int moderator2 = Moderators[rnd2];
-
-                TModerateEmployers employer;
-                employer = new TModerateEmployers { IdEmployee = moderator1, IdModerateProduct = product.Id, Result = null };
-                TModerateProduct.TModerateEmployers.Add(employer);
-                context.TModerateEmployers.Add(employer);
-
-                employer = new TModerateEmployers { IdEmployee = moderator2, IdModerateProduct = product.Id, Result = null };
-                TModerateProduct.TModerateEmployers.Add(employer);
-                context.TModerateEmployers.Add(employer);
-
-                context.SaveChanges();
-                return TModerateProduct;
-            }
-        }
-
-        public TProducts FormTableProducts(Product product)//Формирует таблицу TProduct используя класс product
-        {
-            using (postgresContext context = new postgresContext())
-            {
-                TProducts TProduct = new TProducts();
-
-                TProduct.Id = (context.TProducts.ToList().Max(u => u.Id) + 1);
-                TProduct.Name = product.Name;
-                TProduct.Description = product.Description;
-
-                //Если такого же разработчика нету в БД, то добавляем
-                List<TDeveloper> TDevelopers = context.TDeveloper.ToList();
-                if (TDevelopers.FirstOrDefault(u => u.Name == product.Developer) == null)
-                {
-                    int ID = TDevelopers.Count == 0 ? 0 : (TDevelopers.Max(u => u.Id) + 1);
-                    context.TDeveloper.Add(new TDeveloper { Id = ID, Name = product.Developer });
-                }
-
-                //Если такого же издателя нету в БД, то добавляем
-                List<TPublisher> TPublishers = context.TPublisher.ToList();
-                if (TPublishers.FirstOrDefault(u => u.Name == product.Publisher) == null)
-                {
-                    int ID = TPublishers.Count == 0 ? 0 : (TPublishers.Max(u => u.Id) + 1);
-                    context.TPublisher.Add(new TPublisher { Id = ID, Name = product.Publisher });
-                }
-                //Сохраняем изменения
-                context.SaveChanges();
-
-                TProduct.IdDeveloper = TDevelopers.FirstOrDefault(u => u.Name == product.Developer).Id;
-                TProduct.IdPublisher = context.TPublisher.FirstOrDefault(u => u.Name == product.Publisher).Id;
-
-                TProduct.Quantity = 100;
-                TProduct.ReleaseDate = product.ReleaseDate;
-                TProduct.RetailPrice = product.RetailPrice;
-                TProduct.WholesalePrice = product.WholesalePrice;
-
-                return TProduct;
-            }
-        }
-
         public List<Product> GetUserGames(int id)
         {
             List<Product> Games = new List<Product>(); 
@@ -273,5 +191,48 @@ namespace Service
             }
             return Games;
         }
+
+        public void CalculateGameScore(int idGame)
+        {
+            using(postgresContext context = new postgresContext())
+            {
+                //Находим нужную нам игру
+                TProducts product = context.TProducts.FirstOrDefault(u=>u.Id == idGame);
+
+                //Вычисляем её среднюю оценку
+                product.Rate = context.TComments.Where(u=>u.IdProduct == idGame).Average(u=>u.Score);
+
+                //Обновляем её в БД
+                context.TProducts.Update(product);
+
+                //Сохраняем изменения в БД
+                context.SaveChanges();
+            }
+        }
+
+        public Comment FormComment(TComments TComment)
+        {
+            Comment comment = new Comment();
+            comment.id = TComment.Id;
+            comment.idProduct = TComment.IdProduct;
+            comment.idUser = TComment.IdUser;
+            comment.Score = TComment.Score;
+            comment.comment = TComment.Comment;
+            return comment;
+        }
+
+        public string RandomString(int length)
+        {
+            var result = new char[length];
+            var r = new Random();
+            for (int i = 0; i < result.Length; i++)
+            {
+                do
+                    result[i] = (char)r.Next(127);
+                while (result[i] < '!');
+            }
+            return new string(result);
+        }
+
     }
 }

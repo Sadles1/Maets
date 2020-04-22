@@ -1,6 +1,8 @@
 ﻿using Client.Data.Views;
 using Client.Service;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Client
@@ -8,7 +10,7 @@ namespace Client
     public class CallbackClass : IWCFServiceCallback
     {
         private ShopWindows shopWindows;
-
+        DataProvider dp = new DataProvider();
         public CallbackClass()
         {
         }
@@ -37,9 +39,12 @@ namespace Client
         /// Вызывается при получении заявки в друзья
         /// </summary>
         /// <param name="idSender"></param>
-        public void GetFriendRequest(int idSender)
+        public void GetFriendRequest(Service.Profile Sender)
         {
-
+            //MessageBox.Show("123");
+            // Service.Profile pr = await dp.GetProfileAsync(idSender);
+            
+            MainWindow.shopWindows.reqestrefresh(Sender);
         }
 
         /// <summary>
@@ -49,7 +54,7 @@ namespace Client
         public void GetMessage(UserMessage msg)
         {
            // Chat.chatnow.get_user(msg.IDSender,msg.date);
-            Chat.chatnow.tbChat.Text += Chat.chatnow.get_user(msg.IDSender,msg.date) + msg.message;
+            Chat.chatnow.tbChat.Text += Chat.chatnow.get_user(msg.IDSender,msg.date) + msg.message +"\n";
 
         }
     }

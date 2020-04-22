@@ -79,26 +79,16 @@ namespace Client.Data.Views
             chat1.IDReceiver = Resiverg.ID;
             chat1.IDSender = Senderg.ID;
             ShopWindows.client.SendMsg(chat1);
-            chat.Clear();
-            tbChat.Text = null;
+
             tbChatnew.Clear();
-            chat = ShopWindows.client.GetChat(ShopWindows.client.CheckProfile(MainWindow.shopWindows.profile.ID).ID, Resiverg.ID).ToList();
-            foreach (Service.UserMessage msg in chat)
-            {
-                if (msg.IDSender == Senderg.ID)
-                {
-                   // msg.message.PadRight(100);
-                    tbChat.Text += Senderg.Login + " " + msg.date + ": ";
-                }
-                else if (msg.IDSender == Resiverg.ID)
-                {
-                   // msg.message.PadLeft(100);
-                    tbChat.Text += Resiverg.Login + " " + msg.date + ": ";
-                }
-                tbChat.Text += msg.message;
+
+
+            tbChat.Text += Senderg.Login + " " + DateTime.Now + ": ";
+             
+                tbChat.Text += chat1.message;
                 
                 tbChat.Text += "\n";
-            }
+            
 
 
             scrl.ScrollToVerticalOffset(int.MaxValue);

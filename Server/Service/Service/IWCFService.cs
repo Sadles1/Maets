@@ -12,7 +12,7 @@ namespace Service
         Profile Connect(string Login, string Password);
 
         [OperationContract(IsOneWay = true)]
-        void AddProduct(Product product);
+        void AddProduct(int idModerateProduct);
 
         [OperationContract(IsOneWay = true)]
         void Disconnect(int Id);
@@ -39,7 +39,7 @@ namespace Service
         bool CheckBlacklist(int IdMainUser, int IdSeconUser);
 
         [OperationContract(IsOneWay = true)]
-        void AddModerationProduct(Product product);
+        void AddModerationProduct(Product product, List<byte[]> Images);
 
         [OperationContract(IsOneWay = true)]
         void DeleteAccount(int id);
@@ -83,6 +83,31 @@ namespace Service
 
         [OperationContract]
         Profile CheckActiveProfile(int idUser);
+
+        [OperationContract]
+
+        List<Profile> GetProfileByFilter(string filter);
+
+        [OperationContract]
+
+        List<byte[]> GetGameImages(int id);
+
+
+        [OperationContract]
+        void AddComment(int idUSer,int idGame,string Comment,int Score);
+
+
+        [OperationContract]
+        List<Comment> GetAllGameComments(int idGame);
+
+        [OperationContract]
+        Profile GetEasyProfile(int id);
+
+        [OperationContract]
+        string GetWayToGame(int idUser, int idGame);
+
+        [OperationContract]
+        string CheckMail(string Mail);
     }
 
     public interface IWCFServiceCalbback
@@ -94,17 +119,16 @@ namespace Service
         void ConnectionFromAnotherDevice();
 
         [OperationContract(IsOneWay = true)]
-        void GetFriendRequest(int idSender);
+        void GetFriendRequest(Profile pr);
 
         [OperationContract(IsOneWay = true)]
         void FriendOnline(int idUser);
-
     }
 
     [ServiceContract(SessionMode = SessionMode.Allowed)]
     public interface IDownloadService
     {
         [OperationContract]
-        Stream DownloadProduct(int idProduct);
+        Stream DownloadProduct(int idUser,int idProduct,string path);
     }
 }

@@ -4,11 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+
     public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
@@ -142,12 +145,76 @@ namespace Service
         /// Метод для добавления продукта на модерацию
         /// </summary>
         /// <param name="product"></param>
-        public void AddModerationProduct(Product product)
+        public void AddModerationProduct(Product product, List<byte[]> Images)
         {
             using (postgresContext context = new postgresContext())
-            {
-                TModerateProducts moderateProduct = dp.FormModerateProduct(product);
-                context.TModerateProducts.Add(moderateProduct);
+            {               
+                TModerateProducts TModerateProduct = new TModerateProducts();
+                List<TModerateProducts> moderateProducts = context.TModerateProducts.ToList();
+
+                //Формируем продукт
+                TModerateProduct.Id = moderateProducts.Count > 0 ? (moderateProducts.Max(u => u.Id) + 1) : 1;
+                TModerateProduct.Name = product.Name;
+                TModerateProduct.Description = product.Description;
+                TModerateProduct.RequestDate = DateTime.Now.Date;
+                TModerateProduct.RetailPrice = product.RetailPrice;
+                TModerateProduct.WholesalePrice = product.WholesalePrice;
+
+                //Если такого же разработчика нету в БД, то добавляем
+                List<TDeveloper> TDevelopers = context.TDeveloper.ToList();
+                if (TDevelopers.FirstOrDefault(u => u.Name == product.Developer) == null)
+                {
+                    int ID = TDevelopers.Count == 0 ? 1 : (TDevelopers.Max(u => u.Id) + 1);
+                    context.TDeveloper.Add(new TDeveloper { Id = ID, Name = product.Developer });
+                }
+
+                //Если такого же издателя нету в БД, то добавляем
+                List<TPublisher> TPublishers = context.TPublisher.ToList();
+                if (TPublishers.FirstOrDefault(u => u.Name == product.Publisher) == null)
+                { 
+                    int ID = TPublishers.Count == 0 ? 1 : (TPublishers.Max(u => u.Id) + 1);
+
+                    context.TPublisher.Add(new TPublisher { Id = ID, Name = product.Publisher });
+                }
+
+                TModerateProduct.IdDeveloper = TDevelopers.FirstOrDefault(u => u.Name == product.Developer).Id;
+                TModerateProduct.IdPublisher = TPublishers.FirstOrDefault(u => u.Name == product.Publisher).Id;
+
+                //Указываем путь
+                string path = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{product.Id}\";
+
+                //записываем основное изображение
+                File.WriteAllBytes($@"{path}MainImage.encr", product.MainImage);
+
+                //Записываем все остальные изображения игры
+                int i = 1;
+                foreach (byte[] image in Images)
+                {
+                    File.WriteAllBytes($@"{path}\Images\{i}.encr",image);
+                    i++;
+                }
+
+                //Выбираем двух случаных модераторов для модерирования
+                List<int> Moderators = context.TUsers.Where(u => u.AccessRight == 3).Select(u => u.Id).ToList();//Список всех id модераторов
+
+                Random rnd = new Random();
+                int rnd1 = rnd.Next(0, Moderators.Count);
+                int rnd2 = rnd.Next(0, Moderators.Count);
+                while (rnd2 == rnd1)
+                    rnd2 = rnd.Next(0, Moderators.Count);
+                int moderator1 = Moderators[rnd1];
+                int moderator2 = Moderators[rnd2];
+
+                TModerateEmployers employer;
+                employer = new TModerateEmployers { IdEmployee = moderator1, IdModerateProduct = product.Id, Result = null };
+                TModerateProduct.TModerateEmployers.Add(employer);
+                context.TModerateEmployers.Add(employer);
+
+                employer = new TModerateEmployers { IdEmployee = moderator2, IdModerateProduct = product.Id, Result = null };
+                TModerateProduct.TModerateEmployers.Add(employer);
+                context.TModerateEmployers.Add(employer);
+
+                context.TModerateProducts.Add(TModerateProduct);
                 context.SaveChanges();
             }
         }
@@ -155,11 +222,27 @@ namespace Service
         /// <summary>
         /// Метод для добавления продукта в магазин
         /// </summary>
-        public void AddProduct(Product product)
+        public void AddProduct(int idModerateProduct)
         {
             using (postgresContext context = new postgresContext())
             {
-                TProducts TProduct = dp.FormTableProducts(product);
+                TProducts TProduct = new TProducts();
+                TModerateProducts moderateProduct = context.TModerateProducts.FirstOrDefault(u=>u.Id == idModerateProduct);
+                List<TProducts> products = context.TProducts.ToList();
+
+                TProduct.Id = products.Count > 0 ? (products.Max(u => u.Id) + 1) : 1;
+                TProduct.Name = moderateProduct.Name;
+                TProduct.Description = moderateProduct.Description;
+                TProduct.IdDeveloper = moderateProduct.IdDeveloper;
+                TProduct.IdPublisher = moderateProduct.IdPublisher;
+
+                //Сохраняем изменения
+                context.SaveChanges();
+
+                TProduct.Quantity = 100;
+                TProduct.ReleaseDate = DateTime.Now.Date;
+                TProduct.RetailPrice = moderateProduct.RetailPrice;
+                TProduct.WholesalePrice = moderateProduct.WholesalePrice;
                 context.TProducts.Add(TProduct);
                 context.SaveChanges();
             }
@@ -191,7 +274,7 @@ namespace Service
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{IdSeconUser}\Blacklist.json";
 
             //Десериализуем файл
-            int? Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int?>>(File.ReadAllText(path)).FirstOrDefault(u=>u == IdMainUser) : null;
+            int? Blacklist = File.Exists(path) ? JsonConvert.DeserializeObject<List<int?>>(File.ReadAllText(path)).FirstOrDefault(u => u == IdMainUser) : null;
 
             //Если он пустой то возвращем false так как мы не в чёрном списке
             if (Blacklist == null)
@@ -256,7 +339,7 @@ namespace Service
             //Обновляем файл с друзьями у другого аккаунта
             path = $@"{BaseSettings.Default.SourcePath}\Users\{idFriend}\Friends.json";
             friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
-            friends.Remove(id);
+            friends.Add(id);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
         }
 
@@ -302,6 +385,26 @@ namespace Service
                 return FriendRequests;
             }
         }
+
+        public string CheckMail(string Mail)
+        {
+            string Code = dp.RandomString(4);
+            MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
+            MailAddress to = new MailAddress(Mail);
+            MailMessage message = new MailMessage(from, to);
+            message.Subject = "Регистрация на Maets";
+            // текст письма
+            message.Body = $"Доброго времени суток!\nЕсли вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.\nВаш код подтверждения: {Code}\nЕсли вы не ожидали получить это письмо, то просто игнорируйте его.\nС уважением, команда Maets";
+            message.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
+                EnableSsl = true
+            };
+            smtp.Send(message);
+            return Code;
+        }
+
 
         /// <summary>
         /// Метод для регистрации пользователя
@@ -535,13 +638,18 @@ namespace Service
         /// <summary>
         /// Метод для загрузки продукта
         /// </summary>
-        public Stream DownloadProduct(int idProduct)
+        public Stream DownloadProduct(int idUser, int idProduct, string path)
         {
-            //Указываем путь
-            string path = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
+
+            string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
+            List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
+            GamesPath.Add(Tuple.Create(idProduct, path));
+            File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
+
+            string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
 
             //Записываем файл в массив байтов
-            byte[] buffer = File.ReadAllBytes(path);
+            byte[] buffer = File.ReadAllBytes(pathToGame);
 
             //Передаём его через поток
             Stream stream = new MemoryStream(buffer);
@@ -625,17 +733,19 @@ namespace Service
                 friendsReq.Add(idSender);
                 File.WriteAllText(path, JsonConvert.SerializeObject(friendsReq));
 
+                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == idSender);
+                Profile profile = dp.SimpleFormProfile(login);
+
                 //Если пользователь в сети, то нужно вызвать callback для отображения запроса
                 OnlineUser ReceiverUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == idReceiver);
                 if (ReceiverUser != null)
-                    ReceiverUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().GetFriendRequest(idSender);
+                    ReceiverUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().GetFriendRequest(profile);
             }
         }
 
         /// <summary>
-        /// Метод заполняет профиль
+        /// Метод для заполнения чужого профиля
         /// </summary>
-        /// <param name="idUser">ID пользователя</param>
         public Profile CheckProfile(int idUser)
         {
             using (postgresContext context = new postgresContext())
@@ -649,6 +759,9 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Метод для заполнения текущего профиля
+        /// </summary>
         public Profile CheckActiveProfile(int idUser)
         {
             using (postgresContext context = new postgresContext())
@@ -715,19 +828,122 @@ namespace Service
             }
         }
 
+
+        /// <summary>
+        /// Метод возвращает все новые сообщения пользователя
+        /// </summary>
         public List<UserMessage> GetNewMessages(int id)
         {
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
 
             //Десериализуем файл, если файла нет то создаём пустой список
-            List<UserMessage> newMessages = File.Exists(path) ? JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.isRead == false).ToList() : new List<UserMessage>();
+            List<UserMessage> newMessages;
+            if (File.Exists(path))
+                newMessages = JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.isRead == false).ToList();
+            else
+                newMessages = new List<UserMessage>();
             return newMessages;
         }
 
+
+        /// <summary>
+        /// Метод возвращает все игры пользователя
+        /// </summary>
         public List<Product> GetUserGames(int id)
         {
             List<Product> games = dp.GetUserGames(id);
             return games;
+        }
+
+
+        /// <summary>
+        /// Метод для добавления нового комментария
+        /// </summary>
+        public void AddComment(int idUser, int idGame, string Comment, int Score)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Вычисляем новое значение id
+                List<TComments> comments = context.TComments.ToList();
+                int id = comments.Count > 0 ? (context.TComments.Max(u => u.Id) + 1) : 1;
+
+                //Формируем новый комментарий
+                TComments comment = new TComments();
+                comment.Id = id;
+                comment.IdProduct = idGame;
+                comment.IdUser = idUser;
+                comment.Comment = Comment;
+                comment.Score = Score;
+
+                //Добавляем комментарий в БД
+                context.TComments.Add(comment);
+
+                //Сохранием изменения в БД
+                context.SaveChanges();
+            }
+
+            //Высчитываем новый рейтинг для игры
+            dp.CalculateGameScore(idGame);
+        }
+
+
+        /// <summary>
+        /// Метод для удаления существующего комментария
+        /// </summary>
+        public void DeleteComment(int idComment)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TComments comment = context.TComments.FirstOrDefault(u => u.Id == idComment);
+                context.TComments.Remove(comment);
+                context.SaveChanges();
+            }
+        }
+
+
+        /// <summary>
+        /// Метод возвращает все комментарии кокретной игры
+        /// </summary>
+        /// <param name="idGame"></param>
+        /// <returns></returns>
+        public List<Comment> GetAllGameComments(int idGame)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Находим и возвращаем список комментариев для определённой игры
+                List<TComments> Tcomments = context.TComments.Where(u => u.IdProduct == idGame).ToList();
+                List<Comment> comments = new List<Comment>();
+                foreach (TComments Tcomment in Tcomments)
+                {
+                    Comment comment = dp.FormComment(Tcomment);
+                    comments.Add(comment);
+                }
+                return comments;
+            }
+        }
+
+        public Profile GetEasyProfile(int id)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                List<TLogin> TLogins = context.TLogin.ToList();
+                Profile pr = dp.SimpleFormProfile(TLogins.FirstOrDefault(u => u.Id == id));
+                return pr;
+            }
+        }
+
+        public string GetWayToGame(int idUser, int idGame)
+        {
+            string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
+            List<Tuple<int, string>> messages = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
+            foreach (Tuple<int, string> tuple in messages)
+            {
+                if (tuple.Item1 == idGame)
+                {
+                    return tuple.Item2;
+                }
+            }
+            return null;
         }
     }
 }

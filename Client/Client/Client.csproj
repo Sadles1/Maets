@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>maets.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\..\..\..\BouncyCastle.Crypto.dll</HintPath>
@@ -57,8 +60,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -83,7 +88,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Data\ViewModels\Screns.cs" />
     <Compile Include="Data\Models\ModelMyProfile.cs" />
+    <Compile Include="Data\Models\ModelImage.cs" />
     <Compile Include="Data\Models\ModelProfile.cs" />
     <Compile Include="Data\ViewModels\MyProfileViewModel.cs" />
     <Compile Include="Data\ViewModels\LibraryViewModel.cs" />
@@ -96,8 +103,14 @@
     <Compile Include="Data\Views\Korzina.xaml.cs">
       <DependentUpon>Korzina.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\Views\MailConfirmation.xaml.cs">
+      <DependentUpon>MailConfirmation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Views\NewGameAdd.xaml.cs">
+      <DependentUpon>NewGameAdd.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\Views\profilefriend.xaml.cs">
       <DependentUpon>profilefriend.xaml</DependentUpon>
@@ -122,9 +135,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Data\Views\MailConfirmation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Data\Views\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Data\Views\NewGameAdd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Data\Views\profilefriend.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -177,6 +198,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\Service\Client.Service.Comment.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\Service\Client.Service.Product.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -205,6 +229,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\WCFService.wsdl" />
+    <None Include="Data\Images\1.encr" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -250,6 +275,18 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Class\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\Images\new game.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\Images\maets.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="maets.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

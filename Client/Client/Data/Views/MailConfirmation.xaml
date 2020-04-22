@@ -1,0 +1,25 @@
+﻿<Window x:Class="Client.MailConfirmation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MailConfirmation" Height="100" Width="200" WindowStyle="None">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="9*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="tb" FontSize="10" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
+        <TextBox x:Name="Code" Grid.Column="1" Grid.Row="1" MaxLength="4" Width="80" TextAlignment="Center" VerticalAlignment="Center"></TextBox>
+        <Button x:Name="Go" Grid.Column="1" Content="Go" Click="Go_Click" Grid.Row="1" Height="18" Width="40" HorizontalAlignment="Right"></Button>
+    </Grid>
+</Window>

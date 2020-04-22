@@ -67,7 +67,14 @@
                             <Ellipse  HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Fill="Red" Height="20" Width="20"  >
                             </Ellipse>
                         </Grid>
-                      
+                        <Button x:Name="AddGame" Width="30" Height="30" Background="White" FontSize="40" FontWeight="Bold"  Grid.Column="0" Grid.Row="0"  Click="AddGame_Click" BorderThickness="0" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Viewbox Width="20" Height="20">
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                    <Line Width="50" Height="50" X1="25" Y1="0" X2="25" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="14" />
+                                    <Line Width="50" Height="50" X1="0" Y1="25" X2="50" Y2="25" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="14" />
+                                </Grid>
+                            </Viewbox>
+                        </Button>
                         <Button x:Name="Buy" FontSize="17" Click="Buy_Click" Grid.Column="2" Grid.Row="0" Background="White" BorderThickness="0" Content="Корзина"></Button>
                         <StackPanel x:Name="searchproduct" Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="Фильтр: " Margin="10" TextAlignment="Left"/>
@@ -198,15 +205,9 @@
                                         <RowDefinition Height="*"></RowDefinition>
                                         <RowDefinition Height="3*"></RowDefinition>
                                     </Grid.RowDefinitions>
-                                    <Button Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20" Click="Button_Click">
-                                    </Button>
-                                    <Grid Grid.Column="0" Grid.Row="1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-
-                                    </Grid>
+                                    <Button x:Name="Download" Visibility="Hidden" Click="Download_Click" Grid.Column="0" Grid.Row="1" Content="Загрузить" FontSize="20" ></Button>
+                                    <Button Visibility="Hidden" Click="Play_Click" x:Name="Play" Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20" ></Button>
+                                    
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="3">
@@ -326,7 +327,7 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem x:Name="Onlyforadmin" Padding="5,0,5,0"  Header="Для разработчиков"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" >
+                <TabItem x:Name="Onlyforadmin" Padding="5,0,5,0"  Header="Модерация"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>

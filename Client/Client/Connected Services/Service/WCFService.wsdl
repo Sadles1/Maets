@@ -135,6 +135,48 @@
   <wsdl:message name="IWCFService_CheckActiveProfile_OutputMessage">
     <wsdl:part name="parameters" element="tns:CheckActiveProfileResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_GetProfileByFilter_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProfileByFilter" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetProfileByFilter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProfileByFilterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetGameImages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetGameImages" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetGameImages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetGameImagesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_AddComment_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddComment" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_AddComment_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddCommentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetAllGameComments_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllGameComments" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetAllGameComments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllGameCommentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetEasyProfile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEasyProfile" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetEasyProfile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEasyProfileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetWayToGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetWayToGame" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetWayToGame_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetWayToGameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_CheckMail_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMail" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_CheckMail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMailResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
   </wsdl:message>
@@ -239,6 +281,34 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckActiveProfile">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckActiveProfile" message="tns:IWCFService_CheckActiveProfile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckActiveProfileResponse" message="tns:IWCFService_CheckActiveProfile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetProfileByFilter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetProfileByFilter" message="tns:IWCFService_GetProfileByFilter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetProfileByFilterResponse" message="tns:IWCFService_GetProfileByFilter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetGameImages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetGameImages" message="tns:IWCFService_GetGameImages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetGameImagesResponse" message="tns:IWCFService_GetGameImages_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddComment">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddComment" message="tns:IWCFService_AddComment_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddCommentResponse" message="tns:IWCFService_AddComment_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllGameComments">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetAllGameComments" message="tns:IWCFService_GetAllGameComments_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetAllGameCommentsResponse" message="tns:IWCFService_GetAllGameComments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetEasyProfile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetEasyProfile" message="tns:IWCFService_GetEasyProfile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetEasyProfileResponse" message="tns:IWCFService_GetEasyProfile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetWayToGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetWayToGame" message="tns:IWCFService_GetWayToGame_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetWayToGameResponse" message="tns:IWCFService_GetWayToGame_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckMail">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMail" message="tns:IWCFService_CheckMail_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailResponse" message="tns:IWCFService_CheckMail_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
@@ -438,6 +508,69 @@
     </wsdl:operation>
     <wsdl:operation name="CheckActiveProfile">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckActiveProfile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProfileByFilter">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetProfileByFilter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetGameImages">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetGameImages" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddComment">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/AddComment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllGameComments">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetAllGameComments" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEasyProfile">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetEasyProfile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWayToGame">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetWayToGame" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckMail">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckMail" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

@@ -26,36 +26,28 @@ namespace Client
             InitializeComponent();
         }
 
-        async private void Register(string login, string name, string password, string mail, string telephone)//асинхронный метод для регистрации
-        {
-            bool result = false;
-            btnRegister.IsEnabled = false;
-            await Task.Run(() =>
-            {
-                try
-                {
-                    WCFServiceClient client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
-                    Service.Profile profile = new Service.Profile();
-                    profile.Login = login;
-                    profile.Mail = mail;
-                    string hashpassword = dp.HashPassword(password);
-                    profile.AccessRight = 1;
-                    profile.Telephone = telephone;
-                    profile.Name = name;
+        //async private void Register(string login, string name, string password, string mail, string telephone)//асинхронный метод для регистрации
+        //{
+        //    bool result = false;
+        //    btnRegister.IsEnabled = false;
+        //    await Task.Run(() =>
+        //    {
+        //        try
+        //        {
+                   
 
-                    client.Register(profile, hashpassword);
-                    MessageBox.Show("Success");
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);                  
-                }
-            });
-            btnRegister.IsEnabled = true;
-            if (result)
-                Close();
-        }
+                    
+        //            result = true;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);                  
+        //        }
+        //    });
+        //    btnRegister.IsEnabled = true;
+        //    if (result)
+        //        Close();
+        //}
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
@@ -70,7 +62,16 @@ namespace Client
                     throw new Exception("Поле почта не может быть пустым");
                 if (tbPassword.Text == "")
                     throw new Exception("Поле пароль не может быть пустым");
-                Register(tbLogin.Text, tbName.Text, tbPassword.Text, tbMail.Text, tbTelephone.Text);
+                WCFServiceClient client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
+                Service.Profile profile = new Service.Profile();
+                profile.Login = tbLogin.Text;
+                profile.Mail = tbMail.Text;
+                string hashpassword = dp.HashPassword(tbPassword.Text);
+                profile.AccessRight = 1;
+                profile.Telephone = tbTelephone.Text;
+                profile.Name = tbName.Text;
+                MailConfirmation q = new MailConfirmation(profile, hashpassword);
+                q.Show();
             }
             catch (Exception ex)
             {

@@ -1,20 +1,13 @@
-﻿using Client.Data;
-using Client.Data.ViewModels;
-using Client.Service;
+﻿using Client.Service;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
+using WinForms = System.Windows.Forms;
 namespace Client
 {
     /// <summary>
@@ -48,15 +41,24 @@ namespace Client
 
                 InitializeComponent();
                 Loaded += Window_Loaded;
-
-                if (profile.AccessRight == 3) Onlyforadmin.Visibility = Visibility.Visible;
+                Onlyforadmin.Visibility = Visibility.Hidden;
+                if (profile.AccessRight >= 2) Onlyforadmin.Visibility = Visibility.Visible;
 
             }
 
             else
                 throw new Exception("Ошибка подключения");
         }
+        public void reqestrefresh(Service.Profile reqestprof)
+        {
+            fr.Add(reqestprof);
+            if (fr.Count != 0)
+            {
+                Reaestfriends.Visibility = Visibility.Visible;
+                howmanynewfriends.Text = "+" + fr.Count;
 
+            }
+        }
         private void Window_Initialized(object sender, EventArgs e)
         {
             fr = client.GetFriendRequests(profile.ID).ToList();
@@ -64,9 +66,7 @@ namespace Client
             {
                 Reaestfriends.Visibility = Visibility.Visible;
                 howmanynewfriends.Text = "+" + fr.Count;
-                
-
-
+               
             }
             else Reaestfriends.Visibility = Visibility.Hidden;
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
@@ -256,12 +256,23 @@ namespace Client
 
         private void leftmouse_mylibrary(object sender, EventArgs e)
         {
-            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
-
-            int i = Lvm.SelectedIndex;
+            Service.Product idx = profile.Games[mylibrary.SelectedIndex];
+            string path = client.GetWayToGame(client.CheckProfile(profile.ID).ID, idx.Id) + "\\" + idx.Name + ".exe";
+            if (path == null || !File.Exists(path) )
+            {
+                Download.Visibility = Visibility.Visible;
+                Play.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                Download.Visibility = Visibility.Hidden;
+                Play.Visibility = Visibility.Visible;
+            }
+            int i = mylibrary.SelectedIndex;
             if (i != -1)
             {
-                tbgamename.Text = products[i].Name;
+                tbgamename.Visibility = Visibility.Visible;
+                tbgamename.Text = profile.Games[i].Name;
             }
 
         }
@@ -273,7 +284,7 @@ namespace Client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Вы запустили игру " + tbgamename.Text);
+            WinForms.MessageBox.Show("Вы запустили игру " + tbgamename.Text);
         }
 
         private void TextBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -340,7 +351,6 @@ namespace Client
             client.Disconnect(profile.ID);
             client.Close();
         }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
           refresh(ShopWindows.client.CheckActiveProfile(profile.ID));
@@ -398,6 +408,45 @@ namespace Client
             rf.Top = Top;
             rf.Left = Left;
             rf.Show();
+        }
+        
+        private void Download_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog openFileDialog = new FolderBrowserDialog();
+            Service.Product idg = profile.Games[mylibrary.SelectedIndex];
+            //   openFileDialog.Filter = "All files (*.*)";
+            // openFileDialog.CheckFileExists = false;
+            openFileDialog.ShowDialog();
+           string s = openFileDialog.SelectedPath;
+            s += @"\" + idg.Name;
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+           // profile.Games[0].Path = s;
+            //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
+            // System.Windows.MessageBox.Show(s);
+            dp.Download(s, idg.Id, profile.ID);
+            MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
+            MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
+            //}
+            // dp.Download();
+        }
+
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+            Service.Product idx = profile.Games[mylibrary.SelectedIndex];
+            string file = client.GetWayToGame(profile.ID, idx.Id) + @"\" + idx.Name + ".exe";
+            if (file!= null && File.Exists(file))
+                System.Diagnostics.Process.Start(file);
+            else WinForms.MessageBox.Show("Файл не найден");
+        }
+
+        private void AddGame_Click(object sender, RoutedEventArgs e)
+        {
+            NewGameAdd ng = new NewGameAdd();
+            ng.Left = Left;
+            ng.Top = Top;
+            Visibility = Visibility.Hidden;
+            ng.Show();
         }
     }
 }

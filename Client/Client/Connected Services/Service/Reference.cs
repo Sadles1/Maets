@@ -580,6 +580,115 @@ namespace Client.Service {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Comment", Namespace="http://schemas.datacontract.org/2004/07/Service")]
+    [System.SerializableAttribute()]
+    public partial class Comment : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ScoreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string commentField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int idField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int idProductField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int idUserField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Score {
+            get {
+                return this.ScoreField;
+            }
+            set {
+                if ((this.ScoreField.Equals(value) != true)) {
+                    this.ScoreField = value;
+                    this.RaisePropertyChanged("Score");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string comment {
+            get {
+                return this.commentField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.commentField, value) != true)) {
+                    this.commentField = value;
+                    this.RaisePropertyChanged("comment");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int id {
+            get {
+                return this.idField;
+            }
+            set {
+                if ((this.idField.Equals(value) != true)) {
+                    this.idField = value;
+                    this.RaisePropertyChanged("id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int idProduct {
+            get {
+                return this.idProductField;
+            }
+            set {
+                if ((this.idProductField.Equals(value) != true)) {
+                    this.idProductField = value;
+                    this.RaisePropertyChanged("idProduct");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int idUser {
+            get {
+                return this.idUserField;
+            }
+            set {
+                if ((this.idUserField.Equals(value) != true)) {
+                    this.idUserField = value;
+                    this.RaisePropertyChanged("idUser");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", CallbackContract=typeof(Client.Service.IWCFServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IWCFService {
@@ -591,10 +700,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
-        void AddProduct(Client.Service.Product product);
+        void AddProduct(int idModerateProduct);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
-        System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product);
+        System.Threading.Tasks.Task AddProductAsync(int idModerateProduct);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
         void Disconnect(int Id);
@@ -645,10 +754,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
-        void AddModerationProduct(Client.Service.Product product);
+        void AddModerationProduct(Client.Service.Product product, byte[][] Images);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
-        System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product);
+        System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product, byte[][] Images);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         void DeleteAccount(int id);
@@ -733,6 +842,48 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckActiveProfile", ReplyAction="http://tempuri.org/IWCFService/CheckActiveProfileResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> CheckActiveProfileAsync(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProfileByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProfileByFilterResponse")]
+        Client.Service.Profile[] GetProfileByFilter(string filter);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProfileByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProfileByFilterResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile[]> GetProfileByFilterAsync(string filter);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetGameImages", ReplyAction="http://tempuri.org/IWCFService/GetGameImagesResponse")]
+        byte[][] GetGameImages(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetGameImages", ReplyAction="http://tempuri.org/IWCFService/GetGameImagesResponse")]
+        System.Threading.Tasks.Task<byte[][]> GetGameImagesAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
+        void AddComment(int idUSer, int idGame, string Comment, int Score);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
+        System.Threading.Tasks.Task AddCommentAsync(int idUSer, int idGame, string Comment, int Score);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllGameComments", ReplyAction="http://tempuri.org/IWCFService/GetAllGameCommentsResponse")]
+        Client.Service.Comment[] GetAllGameComments(int idGame);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllGameComments", ReplyAction="http://tempuri.org/IWCFService/GetAllGameCommentsResponse")]
+        System.Threading.Tasks.Task<Client.Service.Comment[]> GetAllGameCommentsAsync(int idGame);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetEasyProfile", ReplyAction="http://tempuri.org/IWCFService/GetEasyProfileResponse")]
+        Client.Service.Profile GetEasyProfile(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetEasyProfile", ReplyAction="http://tempuri.org/IWCFService/GetEasyProfileResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> GetEasyProfileAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetWayToGame", ReplyAction="http://tempuri.org/IWCFService/GetWayToGameResponse")]
+        string GetWayToGame(int idUser, int idGame);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetWayToGame", ReplyAction="http://tempuri.org/IWCFService/GetWayToGameResponse")]
+        System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
+        string CheckMail(string Mail);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
+        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -745,7 +896,7 @@ namespace Client.Service {
         void ConnectionFromAnotherDevice();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetFriendRequest")]
-        void GetFriendRequest(int idSender);
+        void GetFriendRequest(Client.Service.Profile pr);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/FriendOnline")]
         void FriendOnline(int idUser);
@@ -787,12 +938,12 @@ namespace Client.Service {
             return base.Channel.ConnectAsync(Login, Password);
         }
         
-        public void AddProduct(Client.Service.Product product) {
-            base.Channel.AddProduct(product);
+        public void AddProduct(int idModerateProduct) {
+            base.Channel.AddProduct(idModerateProduct);
         }
         
-        public System.Threading.Tasks.Task AddProductAsync(Client.Service.Product product) {
-            return base.Channel.AddProductAsync(product);
+        public System.Threading.Tasks.Task AddProductAsync(int idModerateProduct) {
+            return base.Channel.AddProductAsync(idModerateProduct);
         }
         
         public void Disconnect(int Id) {
@@ -859,12 +1010,12 @@ namespace Client.Service {
             return base.Channel.CheckBlacklistAsync(IdMainUser, IdSeconUser);
         }
         
-        public void AddModerationProduct(Client.Service.Product product) {
-            base.Channel.AddModerationProduct(product);
+        public void AddModerationProduct(Client.Service.Product product, byte[][] Images) {
+            base.Channel.AddModerationProduct(product, Images);
         }
         
-        public System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product) {
-            return base.Channel.AddModerationProductAsync(product);
+        public System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product, byte[][] Images) {
+            return base.Channel.AddModerationProductAsync(product, Images);
         }
         
         public void DeleteAccount(int id) {
@@ -978,6 +1129,62 @@ namespace Client.Service {
         public System.Threading.Tasks.Task<Client.Service.Profile> CheckActiveProfileAsync(int idUser) {
             return base.Channel.CheckActiveProfileAsync(idUser);
         }
+        
+        public Client.Service.Profile[] GetProfileByFilter(string filter) {
+            return base.Channel.GetProfileByFilter(filter);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile[]> GetProfileByFilterAsync(string filter) {
+            return base.Channel.GetProfileByFilterAsync(filter);
+        }
+        
+        public byte[][] GetGameImages(int id) {
+            return base.Channel.GetGameImages(id);
+        }
+        
+        public System.Threading.Tasks.Task<byte[][]> GetGameImagesAsync(int id) {
+            return base.Channel.GetGameImagesAsync(id);
+        }
+        
+        public void AddComment(int idUSer, int idGame, string Comment, int Score) {
+            base.Channel.AddComment(idUSer, idGame, Comment, Score);
+        }
+        
+        public System.Threading.Tasks.Task AddCommentAsync(int idUSer, int idGame, string Comment, int Score) {
+            return base.Channel.AddCommentAsync(idUSer, idGame, Comment, Score);
+        }
+        
+        public Client.Service.Comment[] GetAllGameComments(int idGame) {
+            return base.Channel.GetAllGameComments(idGame);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Comment[]> GetAllGameCommentsAsync(int idGame) {
+            return base.Channel.GetAllGameCommentsAsync(idGame);
+        }
+        
+        public Client.Service.Profile GetEasyProfile(int id) {
+            return base.Channel.GetEasyProfile(id);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> GetEasyProfileAsync(int id) {
+            return base.Channel.GetEasyProfileAsync(id);
+        }
+        
+        public string GetWayToGame(int idUser, int idGame) {
+            return base.Channel.GetWayToGame(idUser, idGame);
+        }
+        
+        public System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame) {
+            return base.Channel.GetWayToGameAsync(idUser, idGame);
+        }
+        
+        public string CheckMail(string Mail) {
+            return base.Channel.CheckMail(Mail);
+        }
+        
+        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail) {
+            return base.Channel.CheckMailAsync(Mail);
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -985,10 +1192,10 @@ namespace Client.Service {
     public interface IDownloadService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.IO.Stream DownloadProduct(int idProduct);
+        System.IO.Stream DownloadProduct(int idUser, int idProduct, string path);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct);
+        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idUser, int idProduct, string path);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1018,12 +1225,12 @@ namespace Client.Service {
                 base(binding, remoteAddress) {
         }
         
-        public System.IO.Stream DownloadProduct(int idProduct) {
-            return base.Channel.DownloadProduct(idProduct);
+        public System.IO.Stream DownloadProduct(int idUser, int idProduct, string path) {
+            return base.Channel.DownloadProduct(idUser, idProduct, path);
         }
         
-        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct) {
-            return base.Channel.DownloadProductAsync(idProduct);
+        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idUser, int idProduct, string path) {
+            return base.Channel.DownloadProductAsync(idUser, idProduct, path);
         }
     }
 }

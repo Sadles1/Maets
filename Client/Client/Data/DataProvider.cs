@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+
+
 namespace Client
 {
     class DataProvider
@@ -28,6 +30,21 @@ namespace Client
             }
         }
 
+        public byte[] GetByteFromImage(string file)
+        {
+                byte[] data;
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                BitmapFrame image = BitmapFrame.Create(new Uri(file));//В изображение записываем массив байтов
+                encoder.Frames.Add(image);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    encoder.Save(ms);
+                    data = ms.ToArray();
+                }
+
+            return data; 
+            
+        }
         public string HashPassword(string Password)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(Password);
@@ -37,14 +54,25 @@ namespace Client
                 password += b;
             return password;
         }
-        async public void Download(string path, int idGame)
+         public async Task<Service.Profile> GetProfileAsync(int idUser)
+        {
+          
+            Service.Profile pr = ShopWindows.client.CheckProfile(idUser);
+            return pr;
+        }    
+        //public async Task<Service.Profile> GetProfileAsync(int idUser)
+        //{
+        //    var respounce = await GetProfileAsync(idUser);
+        //    return respounce;
+        //}
+        async public void Download(string path, int idGame, int idUser)
         {
             await Task.Run(() =>
             {
                 try
                 {
                     DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
-                    Stream stream = download.DownloadProduct(idGame);
+                    Stream stream = download.DownloadProduct(idUser,idGame,path);
                     byte[] buffer = new byte[16 * 1024];
                     byte[] data;
                     using (MemoryStream ms = new MemoryStream())
@@ -57,8 +85,13 @@ namespace Client
                         data = ms.ToArray();
                     }
                     File.WriteAllBytes($@"{path}.zip", data);
-                   // ZipFile.ExtractToDirectory($@"{path}.zip", path);
-
+                    //string dbDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    ZipFile.ExtractToDirectory($@"{path}.zip", path);
+                    
                     MessageBox.Show("Загрузка завершена");
 
                     download.Close();
@@ -69,5 +102,8 @@ namespace Client
                 }
             });
         }
+
     }
 }
+
+

@@ -35,8 +35,22 @@ namespace Client
             tv = tv1;
             Service.Profile productnow = tv1;
             InitializeComponent();
+            btnBack.Content = " <-Назад";
+            if (ShopWindows.client.CheckBlacklist(Resiver.ID, Sender.ID))
+            {
+                blacklistgo.Visibility = Visibility.Hidden;
+                blacklistout.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                blacklistgo.Visibility = Visibility.Visible;
+                blacklistout.Visibility = Visibility.Hidden;
+            }
             if (ShopWindows.client.CheckBlacklist(Sender.ID, Resiver.ID))
             {
+                
+                btnChat.Visibility = Visibility.Hidden;
+                btnnewfriend.Visibility = Visibility.Hidden;
                 imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
                 lbLogin.Content = productnow.Login;
                 if (tv.status)
@@ -49,11 +63,15 @@ namespace Client
                 // Lv.ItemsSource = tv.Friends.ToList() ;
                 Inicialize(productnow);
                 blacklistgo.Content = "Дoбавить пользователя \n в Чёрный список";
+                
+                btnChat.Visibility = Visibility.Visible;
+                btnnewfriend.Visibility = Visibility.Visible;
                 Loaded += Window_Loaded;
-                ShopWindows.client.CheckProfile(tv1.ID);
+               
             }
             
         }
+        
         public bool checkfriends()
         {  
             List<Service.Profile> myfriends = MainWindow.shopWindows.profile.Friends.ToList();
@@ -84,7 +102,7 @@ namespace Client
             tbFriendUser.Text = "Друзья пользователя " + productnow.Login;
             //Service.WCFServiceClient client1 = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
 
-            btnBack.Content = " <-Назад";
+            
             // tbgame.Text = productnow.Name;
             // tbgame1.Text = productnow.Login;
             imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
@@ -210,7 +228,7 @@ namespace Client
 
         private void Blacklistout_Click(object sender, RoutedEventArgs e)
         {
-            ShopWindows.client.AddToBlacklist(Sender.ID, Resiver.ID);
+            ShopWindows.client.RemoveFromBlacklist(Sender.ID, Resiver.ID);
             blacklistgo.Visibility = Visibility.Visible;
             blacklistout.Visibility = Visibility.Hidden;
            // blacklistout.Content = "Удалить из \n из Чёрного списка";

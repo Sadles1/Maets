@@ -19,9 +19,12 @@ namespace Client
     /// </summary>
     public partial class Product : Window
     {
+        int ishop = 0;
         public Service.Profile prof;
         public static Korzina buyProduct;
         public Service.Product tv1 = new Service.Product();
+        List<byte[]> screns;
+        List<ModelImage> modelProducts;
         DataProvider dp = new DataProvider();
         public bool check(Service.Product pr)
         {
@@ -68,8 +71,28 @@ namespace Client
         }
         private void Inicialize(Service.Product productnow)
         {
+            screns = new List<byte[]>();
+            screns.Add(productnow.MainImage);
+            for (int i = 0; i < ShopWindows.client.GetGameImages(productnow.Id).ToList().Count; i++)
+            {
+                screns.Add(ShopWindows.client.GetGameImages(productnow.Id).ToList()[i]);
+            }
+            ;
+             modelProducts = new List<ModelImage>();
+            foreach (byte[] product in screns)
+            {
+                ModelImage modelProduct = new ModelImage();
+                modelProducts.Add(modelProduct.MakeModelImage(product));
+            }
+            
+
+           Screenshoot.Items.Add(modelProducts[ishop]);
+            Screenshoot1.Items.Add(modelProducts[ishop + 1]);
+            Screenshoot2.Items.Add(modelProducts[ishop + 2]);
+            Screenshoot3.Items.Add(modelProducts[ishop + 3]);
+            Screenshoot4.Items.Add(modelProducts[ishop + 4]);
+            Screenshoot5.Items.Add(modelProducts[ishop + 5]);
             tbgameName.Text = productnow.Name;
-            Screenshoot.Source = dp.GetImageFromByte(productnow.MainImage);
             tbDescription.Text = productnow.Description;
             tbDeveloper.Text = productnow.Developer;
             tbPublisher.Text = productnow.Publisher;
@@ -101,5 +124,43 @@ namespace Client
             this.Close();
         }
 
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (ishop >= 0)
+            {
+                ishop--;
+                Screenshoot.Items.Clear();
+                Screenshoot.Items.Add(modelProducts[ishop]);
+                if (ishop == 0)
+                {
+                    Next.IsEnabled = true;
+                    Back.IsEnabled = false;
+                    Screenshoot.Items.Clear();
+                    Screenshoot.Items.Add(modelProducts[0]);
+                    //Back.Visibility = Visibility.Hidden;
+                    //Next.Visibility = Visibility.Visible;
+                }
+            }
+
+        }
+
+        private void Next_Click(object sender, RoutedEventArgs e)
+        {
+            if (modelProducts.Count >= ishop + 1)
+            {
+                ishop++;
+
+                Screenshoot.Items.Clear();
+
+                Screenshoot.Items.Add(modelProducts[ishop]);
+                if ((ishop+1) == modelProducts.Count)
+                {
+                    Next.IsEnabled = false;
+                    Back.IsEnabled = true;
+                    // Next.Visibility = Visibility.Hidden;
+                    //Back.Visibility = Visibility.Visible;
+                }
+            }
+        }
     }
 }

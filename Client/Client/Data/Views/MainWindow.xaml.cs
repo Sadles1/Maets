@@ -24,6 +24,7 @@ namespace Client
     public partial class MainWindow : Window
     {
         static public ShopWindows shopWindows;
+        static public RegisterWindows register;
         DataProvider dp = new DataProvider();
         public MainWindow()
         {
@@ -33,6 +34,8 @@ namespace Client
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+           // tbLogin.Text = "p4shark";
+          //  tbPassword.Password = "qwerty90";
             tbLogin.Text = "admin";
             tbPassword.Password = "admin";
         }
@@ -58,7 +61,7 @@ namespace Client
 
         private void Register_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindows register = new RegisterWindows();
+            register = new RegisterWindows();
 
             register.Show();
             this.Close();
