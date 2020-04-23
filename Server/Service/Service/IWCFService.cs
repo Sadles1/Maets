@@ -12,9 +12,6 @@ namespace Service
         Profile Connect(string Login, string Password);
 
         [OperationContract(IsOneWay = true)]
-        void AddProduct(int idModerateProduct);
-
-        [OperationContract(IsOneWay = true)]
         void Disconnect(int Id);
 
         [OperationContract]
@@ -58,7 +55,7 @@ namespace Service
         void RemoveFromBlacklist(int id, int idUserInBlacklist);
 
         [OperationContract(IsOneWay = true)]
-        void SendMsg(UserMessage msg);       
+        void SendMsg(UserMessage msg);
 
         [OperationContract(IsOneWay = true)]
         void SaveCart(int idUser, List<Product> Cart);
@@ -94,7 +91,7 @@ namespace Service
 
 
         [OperationContract]
-        void AddComment(int idUSer,int idGame,string Comment,int Score);
+        void AddComment(int idUSer, int idGame, string Comment, int Score);
 
 
         [OperationContract]
@@ -108,6 +105,12 @@ namespace Service
 
         [OperationContract]
         string CheckMail(string Mail);
+
+        [OperationContract]
+        List<Product> GetModerationProduct(int idUser);
+
+        [OperationContract(IsOneWay = true)]
+        void ChangeModerationStatus(int idUser, int idModerationProduct, bool result);
     }
 
     public interface IWCFServiceCalbback
@@ -129,6 +132,6 @@ namespace Service
     public interface IDownloadService
     {
         [OperationContract]
-        Stream DownloadProduct(int idUser,int idProduct,string path);
+        Stream DownloadProduct(int idProduct, int idUser, string path);
     }
 }

@@ -10,8 +10,7 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
@@ -148,7 +147,7 @@ namespace Service
         public void AddModerationProduct(Product product, List<byte[]> Images)
         {
             using (postgresContext context = new postgresContext())
-            {               
+            {
                 TModerateProducts TModerateProduct = new TModerateProducts();
                 List<TModerateProducts> moderateProducts = context.TModerateProducts.ToList();
 
@@ -159,38 +158,46 @@ namespace Service
                 TModerateProduct.RequestDate = DateTime.Now.Date;
                 TModerateProduct.RetailPrice = product.RetailPrice;
                 TModerateProduct.WholesalePrice = product.WholesalePrice;
+                TModerateProduct.ResultModeration = null;
 
                 //Если такого же разработчика нету в БД, то добавляем
                 List<TDeveloper> TDevelopers = context.TDeveloper.ToList();
-                if (TDevelopers.FirstOrDefault(u => u.Name == product.Developer) == null)
+                TDeveloper developer = TDevelopers.FirstOrDefault(u => u.Name == product.Developer);
+                if (developer == null)
                 {
                     int ID = TDevelopers.Count == 0 ? 1 : (TDevelopers.Max(u => u.Id) + 1);
+                    TModerateProduct.IdDeveloper = ID;
                     context.TDeveloper.Add(new TDeveloper { Id = ID, Name = product.Developer });
+                    context.SaveChanges();
                 }
+                else
+                    TModerateProduct.IdDeveloper = developer.Id;
 
                 //Если такого же издателя нету в БД, то добавляем
                 List<TPublisher> TPublishers = context.TPublisher.ToList();
-                if (TPublishers.FirstOrDefault(u => u.Name == product.Publisher) == null)
-                { 
+                TPublisher publisher = TPublishers.FirstOrDefault(u => u.Name == product.Publisher);
+                if (publisher == null)
+                {
                     int ID = TPublishers.Count == 0 ? 1 : (TPublishers.Max(u => u.Id) + 1);
-
+                    TModerateProduct.IdPublisher = ID;
                     context.TPublisher.Add(new TPublisher { Id = ID, Name = product.Publisher });
+                    context.SaveChanges();
                 }
-
-                TModerateProduct.IdDeveloper = TDevelopers.FirstOrDefault(u => u.Name == product.Developer).Id;
-                TModerateProduct.IdPublisher = TPublishers.FirstOrDefault(u => u.Name == product.Publisher).Id;
-
+                else
+                    TModerateProduct.IdPublisher = publisher.Id;
                 //Указываем путь
-                string path = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{product.Id}\";
+                string path = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{TModerateProduct.Id}";
+                DirectoryInfo dirInfo = new DirectoryInfo($@"{path}\Images");
+                dirInfo.Create();
 
                 //записываем основное изображение
-                File.WriteAllBytes($@"{path}MainImage.encr", product.MainImage);
+                File.WriteAllBytes($@"{path}\MainImage.encr", product.MainImage);
 
                 //Записываем все остальные изображения игры
                 int i = 1;
                 foreach (byte[] image in Images)
                 {
-                    File.WriteAllBytes($@"{path}\Images\{i}.encr",image);
+                    File.WriteAllBytes($@"{path}\Images\{i}.encr", image);
                     i++;
                 }
 
@@ -215,35 +222,6 @@ namespace Service
                 context.TModerateEmployers.Add(employer);
 
                 context.TModerateProducts.Add(TModerateProduct);
-                context.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Метод для добавления продукта в магазин
-        /// </summary>
-        public void AddProduct(int idModerateProduct)
-        {
-            using (postgresContext context = new postgresContext())
-            {
-                TProducts TProduct = new TProducts();
-                TModerateProducts moderateProduct = context.TModerateProducts.FirstOrDefault(u=>u.Id == idModerateProduct);
-                List<TProducts> products = context.TProducts.ToList();
-
-                TProduct.Id = products.Count > 0 ? (products.Max(u => u.Id) + 1) : 1;
-                TProduct.Name = moderateProduct.Name;
-                TProduct.Description = moderateProduct.Description;
-                TProduct.IdDeveloper = moderateProduct.IdDeveloper;
-                TProduct.IdPublisher = moderateProduct.IdPublisher;
-
-                //Сохраняем изменения
-                context.SaveChanges();
-
-                TProduct.Quantity = 100;
-                TProduct.ReleaseDate = DateTime.Now.Date;
-                TProduct.RetailPrice = moderateProduct.RetailPrice;
-                TProduct.WholesalePrice = moderateProduct.WholesalePrice;
-                context.TProducts.Add(TProduct);
                 context.SaveChanges();
             }
         }
@@ -388,7 +366,7 @@ namespace Service
 
         public string CheckMail(string Mail)
         {
-            string Code = dp.RandomString(4);
+            string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
             MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
             MailAddress to = new MailAddress(Mail);
             MailMessage message = new MailMessage(from, to);
@@ -482,7 +460,7 @@ namespace Service
                 {
                     //Формируем профиль
                     Profile profile = dp.FormActiveUser(Tlogin);
-                    profile.status = true;
+                    profile.status = "Online";
 
                     //Записываем подключеного пользователя
                     OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
@@ -638,7 +616,7 @@ namespace Service
         /// <summary>
         /// Метод для загрузки продукта
         /// </summary>
-        public Stream DownloadProduct(int idUser, int idProduct, string path)
+        public Stream DownloadProduct(int idProduct, int idUser, string path)
         {
 
             string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
@@ -647,13 +625,8 @@ namespace Service
             File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
 
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
-
-            //Записываем файл в массив байтов
-            byte[] buffer = File.ReadAllBytes(pathToGame);
-
-            //Передаём его через поток
-            Stream stream = new MemoryStream(buffer);
-            return stream;
+            FileStream gameFile = File.OpenRead(pathToGame);
+            return gameFile;
         }
 
 
@@ -944,6 +917,83 @@ namespace Service
                 }
             }
             return null;
+        }
+
+        public void ChangeModerationStatus(int idUser, int idModerationProduct, bool result)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                List<TModerateEmployers> employers = context.TModerateEmployers.Where(u => u.IdModerateProduct == idModerationProduct).ToList();
+                TModerateEmployers employer = employers.FirstOrDefault(u => u.IdEmployee == idUser);
+                employer.Result = result;
+                context.Update(employer);
+                context.SaveChanges();
+
+                int Result = 0;
+                if (employers.Count == 2)
+                {
+                    foreach(TModerateEmployers moderate in employers)
+                    {
+                        if (moderate.Result == null)
+                            return;
+                        Result += moderate.Result == true ? 1 : -1;
+                    }
+                    if (Result == 2)
+                    {
+                        dp.AddProduct(idModerationProduct);
+                        dp.RemoveFromModeration(idModerationProduct);
+                    }
+                    else if (Result == -2)
+                    {
+                        dp.RemoveFromModeration(idModerationProduct);
+                    }
+                    else
+                    {
+                        List<int> idModerators = context.TUsers.Where(u=>u.AccessRight == 3).Select(u => u.Id).ToList();
+                        foreach (TModerateEmployers moderate in employers)
+                            idModerators.Remove(moderate.IdEmployee);
+                        Random r = new Random();
+
+                        TModerateEmployers newModerator = new TModerateEmployers();
+                        newModerator.IdEmployee = idModerators[r.Next(0,idModerators.Count)];
+                        newModerator.IdModerateProduct = idModerationProduct;
+
+                        context.TModerateEmployers.Add(newModerator);
+                        context.SaveChanges();
+                    } 
+                }
+                else if (employers.Count == 3)
+                {
+                    if (result == true)
+                    {
+                        dp.AddProduct(idModerationProduct);
+                        dp.RemoveFromModeration(idModerationProduct);
+                    }
+                    else
+                    {
+                        dp.RemoveFromModeration(idModerationProduct);
+                    }
+                }
+            }
+        }
+
+        public List<Product> GetModerationProduct(int idUser)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                List<int> idModerateProduct = context.TModerateEmployers.Where(u => u.IdEmployee == idUser && u.Result == null).Select(u => u.IdModerateProduct).ToList();
+                List<TModerateProducts> TmoderateProducts = context.TModerateProducts.ToList();
+                List<Product> products = new List<Product>();
+                foreach (int id in idModerateProduct)
+                {
+                    TModerateProducts product = TmoderateProducts.FirstOrDefault(u => u.Id == id);
+                    Product pr = new Product();
+                    pr.Id = product.Id;
+                    pr.Name = product.Name;
+                    products.Add(pr);
+                }
+                return products;
+            }
         }
     }
 }

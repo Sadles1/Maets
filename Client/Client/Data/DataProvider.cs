@@ -53,55 +53,7 @@ namespace Client
             foreach (byte b in bytes)
                 password += b;
             return password;
-        }
-         public async Task<Service.Profile> GetProfileAsync(int idUser)
-        {
-          
-            Service.Profile pr = ShopWindows.client.CheckProfile(idUser);
-            return pr;
-        }    
-        //public async Task<Service.Profile> GetProfileAsync(int idUser)
-        //{
-        //    var respounce = await GetProfileAsync(idUser);
-        //    return respounce;
-        //}
-        async public void Download(string path, int idGame, int idUser)
-        {
-            await Task.Run(() =>
-            {
-                try
-                {
-                    DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
-                    Stream stream = download.DownloadProduct(idUser,idGame,path);
-                    byte[] buffer = new byte[16 * 1024];
-                    byte[] data;
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        int read;
-                        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            ms.Write(buffer, 0, read);
-                        }
-                        data = ms.ToArray();
-                    }
-                    File.WriteAllBytes($@"{path}.zip", data);
-                    //string dbDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                    ZipFile.ExtractToDirectory($@"{path}.zip", path);
-                    
-                    MessageBox.Show("Загрузка завершена");
-
-                    download.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
+        }      
 
     }
 }

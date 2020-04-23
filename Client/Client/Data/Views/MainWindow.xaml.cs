@@ -36,8 +36,8 @@ namespace Client
         {
            // tbLogin.Text = "p4shark";
           //  tbPassword.Password = "qwerty90";
-            tbLogin.Text = "admin";
-            tbPassword.Password = "admin";
+            tbLogin.Text = "Sadles";
+            tbPassword.Password = "zxcv1234";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)

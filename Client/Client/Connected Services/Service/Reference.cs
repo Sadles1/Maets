@@ -1192,10 +1192,10 @@ namespace Client.Service {
     public interface IDownloadService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.IO.Stream DownloadProduct(int idUser, int idProduct, string path);
+        System.IO.Stream DownloadProduct(int idProduct, int idUser, string path);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idUser, int idProduct, string path);
+        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1225,12 +1225,12 @@ namespace Client.Service {
                 base(binding, remoteAddress) {
         }
         
-        public System.IO.Stream DownloadProduct(int idUser, int idProduct, string path) {
-            return base.Channel.DownloadProduct(idUser, idProduct, path);
+        public System.IO.Stream DownloadProduct(int idProduct, int idUser, string path) {
+            return base.Channel.DownloadProduct(idProduct, idUser, path);
         }
         
-        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idUser, int idProduct, string path) {
-            return base.Channel.DownloadProductAsync(idUser, idProduct, path);
+        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path) {
+            return base.Channel.DownloadProductAsync(idProduct, idUser, path);
         }
     }
 }

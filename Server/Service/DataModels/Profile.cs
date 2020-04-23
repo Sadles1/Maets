@@ -17,7 +17,7 @@ namespace Service
         public string Name { get; set; }
         public string Mail { get; set; }
         public string Telephone { get; set; }
-        public bool status { get; set; }
+        public string status { get; set; }
         public double Money { get; set; }
         public double Discount { get; set; }
     }

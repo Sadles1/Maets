@@ -393,8 +393,8 @@
   <xs:element name="DownloadProduct">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="idUser" type="xs:int" />
         <xs:element minOccurs="0" name="idProduct" type="xs:int" />
+        <xs:element minOccurs="0" name="idUser" type="xs:int" />
         <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>

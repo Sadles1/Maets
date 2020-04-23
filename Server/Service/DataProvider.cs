@@ -87,9 +87,9 @@ namespace Service
 
             //Все данные получем через связанную таблицу
             profile.Mail = Tlogin.IdNavigation.Mail;
-            profile.Name = Tlogin.IdNavigation.Name;          
-            profile.Telephone = Tlogin.IdNavigation.Telephone;             
-            
+            profile.Name = Tlogin.IdNavigation.Name;
+            profile.Telephone = Tlogin.IdNavigation.Telephone;
+
             //Определяем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
 
@@ -99,7 +99,7 @@ namespace Service
             {
                 //Загружаем таблицу TLogins
                 List<TLogin> TLogins = context.TLogin.ToList();
-                
+
                 //Формируем список друзей
                 if (File.Exists($@"{path}Friends.json"))
                 {
@@ -123,7 +123,7 @@ namespace Service
             profile.ID = Tlogin.Id;
             profile.Login = Tlogin.Login;
 
-            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null;
+            profile.status = WCFService.onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID) != null ? "Online" : "Offline";
 
             //Получем основное изображение профиля
             using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\MainImage.encr"))
@@ -178,7 +178,7 @@ namespace Service
 
         public List<Product> GetUserGames(int id)
         {
-            List<Product> Games = new List<Product>(); 
+            List<Product> Games = new List<Product>();
             using (postgresContext context = new postgresContext())
             {
                 List<int> idGames = context.TDeals.Where(u => u.IdBuyers == id && u.Wholesale == false).Select(u => u.IdProduct).ToList();
@@ -194,13 +194,13 @@ namespace Service
 
         public void CalculateGameScore(int idGame)
         {
-            using(postgresContext context = new postgresContext())
+            using (postgresContext context = new postgresContext())
             {
                 //Находим нужную нам игру
-                TProducts product = context.TProducts.FirstOrDefault(u=>u.Id == idGame);
+                TProducts product = context.TProducts.FirstOrDefault(u => u.Id == idGame);
 
                 //Вычисляем её среднюю оценку
-                product.Rate = context.TComments.Where(u=>u.IdProduct == idGame).Average(u=>u.Score);
+                product.Rate = context.TComments.Where(u => u.IdProduct == idGame).Average(u => u.Score);
 
                 //Обновляем её в БД
                 context.TProducts.Update(product);
@@ -221,18 +221,94 @@ namespace Service
             return comment;
         }
 
-        public string RandomString(int length)
+        public string GenRandomString(string Alphabet, int Length)
         {
-            var result = new char[length];
-            var r = new Random();
-            for (int i = 0; i < result.Length; i++)
+            //создаем объект Random, генерирующий случайные числа
+            Random rnd = new Random();
+            //объект StringBuilder с заранее заданным размером буфера под результирующую строку
+            StringBuilder sb = new StringBuilder(Length - 1);
+            //переменную для хранения случайной позиции символа из строки Alphabet
+            int Position = 0;
+            for (int i = 0; i < Length; i++)
             {
-                do
-                    result[i] = (char)r.Next(127);
-                while (result[i] < '!');
+                //получаем случайное число от 0 до последнего
+                //символа в строке Alphabet
+                Position = rnd.Next(0, Alphabet.Length - 1);
+                //добавляем выбранный символ в объект
+                //StringBuilder
+                sb.Append(Alphabet[Position]);
             }
-            return new string(result);
+            //Возвращаем сгенерированную строку
+            return sb.ToString();
         }
+
+        public void RemoveFromModeration(int idModerationProduct)
+        {
+            using(postgresContext context = new postgresContext())
+            {
+
+                string pathToModeratateProduct = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{idModerationProduct}";
+
+                //Удалить все файлы
+                if(Directory.Exists(pathToModeratateProduct))
+                    foreach (string newPath in Directory.GetFiles(pathToModeratateProduct, "*.*", SearchOption.AllDirectories))
+                        File.Delete(newPath);
+
+                List<TModerateEmployers> moderateEmployers = context.TModerateEmployers.Where(u => u.IdModerateProduct == idModerationProduct).ToList();
+                foreach (TModerateEmployers moderator in moderateEmployers)
+                    context.TModerateEmployers.Remove(moderator);
+
+                context.SaveChanges();
+
+                TModerateProducts moderateProduct = context.TModerateProducts.FirstOrDefault(u => u.Id == idModerationProduct);
+                context.TModerateProducts.Remove(moderateProduct);
+                context.SaveChanges();
+            }
+        }
+
+
+        /// <summary>
+        /// Метод для добавления продукта в магазин
+        /// </summary>
+        public void AddProduct(int idModerateProduct)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TProducts TProduct = new TProducts();
+                TModerateProducts moderateProduct = context.TModerateProducts.FirstOrDefault(u => u.Id == idModerateProduct);
+                List<TProducts> products = context.TProducts.ToList();
+
+                TProduct.Id = products.Count > 0 ? (products.Max(u => u.Id) + 1) : 1;
+                TProduct.Name = moderateProduct.Name;
+                TProduct.Description = moderateProduct.Description;
+                TProduct.IdDeveloper = moderateProduct.IdDeveloper;
+                TProduct.IdPublisher = moderateProduct.IdPublisher;
+
+                string pathToModeratateProduct = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{idModerateProduct}";
+                string pathToProduct = $@"{BaseSettings.Default.SourcePath}\Products\{TProduct.Id}";
+
+                //Создать идентичное дерево каталогов
+                foreach (string dirPath in Directory.GetDirectories(pathToModeratateProduct, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(pathToModeratateProduct, pathToProduct));
+
+                //Скопировать все файлы. И перезаписать(если такие существуют)
+                foreach (string newPath in Directory.GetFiles(pathToModeratateProduct, "*.*", SearchOption.AllDirectories))
+                    File.Copy(newPath, newPath.Replace(pathToModeratateProduct, pathToProduct), true);
+
+                //Удалить все файлы
+                foreach (string newPath in Directory.GetFiles(pathToModeratateProduct, "*.*", SearchOption.AllDirectories))
+                    File.Delete(newPath);
+
+
+                TProduct.Quantity = 100;
+                TProduct.ReleaseDate = DateTime.Now.Date;
+                TProduct.RetailPrice = moderateProduct.RetailPrice;
+                TProduct.WholesalePrice = moderateProduct.WholesalePrice;
+                context.TProducts.Add(TProduct);
+                context.SaveChanges();
+            }
+        }
+
 
     }
 }

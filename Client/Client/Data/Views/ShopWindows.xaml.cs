@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -417,19 +419,55 @@ namespace Client
             //   openFileDialog.Filter = "All files (*.*)";
             // openFileDialog.CheckFileExists = false;
             openFileDialog.ShowDialog();
-           string s = openFileDialog.SelectedPath;
+            string s = openFileDialog.SelectedPath;
             s += @"\" + idg.Name;
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-           // profile.Games[0].Path = s;
-            //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
-            // System.Windows.MessageBox.Show(s);
-            dp.Download(s, idg.Id, profile.ID);
-            MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
-            MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
-            //}
-            // dp.Download();
+            DownloadGame(s, idg.Id, profile.ID);
+            Play.Visibility = Visibility.Visible;
+            Download.Visibility = Visibility.Hidden;
+
         }
+
+        async public void DownloadGame(string path, int idGame, int idUser)
+        {
+            Play.IsEnabled = false;
+            await Task.Run(() =>
+            {
+                try
+                {
+                    DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
+                    using (Stream stream = download.DownloadProduct(idGame, idUser, path))
+                    {
+                        byte[] buffer = new byte[16 * 1024];
+                        byte[] data;
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            int read;
+                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                ms.Write(buffer, 0, read);
+                            }
+                            data = ms.ToArray();
+                        }
+                        File.WriteAllBytes($@"{path}.zip", data);
+                    }
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    ZipFile.ExtractToDirectory($@"{path}.zip", path);
+                    File.Delete($@"{path}.zip");
+                    System.Windows.MessageBox.Show("Загрузка завершена");
+
+                    download.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
+            });
+            Play.IsEnabled = true;
+        }
+
 
         private void Play_Click(object sender, RoutedEventArgs e)
         {
