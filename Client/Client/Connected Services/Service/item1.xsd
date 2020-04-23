@@ -14,7 +14,7 @@
       <xs:element minOccurs="0" name="Money" type="xs:double" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Telephone" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="status" type="xs:boolean" />
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Profile" nillable="true" type="tns:Profile" />

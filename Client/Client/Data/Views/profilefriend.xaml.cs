@@ -53,9 +53,9 @@ namespace Client
                 btnnewfriend.Visibility = Visibility.Hidden;
                 imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
                 lbLogin.Content = productnow.Login;
-                if (tv.status)
-                    lbStatus.Content = "Online";
-                else lbStatus.Content = "Offline";
+//                 if (tv.status)
+//                     lbStatus.Content = "Online";
+//                 else lbStatus.Content = "Offline";
                 lbName.Content = "Этот пользователь добавил вас в Чёрный список";
             }
             else
@@ -108,9 +108,9 @@ namespace Client
             imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
             lbLogin.Content = productnow.Login;
             tbmail.Text = productnow.Mail;
-            if (tv.status)
-                lbStatus.Content = "Online";
-            else lbStatus.Content = "Offline";
+//             if (tv.status)
+//                 lbStatus.Content = "Online";
+//             else lbStatus.Content = "Offline";
             tbName.Text = productnow.Name;
             tbPhone.Text = productnow.Telephone;
             Lv.ItemsSource = productnow.Friends;

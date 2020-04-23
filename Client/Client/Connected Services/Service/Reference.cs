@@ -56,7 +56,7 @@ namespace Client.Service {
         private string TelephoneField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool statusField;
+        private string statusField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -212,12 +212,12 @@ namespace Client.Service {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool status {
+        public string status {
             get {
                 return this.statusField;
             }
             set {
-                if ((this.statusField.Equals(value) != true)) {
+                if ((object.ReferenceEquals(this.statusField, value) != true)) {
                     this.statusField = value;
                     this.RaisePropertyChanged("status");
                 }
@@ -699,12 +699,6 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
-        void AddProduct(int idModerateProduct);
-        
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddProduct")]
-        System.Threading.Tasks.Task AddProductAsync(int idModerateProduct);
-        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
         void Disconnect(int Id);
         
@@ -884,6 +878,18 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
         System.Threading.Tasks.Task<string> CheckMailAsync(string Mail);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetModerationProduct", ReplyAction="http://tempuri.org/IWCFService/GetModerationProductResponse")]
+        Client.Service.Product[] GetModerationProduct(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetModerationProduct", ReplyAction="http://tempuri.org/IWCFService/GetModerationProductResponse")]
+        System.Threading.Tasks.Task<Client.Service.Product[]> GetModerationProductAsync(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeModerationStatus")]
+        void ChangeModerationStatus(int idUser, int idModerationProduct, bool result);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeModerationStatus")]
+        System.Threading.Tasks.Task ChangeModerationStatusAsync(int idUser, int idModerationProduct, bool result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -936,14 +942,6 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password) {
             return base.Channel.ConnectAsync(Login, Password);
-        }
-        
-        public void AddProduct(int idModerateProduct) {
-            base.Channel.AddProduct(idModerateProduct);
-        }
-        
-        public System.Threading.Tasks.Task AddProductAsync(int idModerateProduct) {
-            return base.Channel.AddProductAsync(idModerateProduct);
         }
         
         public void Disconnect(int Id) {
@@ -1184,6 +1182,22 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail) {
             return base.Channel.CheckMailAsync(Mail);
+        }
+        
+        public Client.Service.Product[] GetModerationProduct(int idUser) {
+            return base.Channel.GetModerationProduct(idUser);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Product[]> GetModerationProductAsync(int idUser) {
+            return base.Channel.GetModerationProductAsync(idUser);
+        }
+        
+        public void ChangeModerationStatus(int idUser, int idModerationProduct, bool result) {
+            base.Channel.ChangeModerationStatus(idUser, idModerationProduct, result);
+        }
+        
+        public System.Threading.Tasks.Task ChangeModerationStatusAsync(int idUser, int idModerationProduct, bool result) {
+            return base.Channel.ChangeModerationStatusAsync(idUser, idModerationProduct, result);
         }
     }
     

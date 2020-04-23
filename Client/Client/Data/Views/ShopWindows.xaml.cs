@@ -421,6 +421,7 @@ namespace Client
             openFileDialog.ShowDialog();
             string s = openFileDialog.SelectedPath;
             s += @"\" + idg.Name;
+
             DownloadGame(s, idg.Id, profile.ID);
             Play.Visibility = Visibility.Visible;
             Download.Visibility = Visibility.Hidden;
@@ -444,6 +445,8 @@ namespace Client
                             int read;
                             while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
                             {
+                                double a = ((FileStream)stream).Position / ((FileStream)stream).Length;
+                                File.WriteAllText(@"D:\test.txt",Convert.ToString(a));
                                 ms.Write(buffer, 0, read);
                             }
                             data = ms.ToArray();

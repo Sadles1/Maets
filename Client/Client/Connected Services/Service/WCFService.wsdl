@@ -33,9 +33,6 @@
   <wsdl:message name="IWCFService_Connect_OutputMessage">
     <wsdl:part name="parameters" element="tns:ConnectResponse" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_AddProduct_InputMessage">
-    <wsdl:part name="parameters" element="tns:AddProduct" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_Disconnect_InputMessage">
     <wsdl:part name="parameters" element="tns:Disconnect" />
   </wsdl:message>
@@ -177,6 +174,15 @@
   <wsdl:message name="IWCFService_CheckMail_OutputMessage">
     <wsdl:part name="parameters" element="tns:CheckMailResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_GetModerationProduct_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetModerationProduct" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetModerationProduct_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetModerationProductResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ChangeModerationStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeModerationStatus" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
   </wsdl:message>
@@ -199,9 +205,6 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Connect" message="tns:IWCFService_Connect_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ConnectResponse" message="tns:IWCFService_Connect_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddProduct">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddProduct" message="tns:IWCFService_AddProduct_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Disconnect" message="tns:IWCFService_Disconnect_InputMessage" />
@@ -310,6 +313,13 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMail" message="tns:IWCFService_CheckMail_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailResponse" message="tns:IWCFService_CheckMail_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetModerationProduct">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetModerationProduct" message="tns:IWCFService_GetModerationProduct_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetModerationProductResponse" message="tns:IWCFService_GetModerationProduct_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeModerationStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeModerationStatus" message="tns:IWCFService_ChangeModerationStatus_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
     </wsdl:operation>
@@ -340,12 +350,6 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="AddProduct">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/AddProduct" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="Disconnect">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/Disconnect" style="document" />
@@ -577,6 +581,21 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetModerationProduct">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetModerationProduct" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeModerationStatus">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeModerationStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="GetMessage">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetMessage" style="document" />

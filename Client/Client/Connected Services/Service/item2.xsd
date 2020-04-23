@@ -19,13 +19,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="AddProduct">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="idModerateProduct" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="Disconnect">
     <xs:complexType>
       <xs:sequence>
@@ -364,10 +357,33 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetModerationProduct">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idUser" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetModerationProductResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="GetModerationProductResult" nillable="true" type="q21:ArrayOfProduct" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeModerationStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idUser" type="xs:int" />
+        <xs:element minOccurs="0" name="idModerationProduct" type="xs:int" />
+        <xs:element minOccurs="0" name="result" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetMessage">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q21:UserMessage" />
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q22:UserMessage" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -379,7 +395,7 @@
   <xs:element name="GetFriendRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q22:Profile" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q23:Profile" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -402,7 +418,7 @@
   <xs:element name="DownloadProductResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q23="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q23:StreamBody" />
+        <xs:element xmlns:q24="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q24:StreamBody" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
