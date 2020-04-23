@@ -874,10 +874,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        string CheckMail(string Mail);
+        string CheckMail(string Mail, string messageBody);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail);
+        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail, string messageBody);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetModerationProduct", ReplyAction="http://tempuri.org/IWCFService/GetModerationProductResponse")]
         Client.Service.Product[] GetModerationProduct(int idUser);
@@ -890,6 +890,30 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeModerationStatus")]
         System.Threading.Tasks.Task ChangeModerationStatusAsync(int idUser, int idModerationProduct, bool result);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changePassword")]
+        void changePassword(int idUser, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changePassword")]
+        System.Threading.Tasks.Task changePasswordAsync(int idUser, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeProfileInformation")]
+        void ChangeProfileInformation(Client.Service.Profile profile);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeProfileInformation")]
+        System.Threading.Tasks.Task ChangeProfileInformationAsync(Client.Service.Profile profile);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteComment")]
+        void DeleteComment(int idComment);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteComment")]
+        System.Threading.Tasks.Task DeleteCommentAsync(int idComment);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changeProfileImage")]
+        void changeProfileImage(int idUser, byte[] MainImage);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changeProfileImage")]
+        System.Threading.Tasks.Task changeProfileImageAsync(int idUser, byte[] MainImage);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1176,12 +1200,12 @@ namespace Client.Service {
             return base.Channel.GetWayToGameAsync(idUser, idGame);
         }
         
-        public string CheckMail(string Mail) {
-            return base.Channel.CheckMail(Mail);
+        public string CheckMail(string Mail, string messageBody) {
+            return base.Channel.CheckMail(Mail, messageBody);
         }
         
-        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail) {
-            return base.Channel.CheckMailAsync(Mail);
+        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail, string messageBody) {
+            return base.Channel.CheckMailAsync(Mail, messageBody);
         }
         
         public Client.Service.Product[] GetModerationProduct(int idUser) {
@@ -1199,6 +1223,38 @@ namespace Client.Service {
         public System.Threading.Tasks.Task ChangeModerationStatusAsync(int idUser, int idModerationProduct, bool result) {
             return base.Channel.ChangeModerationStatusAsync(idUser, idModerationProduct, result);
         }
+        
+        public void changePassword(int idUser, string password) {
+            base.Channel.changePassword(idUser, password);
+        }
+        
+        public System.Threading.Tasks.Task changePasswordAsync(int idUser, string password) {
+            return base.Channel.changePasswordAsync(idUser, password);
+        }
+        
+        public void ChangeProfileInformation(Client.Service.Profile profile) {
+            base.Channel.ChangeProfileInformation(profile);
+        }
+        
+        public System.Threading.Tasks.Task ChangeProfileInformationAsync(Client.Service.Profile profile) {
+            return base.Channel.ChangeProfileInformationAsync(profile);
+        }
+        
+        public void DeleteComment(int idComment) {
+            base.Channel.DeleteComment(idComment);
+        }
+        
+        public System.Threading.Tasks.Task DeleteCommentAsync(int idComment) {
+            return base.Channel.DeleteCommentAsync(idComment);
+        }
+        
+        public void changeProfileImage(int idUser, byte[] MainImage) {
+            base.Channel.changeProfileImage(idUser, MainImage);
+        }
+        
+        public System.Threading.Tasks.Task changeProfileImageAsync(int idUser, byte[] MainImage) {
+            return base.Channel.changeProfileImageAsync(idUser, MainImage);
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1206,10 +1262,16 @@ namespace Client.Service {
     public interface IDownloadService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.IO.Stream DownloadProduct(int idProduct, int idUser, string path);
+        System.IO.Stream DownloadProduct(int idProduct, int idUser, string path, long startPoin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/DownloadProduct", ReplyAction="http://tempuri.org/IDownloadService/DownloadProductResponse")]
-        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path);
+        System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path, long startPoin);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/GetFileSize", ReplyAction="http://tempuri.org/IDownloadService/GetFileSizeResponse")]
+        long GetFileSize(int idProduct);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDownloadService/GetFileSize", ReplyAction="http://tempuri.org/IDownloadService/GetFileSizeResponse")]
+        System.Threading.Tasks.Task<long> GetFileSizeAsync(int idProduct);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1239,12 +1301,20 @@ namespace Client.Service {
                 base(binding, remoteAddress) {
         }
         
-        public System.IO.Stream DownloadProduct(int idProduct, int idUser, string path) {
-            return base.Channel.DownloadProduct(idProduct, idUser, path);
+        public System.IO.Stream DownloadProduct(int idProduct, int idUser, string path, long startPoin) {
+            return base.Channel.DownloadProduct(idProduct, idUser, path, startPoin);
         }
         
-        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path) {
-            return base.Channel.DownloadProductAsync(idProduct, idUser, path);
+        public System.Threading.Tasks.Task<System.IO.Stream> DownloadProductAsync(int idProduct, int idUser, string path, long startPoin) {
+            return base.Channel.DownloadProductAsync(idProduct, idUser, path, startPoin);
+        }
+        
+        public long GetFileSize(int idProduct) {
+            return base.Channel.GetFileSize(idProduct);
+        }
+        
+        public System.Threading.Tasks.Task<long> GetFileSizeAsync(int idProduct) {
+            return base.Channel.GetFileSizeAsync(idProduct);
         }
     }
 }

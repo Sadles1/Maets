@@ -60,13 +60,13 @@ namespace Client
                     throw new Exception("Поле логин не может быть пустым");
                 if (tbMail.Text == "")
                     throw new Exception("Поле почта не может быть пустым");
-                if (tbPassword.Text == "")
+                if (tbPassword.Password == "")
                     throw new Exception("Поле пароль не может быть пустым");
                 WCFServiceClient client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
                 Service.Profile profile = new Service.Profile();
                 profile.Login = tbLogin.Text;
                 profile.Mail = tbMail.Text;
-                string hashpassword = dp.HashPassword(tbPassword.Text);
+                string hashpassword = dp.HashPassword(tbPassword.Password);
                 profile.AccessRight = 1;
                 profile.Telephone = tbTelephone.Text;
                 profile.Name = tbName.Text;

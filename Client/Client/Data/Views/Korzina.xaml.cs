@@ -28,11 +28,9 @@ namespace Client
 
             this.profile = profile;
             InitializeComponent();
+            newminimum();
             allprice();
-            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
-            {
-                lvProduct.Items.Add(ShopWindows.mainfprofile[i]);
-            }
+           
 
         }
 
@@ -66,13 +64,20 @@ namespace Client
 
                         profile.Money -= Convert.ToDouble(tbSumm.Text);
 
-                        List<int> Cart = new List<int>();
-                        foreach (Service.Product pr in ShopWindows.mainfprofile)
+                        List<int> Cartone = new List<int>();
+                        List<Tuple<int, int>> CartWho = new List<Tuple<int, int>>();
+                        int i = 0;
+                        foreach (ModelProductCart pr in ShopWindows.mainfprofile)
                         {
-                            Cart.Add(pr.Id);
+                            if (pr.How == 1) Cartone.Add(pr.Id);
+                            else if (pr.How > 1)
+                            {
+                                CartWho.Add(new Tuple<int, int> (pr.Id, pr.How));
+                            }
                         }
 
-                        ShopWindows.client.BuyProduct(Cart.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
+                        ShopWindows.client.BuyProduct(Cartone.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
+                        ShopWindows.client.BuyProductWholesale(CartWho.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
                         //Тут будет добавление самой игры на аккаунт
                         MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
                         ShopWindows.mainfprofile.Clear();
@@ -102,14 +107,44 @@ namespace Client
             }
             tbSumm.Text = Convert.ToString(sum);
         }
-        public void allprice()
+        public bool inmylibrary(int j)
         {
+            int no = 0;
+            for (int i = 0; i < profile.Games.ToList().Count; i++)
+            {
+                if (ShopWindows.mainfprofile[j].Id == profile.Games.ToList()[i].Id) no++;
+            }
+            if (no != 0) return true;
+            else return false;
+            }
+        public void newminimum()
+        {
+
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+            {
+                if (inmylibrary(i))
+                {
+                    ShopWindows.mainfprofile[i].How = 2;
+                    ShopWindows.mainfprofile[i].Price = ShopWindows.mainfprofile[i].WholesalePrice;
+                }
+            }
+        }
+            public void allprice()
+        {
+
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+            {
+                lvProduct.Items.Add(ShopWindows.mainfprofile[i]);
+            }
+
             double sum = 0;
             for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
             {
-                sum += ShopWindows.mainfprofile[i].RetailPrice;
+                sum += ShopWindows.mainfprofile[i].Price * ShopWindows.mainfprofile[i].How;
             }
             tbSumm.Text = Convert.ToString(sum);
+            
+
         }
         public void deleteproduct()
         {
@@ -127,7 +162,6 @@ namespace Client
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
             int i = lvProduct.SelectedIndex;
             if (i != -1)
             {
@@ -136,6 +170,34 @@ namespace Client
                 ShopWindows.mainfprofile.RemoveAt(i);
                 deleteproduct();
             }
+        }
+
+        private void Viewbox_MouseLeftButtonUp_1(object sender, MouseButtonEventArgs e)
+        {
+            ShopWindows.mainfprofile[lvProduct.SelectedIndex].How++;
+            ShopWindows.mainfprofile[lvProduct.SelectedIndex].Price = ShopWindows.mainfprofile[lvProduct.SelectedIndex].WholesalePrice;
+            lvProduct.Items.Clear();
+            allprice();
+            
+        }
+
+        private void Viewbox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ShopWindows.mainfprofile[lvProduct.SelectedIndex].How > 1)
+            {
+                if (ShopWindows.mainfprofile[lvProduct.SelectedIndex].How == 2 && inmylibrary(lvProduct.SelectedIndex)) ShopWindows.mainfprofile[lvProduct.SelectedIndex].Price = ShopWindows.mainfprofile[lvProduct.SelectedIndex].WholesalePrice;
+                else
+                {
+                    ShopWindows.mainfprofile[lvProduct.SelectedIndex].How--;
+                    if (ShopWindows.mainfprofile[lvProduct.SelectedIndex].How == 1) ShopWindows.mainfprofile[lvProduct.SelectedIndex].Price = ShopWindows.mainfprofile[lvProduct.SelectedIndex].RetailPrice;
+
+                    else ShopWindows.mainfprofile[lvProduct.SelectedIndex].Price = ShopWindows.mainfprofile[lvProduct.SelectedIndex].WholesalePrice;
+                    lvProduct.Items.Clear();
+                    allprice();
+                }
+                
+            }
+            
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using WinForms = System.Windows.Forms;
 namespace Client
 {
@@ -20,12 +21,15 @@ namespace Client
     {
         static public List<Service.Profile> fr;
 
-        public static List<Service.Product> mainfprofile = new List<Service.Product>();
+        public static List<ModelProductCart> mainfprofile = new List<ModelProductCart>();
         public static WCFServiceClient client;
         static public Korzina buyProduct;
         public Profile profile;
         List<Service.Product> products;
+        List<Service.Product> productsmoderation;
         int ishop = 0;
+
+        static public string imagesmaets;
         DataProvider dp = new DataProvider();
         int idxg;
 
@@ -44,8 +48,16 @@ namespace Client
                 InitializeComponent();
                 Loaded += Window_Loaded;
                 Onlyforadmin.Visibility = Visibility.Hidden;
-                if (profile.AccessRight >= 2) Onlyforadmin.Visibility = Visibility.Visible;
-
+                if (profile.AccessRight >= 3)
+                {
+                     productsmoderation = client.GetModerationProduct(profile.ID).ToList();
+                    for(int i=0; i<productsmoderation.Count;i++)
+                    {
+                        Moderationproduct.Items.Add(productsmoderation[i]);
+                    }
+                    Onlyforadmin.Visibility = Visibility.Visible;
+                }
+                
             }
 
             else
@@ -63,6 +75,8 @@ namespace Client
         }
         private void Window_Initialized(object sender, EventArgs e)
         {
+            mail.Text = profile.Mail;
+            telephone.Text = profile.Telephone;
             fr = client.GetFriendRequests(profile.ID).ToList();
             if (fr.Count != 0)
             {
@@ -72,8 +86,10 @@ namespace Client
             }
             else Reaestfriends.Visibility = Visibility.Hidden;
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
-            tbLogin.Content = profile.Login;
-            lbName.Content = profile.Name;
+            lvimMainImage.Items.Add(profile.MainImage);
+
+            tbLogin.Text = profile.Login;
+            lbName.Text = profile.Name;
             Lvfriend.ItemsSource = profile.Friends;
             Back.IsEnabled = false;
            // ProductOne.DataContext = products[ishop];
@@ -115,7 +131,7 @@ namespace Client
                 howmanyproduct.Text = Convert.ToString(0);
 
             }
-           // imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
+         //   imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
            // tbLogin.Content = pr.Login;
           //  lbName.Content = pr.Name;
             Lvfriend.ItemsSource = pr.Friends;
@@ -148,6 +164,7 @@ namespace Client
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            imagesmaets = Environment.CurrentDirectory + @"\Content\";
             searchproduct.Focus();
             searchproduct.DataContext = new ProductViewModel();
             Lvm.DataContext = searchproduct.DataContext;
@@ -188,12 +205,6 @@ namespace Client
             Close();
         }
 
-        private void BtnFakeProduct_Click(object sender, RoutedEventArgs e)
-        {
-            Service.Product id = new Service.Product();
-            // Product Pr = new Product(id);
-            // Pr.Show();
-        }
         private void leftmouse(object sender, EventArgs e)
         {
             List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
@@ -419,13 +430,31 @@ namespace Client
             //   openFileDialog.Filter = "All files (*.*)";
             // openFileDialog.CheckFileExists = false;
             openFileDialog.ShowDialog();
-            string s = openFileDialog.SelectedPath;
-            s += @"\" + idg.Name;
+           string s = openFileDialog.SelectedPath;
+            if (s != "")
+            {
+                s += @"\" + idg.Name;
 
-            DownloadGame(s, idg.Id, profile.ID);
-            Play.Visibility = Visibility.Visible;
-            Download.Visibility = Visibility.Hidden;
+                //if (openFileDialog.ShowDialog() == true)
+                //{
+                // profile.Games[0].Path = s;
+                //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
+                // System.Windows.MessageBox.Show(s);
+                DownloadGame(s, idg.Id, profile.ID);
+                MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
+                MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
+                //}
+                // dp.Download();
+            }
+        }
 
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+            Service.Product idx = profile.Games[mylibrary.SelectedIndex];
+            string file = client.GetWayToGame(profile.ID, idx.Id) + @"\" + idx.Name + ".exe";
+            if (file!= null && File.Exists(file))
+                System.Diagnostics.Process.Start(file);
+            else WinForms.MessageBox.Show("Файл не найден");
         }
 
         async public void DownloadGame(string path, int idGame, int idUser)
@@ -436,26 +465,40 @@ namespace Client
                 try
                 {
                     DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
-                    using (Stream stream = download.DownloadProduct(idGame, idUser, path))
+                    long DownloadSize;
+
+                    using (FileStream outputStream = new FileStream($@"{path}.zip", FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        byte[] buffer = new byte[16 * 1024];
-                        byte[] data;
-                        using (MemoryStream ms = new MemoryStream())
+                        if (File.Exists($@"{path}.zip"))
                         {
-                            int read;
-                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                double a = ((FileStream)stream).Position / ((FileStream)stream).Length;
-                                File.WriteAllText(@"D:\test.txt",Convert.ToString(a));
-                                ms.Write(buffer, 0, read);
-                            }
-                            data = ms.ToArray();
+                            FileInfo file = new FileInfo($@"{path}.zip");
+                            DownloadSize = file.Length;
+                            outputStream.Position = DownloadSize;
                         }
-                        File.WriteAllBytes($@"{path}.zip", data);
-                    }
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
+                        else
+                            DownloadSize = 0;
+
+
+
+
+                        long FileSize = download.GetFileSize(idGame);
+                        const int bufferSize = 16 * 1024;
+
+                        byte[] buffer = new byte[bufferSize];
+                        using (Stream stream = download.DownloadProduct(idGame, idUser, path, DownloadSize))
+                        {
+
+                            int bytesRead = stream.Read(buffer, 0, bufferSize);
+                            while (bytesRead > 0)
+                            {
+                                outputStream.Write(buffer, 0, bytesRead);
+                                bytesRead = stream.Read(buffer, 0, bufferSize);
+                                DownloadSize += buffer.Length;
+                                outputStream.Flush();
+                            }
+                            outputStream.Close();
+
+                        }
                     }
                     ZipFile.ExtractToDirectory($@"{path}.zip", path);
                     File.Delete($@"{path}.zip");
@@ -471,16 +514,6 @@ namespace Client
             Play.IsEnabled = true;
         }
 
-
-        private void Play_Click(object sender, RoutedEventArgs e)
-        {
-            Service.Product idx = profile.Games[mylibrary.SelectedIndex];
-            string file = client.GetWayToGame(profile.ID, idx.Id) + @"\" + idx.Name + ".exe";
-            if (file!= null && File.Exists(file))
-                System.Diagnostics.Process.Start(file);
-            else WinForms.MessageBox.Show("Файл не найден");
-        }
-
         private void AddGame_Click(object sender, RoutedEventArgs e)
         {
             NewGameAdd ng = new NewGameAdd();
@@ -488,6 +521,170 @@ namespace Client
             ng.Top = Top;
             Visibility = Visibility.Hidden;
             ng.Show();
+        }
+
+        private void Refreshmoderation_Click(object sender, RoutedEventArgs e)
+        {
+
+            
+        }
+
+        private void BtnYes_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            int i = Moderationproduct.SelectedIndex;
+            client.ChangeModerationStatus(profile.ID, productsmoderation[i].Id, true);
+            Moderationproduct.Items.RemoveAt(i);
+        }
+
+        private void BtnNo_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            int i = Moderationproduct.SelectedIndex;
+            client.ChangeModerationStatus(profile.ID, productsmoderation[i].Id, false);
+            Moderationproduct.Items.RemoveAt(i);
+
+        }
+
+        private void Changeprofile_Click(object sender, RoutedEventArgs e)
+        {
+            tbLogin.Visibility = Visibility.Hidden;
+            lbName.Visibility = Visibility.Hidden;
+            mail.Visibility = Visibility.Hidden;
+            telephone.Visibility = Visibility.Hidden;
+            tbLoginnew_hint.Text = tbLogin.Text;
+            tbtelephonenew_hint.Text = telephone.Text;
+            tbmailnew_hint.Text = mail.Text;
+            lbNamenew_hint.Text = lbName.Text;
+            ChangeprofileSave.Visibility = Visibility.Visible;
+            Changeprofile.Visibility = Visibility.Hidden;
+            newprofilechange.Visibility = Visibility.Visible;
+            btnBack.Visibility = Visibility.Visible;
+
+        }
+
+        private void Tbtelephonenew_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(tbtelephonenew.Text!="")
+                {
+
+                tbtelephonenew_hint.Visibility = Visibility.Hidden;
+                }
+                else tbtelephonenew_hint.Visibility = Visibility.Visible;
+        }
+
+        private void Tbmailnew_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tbmailnew.Text != "")
+            {
+
+                tbmailnew_hint.Visibility = Visibility.Hidden;
+            }
+            else tbmailnew_hint.Visibility = Visibility.Visible;
+
+        }
+
+        private void LbNamenew_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (lbNamenew.Text != "")
+            {
+
+                lbNamenew_hint.Visibility = Visibility.Hidden;
+            }
+            else lbNamenew_hint.Visibility = Visibility.Visible;
+        }
+
+        private void TbLoginnew_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tbLoginnew.Text != "")
+            {
+
+                tbLoginnew_hint.Visibility = Visibility.Hidden;
+            }
+            else tbLoginnew_hint.Visibility = Visibility.Visible;
+        }
+
+        private void ChangeprofileSave_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (tbLoginnew.Text == "" && tbmailnew.Text=="" && tbmailnew.Text == "" && lbNamenew.Text == "")
+                    throw new Exception("Вы не заполнили ни одного поля!");
+                Profile newprof = new Profile();
+                newprof.ID = profile.ID;
+                newprof.Telephone = tbtelephonenew.Text;
+                newprof.Name = lbNamenew.Text;
+                newprof.Login = tbLoginnew.Text;
+                newprof.Mail = tbmailnew.Text;
+                client.ChangeProfileInformation(newprof);
+                tbLogin.Text = newprof.Login;
+                lbName.Text = newprof.Name;
+                mail.Text = newprof.Mail;
+                telephone.Text = newprof.Telephone;
+                newprofilechange.Visibility = Visibility.Hidden;
+                btnBack.Visibility = Visibility.Hidden;
+                ChangeprofileSave.Visibility = Visibility.Hidden;
+                Changeprofile.Visibility = Visibility.Visible;
+                tbLogin.Visibility = Visibility.Visible;
+                lbName.Visibility = Visibility.Visible;
+                mail.Visibility = Visibility.Visible;
+                telephone.Visibility = Visibility.Visible;
+
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message,"Предупреждение");
+            }
+        }
+
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            newprofilechange.Visibility = Visibility.Hidden;
+            btnBack.Visibility = Visibility.Hidden;
+            ChangeprofileSave.Visibility = Visibility.Hidden;
+            Changeprofile.Visibility = Visibility.Visible;
+            tbLogin.Visibility = Visibility.Visible;
+            lbName.Visibility = Visibility.Visible;
+            mail.Visibility = Visibility.Visible;
+            telephone.Visibility = Visibility.Visible;
+        }
+        List<byte[]> gamescreen = new List<byte[]>();
+        private ModelImage get_image_from_PC()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.ShowDialog();
+            ModelImage modelProduct = new ModelImage();
+            string s = openFileDialog.FileName;
+
+            // System.Windows.MessageBox.Show(s);
+            if (s != "")
+            {
+                byte[] buffer = dp.GetByteFromImage(s);
+                gamescreen.Add(buffer);
+
+
+                modelProduct = modelProduct.MakeModelImage(buffer);
+                return modelProduct;
+            }
+            else
+            {
+                modelProduct.Id = -1;
+                return modelProduct;
+            }
+        }
+
+        private void ImMainImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            
+            
+            ModelImage modelProduct= get_image_from_PC();
+            if (modelProduct.Id != -1)
+            {
+                lvimMainImage.Items.Clear();
+                imMainImage.Visibility = Visibility.Hidden;
+                lvimMainImage.Items.Add(modelProduct);
+                client.changeProfileImage(profile.ID, modelProduct.MainImage);
+            }
+            else lvimMainImage.SelectedItem = null;
+            
         }
     }
 }

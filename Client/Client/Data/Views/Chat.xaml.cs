@@ -63,12 +63,12 @@ namespace Client.Data.Views
         {
             this.DragMove();
         }
-        public string get_user(int id, DateTime msg)
+        public void get_user(int id, DateTime msg)
         { 
             if (id == Senderg.ID)
-                return tbChat.Text += Senderg.Login + " " + msg + ": ";
+                tbChat.Text += Senderg.Login + " " + msg + ": ";
             else 
-                return tbChat.Text += Resiverg.Login + " " + msg + ": ";
+                 tbChat.Text += Resiverg.Login + " " + msg + ": ";
 
         }
 

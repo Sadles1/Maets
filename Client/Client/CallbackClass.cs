@@ -53,8 +53,9 @@ namespace Client
         /// <param name="msg"></param>
         public void GetMessage(UserMessage msg)
         {
+            Chat.chatnow.get_user(msg.IDSender, msg.date);
            // Chat.chatnow.get_user(msg.IDSender,msg.date);
-            Chat.chatnow.tbChat.Text += Chat.chatnow.get_user(msg.IDSender,msg.date) + msg.message +"\n";
+            Chat.chatnow.tbChat.Text +=  msg.message +"\n";
 
         }
     }

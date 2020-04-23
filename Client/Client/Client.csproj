@@ -88,6 +88,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Data\Options.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Options.settings</DependentUpon>
+      <CustomToolNamespace>Client</CustomToolNamespace>
+    </Compile>
+    <Compile Include="Data\Models\ModelProductCart.cs" />
     <Compile Include="Data\ViewModels\Screns.cs" />
     <Compile Include="Data\Models\ModelMyProfile.cs" />
     <Compile Include="Data\Models\ModelImage.cs" />
@@ -229,6 +236,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\WCFService.wsdl" />
+    <None Include="Data\Options.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Options.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Client</CustomToolNamespace>
+    </None>
     <None Include="Data\Images\1.encr" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -236,7 +248,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

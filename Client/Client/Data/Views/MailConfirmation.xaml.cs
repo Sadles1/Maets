@@ -30,7 +30,8 @@ namespace Client
             this.hashpassword = hashpassword; 
             InitializeComponent();
             tb.Text = "Введите код подтвержения, отправленный на почту \n" + profile.Mail;
-            code = client.CheckMail(profile.Mail);
+            string message = $"Доброго времени суток!\nЕсли вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.\nВаш код подтверждения: { Code}\nЕсли вы не ожидали получить это письмо, то просто игнорируйте его.\nС уважением, команда Maets";
+            code = client.CheckMail(profile.Mail,message);
             
         }
 

@@ -183,6 +183,18 @@
   <wsdl:message name="IWCFService_ChangeModerationStatus_InputMessage">
     <wsdl:part name="parameters" element="tns:ChangeModerationStatus" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_changePassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:changePassword" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ChangeProfileInformation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeProfileInformation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_DeleteComment_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteComment" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_changeProfileImage_InputMessage">
+    <wsdl:part name="parameters" element="tns:changeProfileImage" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
   </wsdl:message>
@@ -200,6 +212,12 @@
   </wsdl:message>
   <wsdl:message name="IDownloadService_DownloadProduct_OutputMessage">
     <wsdl:part name="parameters" element="tns:DownloadProductResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDownloadService_GetFileSize_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSize" />
+  </wsdl:message>
+  <wsdl:message name="IDownloadService_GetFileSize_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSizeResponse" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IWCFService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
@@ -320,6 +338,18 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeModerationStatus">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeModerationStatus" message="tns:IWCFService_ChangeModerationStatus_InputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="changePassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/changePassword" message="tns:IWCFService_changePassword_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeProfileInformation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeProfileInformation" message="tns:IWCFService_ChangeProfileInformation_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteComment">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/DeleteComment" message="tns:IWCFService_DeleteComment_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="changeProfileImage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/changeProfileImage" message="tns:IWCFService_changeProfileImage_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
     </wsdl:operation>
@@ -337,6 +367,10 @@
     <wsdl:operation name="DownloadProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IDownloadService/DownloadProduct" message="tns:IDownloadService_DownloadProduct_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDownloadService/DownloadProductResponse" message="tns:IDownloadService_DownloadProduct_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSize">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDownloadService/GetFileSize" message="tns:IDownloadService_GetFileSize_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDownloadService/GetFileSizeResponse" message="tns:IDownloadService_GetFileSize_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IWCFService" type="tns:IWCFService">
@@ -597,6 +631,30 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
+    <wsdl:operation name="changePassword">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/changePassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeProfileInformation">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeProfileInformation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteComment">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/DeleteComment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="changeProfileImage">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/changeProfileImage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="GetMessage">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetMessage" style="document" />
       <wsdl:output>
@@ -627,6 +685,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="DownloadProduct">
       <soap12:operation soapAction="http://tempuri.org/IDownloadService/DownloadProduct" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSize">
+      <soap12:operation soapAction="http://tempuri.org/IDownloadService/GetFileSize" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

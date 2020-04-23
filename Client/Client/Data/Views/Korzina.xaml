@@ -19,31 +19,49 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-
         <TextBlock Grid.Column="0" Text="Оформление заказа" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
         <TextBlock x:Name="tbSumm" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Height="Auto" Width="200" FontSize="40"  ></TextBlock>
         <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35"></TextBlock>
         <TextBlock Grid.Column="1" Grid.Row="0" Text="Стоимость" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
-            <ListView x:Name="lvProduct"  ItemsSource="{Binding Items}"  Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">
+        <Grid Grid.Row="1" Grid.ColumnSpan="3">
+            <ListView x:Name="lvProduct"   Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" >
-                            <Image Source="{Binding MainImage}" Width="100" Height="100"/>
-                            <TextBlock Text="{Binding Name}" Margin="25,5,0,0" FontSize="30" Width="400" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding RetailPrice}" Margin="150,0,0,0" HorizontalAlignment="Right"  TextAlignment="Right" VerticalAlignment="Center" FontSize="20"></TextBlock>
-                            <Viewbox Width="10" Height="10" MouseLeftButtonUp="BtnDelete_Click"  Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Margin="35,5,0,0" HorizontalAlignment="Right"  >
+                        <Grid Width="820">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.8*"></ColumnDefinition>
+                                <ColumnDefinition Width="7*"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Image}" Width="100" Height="100" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="15,5,0,0" FontSize="30" Width="400" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Price}" FontFamily="Panton Bold" Grid.Column="2" HorizontalAlignment="Center" FontSize="20"  TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Grid.Column="3" Text="{Binding How}" FontFamily="Panton Bold" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
+                            <Viewbox Width="30" Height="30" MouseLeftButtonUp="Viewbox_MouseLeftButtonUp_1"  Grid.Column="3"  VerticalAlignment="Center" Margin="15,0,0,10" HorizontalAlignment="Left"  >
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                    <Line Width="70" Height="70" X1="0" Y1="35" X2="35" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
+                                    <Line Width="70" Height="70" X1="70" Y1="35" X2="35" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox MouseLeftButtonUp="Viewbox_MouseLeftButtonUp" Width="30" Height="30"  Grid.Column="3" VerticalAlignment="Center" Margin="15,10,0,0" HorizontalAlignment="Left"  >
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                    <Line Width="70" Height="70" X1="0" Y1="35" X2="35" Y2="70" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
+                                    <Line Width="70" Height="70" X1="70" Y1="35" X2="35" Y2="70" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox MouseLeftButtonUp="BtnDelete_Click" Grid.Column="4" Width="10" Height="10"   VerticalAlignment="Top"  HorizontalAlignment="Right"  >
                                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
                                     <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
                                     <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
                                 </Grid>
                             </Viewbox>
 
-                        </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
+            
         </Grid>
         <Button x:Name="Buy" Click="Buy_Click" Grid.Row="2" Grid.Column="1" Background="Green" Content="Купить" FontSize="25"></Button>
     </Grid>

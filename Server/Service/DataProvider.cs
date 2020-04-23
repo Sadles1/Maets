@@ -19,19 +19,8 @@ namespace Service
             {
 
                 List<TUsers> Tusers = context.TUsers.ToList();
-                List<TLogin> TLogins = context.TLogin.ToList();
+                CheckUserInfo(profile.Login, profile.Mail, profile.Telephone);
 
-                //Проверка что такой же логин не используеться
-                if (TLogins.FirstOrDefault(u => u.Login == profile.Login) != null)
-                    throw new FaultException("Данный логин уже занят");
-
-                //Проверка что такая же почта не используеться
-                if (Tusers.FirstOrDefault(u => u.Mail == profile.Mail) != null)
-                    throw new FaultException("Данная почта уже зарегистрирована");
-
-                //Проверка что такой же номер телефона не используеться, но номер может быть пустой
-                if (Tusers.FirstOrDefault(u => u.Telephone == profile.Telephone) != null && profile.Telephone != null)
-                    throw new FaultException("Данный номер телефона уже используеться");
 
                 //Формируем ID
                 TUser.Id = Tusers.Count == 0 ? 0 : (Tusers.Max(u => u.Id) + 1);
@@ -49,6 +38,24 @@ namespace Service
                 Tlogin.Login = profile.Login;
                 Tlogin.Password = Password;
 
+            }
+        }
+
+        public void CheckUserInfo(string login, string mail, string telephone)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                List<TUsers> Tusers = context.TUsers.ToList();
+                List<TLogin> TLogins = context.TLogin.ToList();
+                //Проверка что такой же логин не используеться
+                if (TLogins.FirstOrDefault(u => u.Login == login) != null)
+                    throw new FaultException("Данный логин уже занят");
+                //Проверка что такая же почта не используеться
+                if (Tusers.FirstOrDefault(u => u.Mail == mail) != null)
+                    throw new FaultException("Данная почта уже зарегистрирована");
+                //Проверка что такой же номер телефона не используеться, но номер может быть пустой
+                if (Tusers.FirstOrDefault(u => u.Telephone == telephone) != null && telephone != null)
+                    throw new FaultException("Данный номер телефона уже используеться");
             }
         }
 
@@ -152,6 +159,7 @@ namespace Service
                 product.Developer = TProduct.IdDeveloperNavigation.Name;
                 product.ReleaseDate = TProduct.ReleaseDate.Date;
                 product.RetailPrice = TProduct.RetailPrice;
+                product.WholesalePrice = TProduct.WholesalePrice;
 
                 product.GameGenre = new List<string>();
                 foreach (TGameGenre genre in gameGenre)

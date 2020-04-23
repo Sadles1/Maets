@@ -42,16 +42,16 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                
-                <Label x:Name="lbLogin" Grid.ColumnSpan="2" Grid.Row="0" Content="Login" FontSize="20" VerticalAlignment="Center"/>
+
+                <TextBlock FontFamily="Panton Bold" x:Name="lbLogin"  Grid.ColumnSpan="2" Grid.Row="0"  FontSize="20" VerticalAlignment="Center"/>
                 <Label x:Name="lbStatus" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Grid.Column="0" FontFamily="Panton Bold" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
                 <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" FontSize="10" VerticalAlignment="Center"/>
-                <TextBlock x:Name="tbName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <TextBlock x:Name="tbmail" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <TextBlock  x:Name="tbPhone" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <Label x:Name="lbEmail" Grid.Column="0" Grid.Row="3" Content="Email" FontSize="10" VerticalAlignment="Center"/>
-                <Label x:Name="lbPhone" Grid.Column="0" Grid.Row="4" Content="Phone" FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock FontFamily="Panton Bold" x:Name="tbName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock FontFamily="Panton Bold" x:Name="tbmail" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock FontFamily="Panton Bold" x:Name="tbPhone" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Margin="5,0,0,0" FontFamily="Panton Bold" x:Name="lbEmail" Grid.Column="0" Grid.Row="3" Text="Email" FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock Margin="5,0,0,0" FontFamily="Panton Bold" x:Name="lbPhone" Grid.Column="0" Grid.Row="4" Text="Phone" FontSize="10" VerticalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
@@ -64,13 +64,14 @@
                 <Button x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
 
                 <Button x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow"></Button>
+                <Button x:Name="newreqest" Grid.Row="0" Visibility="Hidden" ToolTip="Нажмите, чтобы отменить заявку" Click="Newreqest_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Заявка отправлена"  Background="#FF0068FF" Opacity="0.3"></Button>
                 <Button x:Name="btndelfriend" Grid.Row="0" Click="Btndelfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25"  Visibility="Hidden" Content="Удалить из друзей" Background="Snow"></Button>
                 <Grid x:Name="FriendYN" Grid.Row="0" Visibility="Hidden">
                 <Button x:Name="btnnewfriendyes" Click="Btnnewfriendyes_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="0,0,19,0" Content="Да" HorizontalAlignment="Right" Background="Snow"></Button>
                 <Button x:Name="btnnewlfriendno" Click="Btnnewlfriendno_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="18.5,0,0,0" Content="Нет" HorizontalAlignment="Left" Background="Snow"></Button>
                 <TextBlock x:Name="Whonewfriend" Text="Добавить в друзья?" TextAlignment="Center"  VerticalAlignment="Top" Height="21"></TextBlock>
             </Grid>
-            <TextBlock x:Name="tbFriendUser"  Grid.Row="2" Height="20"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
+            <TextBlock x:Name="tbFriendUser" FontFamily="Panton Bold" Grid.Row="2" Height="20"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
                 <ListView x:Name="Lv" Grid.Row="3" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
                     <ListView.ItemTemplate>
                         <DataTemplate x:Name="DT">
@@ -83,6 +84,7 @@
                                 </Image>
                                 <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
                                 <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
+                                <TextBlock  Text="{Binding status}" Margin="5"/>
                             </WrapPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

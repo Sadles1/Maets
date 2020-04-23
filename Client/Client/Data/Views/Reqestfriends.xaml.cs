@@ -19,7 +19,6 @@ namespace Client
     /// </summary>
     public partial class Reqestfriends : Window
     {
-        Service.Profile newprofile;
         public Reqestfriends()
         {
             InitializeComponent();

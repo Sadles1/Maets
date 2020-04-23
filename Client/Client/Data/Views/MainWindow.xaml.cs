@@ -15,6 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Configuration;
 using System.ServiceModel;
+using Client.Data;
 
 namespace Client
 {
@@ -34,17 +35,30 @@ namespace Client
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-           // tbLogin.Text = "p4shark";
-          //  tbPassword.Password = "qwerty90";
-            tbLogin.Text = "Sadles";
-            tbPassword.Password = "zxcv1234";
+            this.Title = "Maets";
+            // tbLogin.Text = "p4shark";
+             tbLogin.Text = "admin";
+            //  tbPassword.Password = "qwerty90";
+             tbPassword.Password = "admin";
+            if (Options.Default.localUN == "" || Options.Default.localPW == "")
+            {
+                RememberPassword.IsChecked = false;
+            }
+            else if (Options.Default.localUN != "" || Options.Default.localPW != "")
+            {
+                RememberPassword.IsChecked = true;
+                tbLogin.Text = Options.Default.localUN;
+                tbPassword.Password = Options.Default.localPW;
+            }
+
+
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
+                remember();
                 shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Password));
                 shopWindows.Show();
                 Close();
@@ -82,6 +96,38 @@ namespace Client
 
         }
 
+        private void remember()
+        {
+            if (RememberPassword.IsChecked == true)
+            {
+                string a = Convert.ToString(tbPassword.Password);
+                Options.Default.localUN = tbLogin.Text;
+                Options.Default.Save();
+                Options.Default.Reload();
+                Options.Default.localPW = a;
+                Options.Default.Save();
+                Options.Default.Reload();
+            }
+            else
+            {
+                Options.Default.localUN = "";
+                Options.Default.localPW = "";
+                Options.Default.Save();
+            }
+        }
+        private void RememberPassword_Click(object sender, RoutedEventArgs e)
+        {
+            remember();
+        }
 
+        private void TbLogin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            remember();
+        }
+
+        private void TbPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            remember();
+        }
     }
 }

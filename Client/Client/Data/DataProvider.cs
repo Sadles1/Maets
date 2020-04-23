@@ -53,7 +53,14 @@ namespace Client
             foreach (byte b in bytes)
                 password += b;
             return password;
-        }      
+        }
+        
+        //public async Task<Service.Profile> GetProfileAsync(int idUser)
+        //{
+        //    var respounce = await GetProfileAsync(idUser);
+        //    return respounce;
+        //}
+       
 
     }
 }

@@ -343,6 +343,10 @@ namespace Service
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
         }
 
+
+        /// <summary>
+        /// Метод возвращает список всех запросов в друзья конкретного пользователя
+        /// </summary>
         public List<Profile> GetFriendRequests(int id)
         {
             using (postgresContext context = new postgresContext())
@@ -364,7 +368,11 @@ namespace Service
             }
         }
 
-        public string CheckMail(string Mail)
+
+        /// <summary>
+        /// Метод выполняет проверку почты
+        /// </summary>
+        public string CheckMail(string Mail, string messageBody)
         {
             string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
             MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
@@ -372,7 +380,7 @@ namespace Service
             MailMessage message = new MailMessage(from, to);
             message.Subject = "Регистрация на Maets";
             // текст письма
-            message.Body = $"Доброго времени суток!\nЕсли вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.\nВаш код подтверждения: {Code}\nЕсли вы не ожидали получить это письмо, то просто игнорируйте его.\nС уважением, команда Maets";
+            message.Body = messageBody;
             message.IsBodyHtml = true;
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
             {
@@ -558,6 +566,10 @@ namespace Service
             }
         }
 
+
+        /// <summary>
+        /// Метод возвращает список пользователей используя фильтр
+        /// </summary>
         public List<Profile> GetProfileByFilter(string filter)
         {
             using (postgresContext context = new postgresContext())
@@ -616,7 +628,7 @@ namespace Service
         /// <summary>
         /// Метод для загрузки продукта
         /// </summary>
-        public Stream DownloadProduct(int idProduct, int idUser, string path)
+        public Stream DownloadProduct(int idProduct, int idUser, string path, long startPoint)
         {
 
             string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
@@ -625,10 +637,20 @@ namespace Service
             File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
 
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
-            FileStream gameFile = File.OpenRead(pathToGame);
+            FileStream gameFile = new FileStream(pathToGame, FileMode.Open);
+
+            if (startPoint != 0)
+                gameFile.Position = startPoint;
+
             return gameFile;
         }
 
+        public long GetFileSize(int idProduct)
+        {
+            string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
+            FileInfo file = new FileInfo(pathToGame);
+            return file.Length;
+        }
 
         /// <summary>
         /// Вызываеться для отключения от сервера
@@ -748,6 +770,10 @@ namespace Service
             }
         }
 
+        public void changeProfileImage(int idUser, byte[] MainImage)
+        {
+            File.WriteAllBytes($@"{BaseSettings.Default.SourcePath}\Users\{idUser}\MainImage.encr", MainImage);
+        }
 
         /// <summary>
         /// Метод для смены пароля
@@ -772,25 +798,28 @@ namespace Service
             }
         }
 
+
         /// <summary>
         /// Метод для смены Логина, пароля, почты, и телефона
         /// </summary>
         /// <param name="profile">Передавать только те параметры которые надо изменить</param>
-        public void ChangeProfileInforamtion(Profile profile)
+        public void ChangeProfileInformation(Profile profile)
         {
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
                 TLogin login = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Id == profile.ID);
 
+                dp.CheckUserInfo(profile.Login, profile.Mail, profile.Telephone);
+
                 //Обновляем только те данные которые необходимо обновить
-                if (profile.Login != null)
+                if (profile.Login != "")
                     login.Login = profile.Login;
-                if (profile.Name != null)
+                if (profile.Name != "")
                     login.IdNavigation.Name = profile.Name;
-                if (profile.Mail != null)
+                if (profile.Mail != "")
                     login.IdNavigation.Mail = profile.Mail;
-                if (profile.Telephone != null)
+                if (profile.Telephone != "")
                     login.IdNavigation.Telephone = profile.Telephone;
 
                 //Добавляем изменения в БД
@@ -932,7 +961,7 @@ namespace Service
                 int Result = 0;
                 if (employers.Count == 2)
                 {
-                    foreach(TModerateEmployers moderate in employers)
+                    foreach (TModerateEmployers moderate in employers)
                     {
                         if (moderate.Result == null)
                             return;
@@ -949,18 +978,18 @@ namespace Service
                     }
                     else
                     {
-                        List<int> idModerators = context.TUsers.Where(u=>u.AccessRight == 3).Select(u => u.Id).ToList();
+                        List<int> idModerators = context.TUsers.Where(u => u.AccessRight == 3).Select(u => u.Id).ToList();
                         foreach (TModerateEmployers moderate in employers)
                             idModerators.Remove(moderate.IdEmployee);
                         Random r = new Random();
 
                         TModerateEmployers newModerator = new TModerateEmployers();
-                        newModerator.IdEmployee = idModerators[r.Next(0,idModerators.Count)];
+                        newModerator.IdEmployee = idModerators[r.Next(0, idModerators.Count)];
                         newModerator.IdModerateProduct = idModerationProduct;
 
                         context.TModerateEmployers.Add(newModerator);
                         context.SaveChanges();
-                    } 
+                    }
                 }
                 else if (employers.Count == 3)
                 {

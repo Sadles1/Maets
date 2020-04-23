@@ -28,7 +28,7 @@ namespace Client
         DataProvider dp = new DataProvider();
         public bool check(Service.Product pr)
         {
-            List<Service.Product> listpr = MainWindow.shopWindows.profile.Games.ToList();
+            List<Service.Product> listpr = prof.Games.ToList();
             int q=0;
             for( int i=0; i< listpr.Count;i++)
             {
@@ -60,8 +60,7 @@ namespace Client
             if (check(tv))
             {
                 BuyAlready.Visibility = Visibility.Visible;
-                BuyAlready.ToolTip = "Этот товар уже есть в вашей библиотеке!)";
-                btnBuy.IsEnabled = false;
+                BuyAlready.ToolTip = "Этот товар уже есть в вашей библиотеке, вы можете купить его только оптом(2+ штук))";
                 
             }
         }
@@ -110,7 +109,10 @@ namespace Client
 
         private void BtnBuy_Click(object sender, RoutedEventArgs e)
         {
-            ShopWindows.mainfprofile.Add(tv1);
+            ModelProductCart tvc = new ModelProductCart();
+            tvc = tvc.MakeModelProductCart(tv1);
+            tvc.Price = tv1.RetailPrice;
+            ShopWindows.mainfprofile.Add(tvc);
             btnBuy.Visibility = Visibility.Hidden;
             btnkorzina.Visibility = Visibility.Visible;
         }

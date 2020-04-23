@@ -104,13 +104,28 @@ namespace Service
         string GetWayToGame(int idUser, int idGame);
 
         [OperationContract]
-        string CheckMail(string Mail);
+        string CheckMail(string Mail, string messageBody);
 
         [OperationContract]
         List<Product> GetModerationProduct(int idUser);
 
         [OperationContract(IsOneWay = true)]
         void ChangeModerationStatus(int idUser, int idModerationProduct, bool result);
+
+        [OperationContract(IsOneWay = true)]
+        void changePassword(int idUser, string password);
+
+
+        [OperationContract(IsOneWay = true)]
+        void ChangeProfileInformation(Profile profile);
+
+
+        [OperationContract(IsOneWay = true)]
+        void DeleteComment(int idComment);
+
+        [OperationContract(IsOneWay = true)]
+        void changeProfileImage(int idUser, byte[] MainImage);
+
     }
 
     public interface IWCFServiceCalbback
@@ -132,6 +147,9 @@ namespace Service
     public interface IDownloadService
     {
         [OperationContract]
-        Stream DownloadProduct(int idProduct, int idUser, string path);
+        Stream DownloadProduct(int idProduct, int idUser, string path, long startPoin);
+
+        [OperationContract]
+        long GetFileSize(int idProduct);
     }
 }

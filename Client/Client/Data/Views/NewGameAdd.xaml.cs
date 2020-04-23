@@ -33,7 +33,7 @@ namespace Client
             modelProducts = new List<ModelImage>();
             btnAdd.Content = "Отправить заявку\n на добаление";
             ModelImage modelProduct = new ModelImage();
-            modelProducts.Add(modelProduct.MakeModelImage(File.ReadAllBytes($@"{Environment.CurrentDirectory}\Content\Images\1.encr")));
+            modelProducts.Add(modelProduct.MakeModelImage(File.ReadAllBytes(ShopWindows.imagesmaets+ @"1.encr")));
             Screenshoot.Items.Add(modelProducts[0]);
             Screenshoot1.Items.Add(modelProducts[0]);
             Screenshoot2.Items.Add(modelProducts[0]);
@@ -164,6 +164,8 @@ namespace Client
                 }
                 ShopWindows.client.AddModerationProduct(yourgame, scrs.ToArray());
                 System.Windows.MessageBox.Show("Успешно отправлено на модерацию");
+                MainWindow.shopWindows.Visibility = Visibility.Visible;
+                MainWindow.shopWindows.Refresh.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
                 this.Close();
             }
 

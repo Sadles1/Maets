@@ -347,6 +347,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="messageBody" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -380,10 +381,40 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="changePassword">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idUser" type="xs:int" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeProfileInformation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="profile" nillable="true" type="q22:Profile" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteComment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idComment" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="changeProfileImage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idUser" type="xs:int" />
+        <xs:element minOccurs="0" name="MainImage" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetMessage">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q22:UserMessage" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q23:UserMessage" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -395,7 +426,7 @@
   <xs:element name="GetFriendRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q23:Profile" />
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q24:Profile" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -412,13 +443,28 @@
         <xs:element minOccurs="0" name="idProduct" type="xs:int" />
         <xs:element minOccurs="0" name="idUser" type="xs:int" />
         <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="startPoin" type="xs:long" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="DownloadProductResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q24="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q24:StreamBody" />
+        <xs:element xmlns:q25="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q25:StreamBody" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileSize">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idProduct" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileSizeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFileSizeResult" type="xs:long" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
