@@ -13,6 +13,8 @@ namespace Service
             TGameGenre = new HashSet<TGameGenre>();
             TMinGameSysReq = new HashSet<TMinGameSysReq>();
             TRecGameSysReq = new HashSet<TRecGameSysReq>();
+            TUsersGames = new HashSet<TUsersGames>();
+            TProductKeys = new HashSet<TProductKeys>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -21,12 +23,14 @@ namespace Service
         public double RetailPrice { get; set; }
         public string Description { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
         public int IdDeveloper { get; set; }
         public int IdPublisher { get; set; }
 
         public virtual TDeveloper IdDeveloperNavigation { get; set; }
         public virtual TPublisher IdPublisherNavigation { get; set; }
+        public virtual ICollection<TUsersGames> TUsersGames { get; set; }
+        public virtual ICollection<TProductKeys> TProductKeys { get; set; }
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
         public virtual ICollection<TGameGenre> TGameGenre { get; set; }

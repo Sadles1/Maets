@@ -308,6 +308,7 @@ namespace Service
                     File.Delete(newPath);
 
 
+
                 TProduct.Quantity = 100;
                 TProduct.ReleaseDate = DateTime.Now.Date;
                 TProduct.RetailPrice = moderateProduct.RetailPrice;

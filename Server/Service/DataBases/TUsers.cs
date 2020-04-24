@@ -12,6 +12,7 @@ namespace Service
             TDeals = new HashSet<TDeals>();
             TLogin = new HashSet<TLogin>();
             TModerateEmployers = new HashSet<TModerateEmployers>();
+            TUsersGames = new HashSet<TUsersGames>();
         }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -26,6 +27,7 @@ namespace Service
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }
         public virtual ICollection<TLogin> TLogin { get; set; }
+        public virtual ICollection<TUsersGames> TUsersGames { get; set; }
         public virtual ICollection<TModerateEmployers> TModerateEmployers { get; set; }
     }
 }

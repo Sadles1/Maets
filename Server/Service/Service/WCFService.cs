@@ -38,6 +38,12 @@ namespace Service
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == id);
                     Product pr = new Product { Id = product.Id, RetailPrice = product.RetailPrice };
 
+                    TUsersGames usersGames = new TUsersGames();
+                    usersGames.IdUser = idProfile;
+                    usersGames.IdProduct = product.Id;
+
+                    context.TUsersGames.Add(usersGames);
+
                     TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, 1, false);
                     context.TDeals.Add(deal);
                     profile.Money -= pr.RetailPrice * (1 - profile.PersonalDiscount);
@@ -490,9 +496,9 @@ namespace Service
                         foreach (Profile friend in profile.Friends)
                         {
 
-                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile == friend);
+                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
                             if (OnlineFriend != null)
-                                ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
+                                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
                         }
                     }
 
@@ -668,6 +674,24 @@ namespace Service
                 string Login = User.UserProfile.Login;
                 //Выводим сообщение в серверную консоль
                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} disconnect");
+
+
+                using (postgresContext context = new postgresContext())
+                {
+
+                    string path = $@"{BaseSettings.Default.SourcePath}\Users\{Id}\";
+                    //List<TLogin> Tlogins = context.TLogin.ToList();
+                    if (File.Exists($@"{path}Friends.json"))
+                    {
+                        List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
+                        foreach (int id in IdFriends)
+                        {
+                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == id);
+                            if (OnlineFriend != null)
+                                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOffline(Id);
+                        }
+                    }
+                }
 
                 //Удаляем пользователя из списка активных пользователей
                 onlineUsers.Remove(User);
@@ -1023,6 +1047,18 @@ namespace Service
                 }
                 return products;
             }
+        }
+
+        public void SetMessageRead(int id, int idChatedUser)
+        {
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
+            List<UserMessage> allMessages = JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.IDSender == idChatedUser || u.IDReceiver == id).ToList();
+            foreach (UserMessage currentMessage in allMessages)
+            {
+                if (currentMessage.isRead == false)
+                    currentMessage.isRead = true;
+            }
+            File.WriteAllText(path, JsonConvert.SerializeObject(allMessages));
         }
     }
 }

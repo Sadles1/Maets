@@ -152,6 +152,8 @@
       <DependentUpon>BaseSettings.settings</DependentUpon>
     </Compile>
     <Compile Include="Crypt.cs" />
+    <Compile Include="DataBases\TProductKeys.cs" />
+    <Compile Include="DataBases\TUsersGames.cs" />
     <Compile Include="DataModels\Comment.cs" />
     <Compile Include="DataModels\Message.cs" />
     <Compile Include="DataModels\OnlineUser.cs" />
@@ -161,7 +163,6 @@
     <Compile Include="DataBases\postgresContext.cs" />
     <Compile Include="Dispatchers\MainErrorHandler.cs" />
     <Compile Include="Dispatchers\MainErrorHandlerBehaviour.cs" />
-    <Compile Include="MyStream.cs" />
     <Compile Include="Service\IWCFService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\WCFService.cs" />

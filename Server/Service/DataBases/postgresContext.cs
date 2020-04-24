@@ -28,6 +28,8 @@ namespace Service
         public virtual DbSet<TRecGameSysReq> TRecGameSysReq { get; set; }
         public virtual DbSet<TSysReq> TSysReq { get; set; }
         public virtual DbSet<TUsers> TUsers { get; set; }
+        public virtual DbSet<TProductKeys> TProductKeys { get; set; }
+        public virtual DbSet<TUsersGames> TUsersGames { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -117,6 +119,40 @@ namespace Service
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("t_GameGenre_IdGenre_fkey");
             });
+
+            modelBuilder.Entity<TProductKeys>(entity =>
+            {
+                entity.ToTable("t_ProductKeys");
+
+                entity.Property(e => e.LicenseKey).ValueGeneratedNever();
+
+                entity.HasOne(d => d.IdProductNavigation)
+                    .WithMany(p => p.TProductKeys)
+                    .HasForeignKey(d => d.IdProduct)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("t_ProductKeys_IdProduct_fkey");
+            });
+
+            modelBuilder.Entity<TUsersGames>(entity =>
+            {
+                entity.HasKey(e => new { e.IdProduct, e.IdUser })
+                    .HasName("t_UsersGames_pkey");
+
+                entity.ToTable("t_UsersGames");
+
+                entity.HasOne(d => d.IdProductNavigation)
+                    .WithMany(p => p.TUsersGames)
+                    .HasForeignKey(d => d.IdProduct)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("t_UsersGames_IdProduct_fkey");
+
+                entity.HasOne(d => d.IdUsersNavigation)
+                    .WithMany(p => p.TUsersGames)
+                    .HasForeignKey(d => d.IdUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("t_UsersGames_IdUser_fkey");
+            });
+
 
             modelBuilder.Entity<TGenre>(entity =>
             {

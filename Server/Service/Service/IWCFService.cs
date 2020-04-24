@@ -126,10 +126,15 @@ namespace Service
         [OperationContract(IsOneWay = true)]
         void changeProfileImage(int idUser, byte[] MainImage);
 
+        [OperationContract(IsOneWay = true)]
+        void SetMessageRead(int id, int idChatedUser);
     }
 
     public interface IWCFServiceCalbback
     {
+        [OperationContract(IsOneWay = true)]
+        void FriendOffline(int idUser);
+
         [OperationContract(IsOneWay = true)]
         void GetMessage(UserMessage msg);
 
