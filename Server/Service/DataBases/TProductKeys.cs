@@ -10,11 +10,11 @@ namespace Service
 {
     public partial class TProductKeys
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string LicenseKey { get; set; }
+        public string Key { get; set; }
         public int IdProduct { get; set; }
-        public bool isSold { get; set; }
-        public bool isActivate { get; set; }
+        public bool IsSold { get; set; }
+        public bool IsActivate { get; set; }
+
         public virtual TProducts IdProductNavigation { get; set; }
     }
 }

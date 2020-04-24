@@ -8,11 +8,11 @@ namespace Service
 {
     public partial class TUsersGames
     {
-        public int IdUser { get; set; }
-        public int IdProduct { get; set; }
+        public int Iduser { get; set; }
+        public int Idproduct { get; set; }
 
-        public virtual TProducts IdProductNavigation { get; set; }
-        public virtual TUsers IdUsersNavigation { get; set; }
+        public virtual TProducts IdproductNavigation { get; set; }
+        public virtual TUsers IduserNavigation { get; set; }
 
     }
 }

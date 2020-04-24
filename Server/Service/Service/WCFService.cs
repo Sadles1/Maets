@@ -38,11 +38,7 @@ namespace Service
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == id);
                     Product pr = new Product { Id = product.Id, RetailPrice = product.RetailPrice };
 
-                    TUsersGames usersGames = new TUsersGames();
-                    usersGames.IdUser = idProfile;
-                    usersGames.IdProduct = product.Id;
-
-                    context.TUsersGames.Add(usersGames);
+                    context.TUsersGames.Add(new TUsersGames {Idproduct = product.Id,Iduser = idProfile });
 
                     TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, 1, false);
                     context.TDeals.Add(deal);

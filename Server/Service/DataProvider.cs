@@ -189,7 +189,7 @@ namespace Service
             List<Product> Games = new List<Product>();
             using (postgresContext context = new postgresContext())
             {
-                List<int> idGames = context.TDeals.Where(u => u.IdBuyers == id && u.Wholesale == false).Select(u => u.IdProduct).ToList();
+                List<int> idGames = context.TUsersGames.Where(u => u.Iduser == id).Select(u => u.Idproduct).ToList();
                 if (idGames.Count != 0)
                 {
                     List<TProducts> TProducts = context.TProducts.Include(u => u.IdPublisherNavigation).Include(u => u.IdDeveloperNavigation).ToList();

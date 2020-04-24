@@ -7,8 +7,7 @@ namespace Service
     public partial class postgresContext : DbContext
     {
         public postgresContext()
-        {
-        }
+        { }
 
         public postgresContext(DbContextOptions<postgresContext> options)
             : base(options)
@@ -120,11 +119,19 @@ namespace Service
                     .HasConstraintName("t_GameGenre_IdGenre_fkey");
             });
 
+
             modelBuilder.Entity<TProductKeys>(entity =>
             {
+                entity.HasKey(e => e.Key)
+                    .HasName("t_ProductKeys_pkey");
+
                 entity.ToTable("t_ProductKeys");
 
-                entity.Property(e => e.LicenseKey).ValueGeneratedNever();
+                entity.Property(e => e.Key).HasMaxLength(24);
+
+                entity.Property(e => e.IsActivate).HasColumnName("isActivate");
+
+                entity.Property(e => e.IsSold).HasColumnName("isSold");
 
                 entity.HasOne(d => d.IdProductNavigation)
                     .WithMany(p => p.TProductKeys)
@@ -135,22 +142,26 @@ namespace Service
 
             modelBuilder.Entity<TUsersGames>(entity =>
             {
-                entity.HasKey(e => new { e.IdProduct, e.IdUser })
+                entity.HasKey(e => new { e.Iduser, e.Idproduct })
                     .HasName("t_UsersGames_pkey");
 
                 entity.ToTable("t_UsersGames");
 
-                entity.HasOne(d => d.IdProductNavigation)
-                    .WithMany(p => p.TUsersGames)
-                    .HasForeignKey(d => d.IdProduct)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_UsersGames_IdProduct_fkey");
+                entity.Property(e => e.Iduser).HasColumnName("IDUser");
 
-                entity.HasOne(d => d.IdUsersNavigation)
+                entity.Property(e => e.Idproduct).HasColumnName("IDProduct");
+
+                entity.HasOne(d => d.IdproductNavigation)
                     .WithMany(p => p.TUsersGames)
-                    .HasForeignKey(d => d.IdUser)
+                    .HasForeignKey(d => d.Idproduct)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("t_UsersGames_IdUser_fkey");
+                    .HasConstraintName("t_UsersGames_IDProduct_fkey");
+
+                entity.HasOne(d => d.IduserNavigation)
+                    .WithMany(p => p.TUsersGames)
+                    .HasForeignKey(d => d.Iduser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("t_UsersGames_IDUser_fkey");
             });
 
 
