@@ -460,8 +460,6 @@ namespace Service
             return Code;
         }
 
-
-
         /// <summary>
         /// Метод для регистрации пользователя
         /// </summary>
@@ -536,7 +534,6 @@ namespace Service
 
                 if (Tlogin != null)
                 {
-
                     //Выводим сообщение в серверную консоль
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
@@ -562,7 +559,7 @@ namespace Service
                         }
                     }
 
-                    ActiveUser = new OnlineUser { UserProfile = new Profile { ID = Tlogin.Id,Login = Tlogin.Login }, operationContext = OperationContext.Current };
+                    ActiveUser = new OnlineUser { UserProfile = new Profile { ID = Tlogin.Id, Login = Tlogin.Login }, operationContext = OperationContext.Current };
                     ActiveUser.sessionID = OperationContext.Current.Channel;
                     ActiveUser.sessionID.Faulted += new EventHandler(ClientFault);
 
@@ -742,6 +739,37 @@ namespace Service
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
             FileInfo file = new FileInfo(pathToGame);
             return file.Length;
+        }
+
+        public void Kicked(int id)
+        {
+//             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
+// 
+//             if (User != null)
+//             {
+//                 //Получаем id сессии
+//                 string sessionId = (OperationContext.Current.SessionId);
+//                 string Login = User.UserProfile.Login;
+//                 //Выводим сообщение в серверную консоль
+//                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} disconnect");
+// 
+// 
+//                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{Id}\";
+//                 //List<TLogin> Tlogins = context.TLogin.ToList();
+//                 if (File.Exists($@"{path}Friends.json"))
+//                 {
+//                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
+//                     foreach (int id in IdFriends)
+//                     {
+//                         OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == id);
+//                         if (OnlineFriend != null)
+//                             OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOffline(Id);
+//                     }
+//                 }
+// 
+//                 //Удаляем пользователя из списка активных пользователей
+//                 onlineUsers.Remove(User);
+//             }
         }
 
         /// <summary>
@@ -988,42 +1016,37 @@ namespace Service
         /// <summary>
         /// Метод для добавления нового комментария
         /// </summary>
-        public void AddComment(int idUser, int idGame, string Comment, int Score)
+        public void AddComment(Comment comment)
         {
             using (postgresContext context = new postgresContext())
-            {
-                //Вычисляем новое значение id
-                List<TComments> comments = context.TComments.ToList();
-                int id = comments.Count > 0 ? (context.TComments.Max(u => u.Id) + 1) : 1;
-
+            { 
                 //Формируем новый комментарий
-                TComments comment = new TComments();
-                comment.Id = id;
-                comment.IdProduct = idGame;
-                comment.IdUser = idUser;
-                comment.Comment = Comment;
-                comment.Score = Score;
+                TComments Tcomment = new TComments();
+                Tcomment.IdProduct = comment.idProduct;
+                Tcomment.IdUser = comment.idUser;
+                Tcomment.Comment = comment.comment;
+                Tcomment.Score = comment.Score;
 
                 //Добавляем комментарий в БД
-                context.TComments.Add(comment);
+                context.TComments.Add(Tcomment);
 
                 //Сохранием изменения в БД
                 context.SaveChanges();
             }
 
             //Высчитываем новый рейтинг для игры
-            dp.CalculateGameScore(idGame);
+            dp.CalculateGameScore(comment.idProduct);
         }
 
 
         /// <summary>
         /// Метод для удаления существующего комментария
         /// </summary>
-        public void DeleteComment(int idComment)
+        public void DeleteComment(int idUser, int idProduct)
         {
             using (postgresContext context = new postgresContext())
             {
-                TComments comment = context.TComments.FirstOrDefault(u => u.Id == idComment);
+                TComments comment = context.TComments.FirstOrDefault(u => u.IdUser == idUser && u.IdProduct == idProduct);
                 context.TComments.Remove(comment);
                 context.SaveChanges();
             }
@@ -1034,17 +1057,25 @@ namespace Service
         /// </summary>
         /// <param name="idGame"></param>
         /// <returns></returns>
-        public List<Comment> GetAllGameComments(int idGame)
+        public List<Tuple<Comment, Profile>> GetAllGameComments(int idGame)
         {
             using (postgresContext context = new postgresContext())
             {
                 //Находим и возвращаем список комментариев для определённой игры
+                List<TLogin> logins = context.TLogin.ToList();
                 List<TComments> Tcomments = context.TComments.Where(u => u.IdProduct == idGame).ToList();
-                List<Comment> comments = new List<Comment>();
+                List<Tuple<Comment, Profile>> comments = new List<Tuple<Comment, Profile>>();
                 foreach (TComments Tcomment in Tcomments)
                 {
-                    Comment comment = dp.FormComment(Tcomment);
-                    comments.Add(comment);
+                    Comment comment = new Comment();
+                    comment.idProduct = Tcomment.IdProduct;
+                    comment.idUser = Tcomment.IdUser;
+                    comment.Score = Tcomment.Score;
+                    comment.comment = Tcomment.Comment;
+
+                    Profile pr = dp.SimpleFormProfile(logins.FirstOrDefault(u => u.Id == comment.idUser));
+
+                    comments.Add(Tuple.Create(comment, pr));
                 }
                 return comments;
             }
@@ -1078,7 +1109,7 @@ namespace Service
         {
             using (postgresContext context = new postgresContext())
             {
-                TLogin user = context.TLogin.Include(u=>u.IdNavigation).FirstOrDefault(u=>u.Id == idUser);
+                TLogin user = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Id == idUser);
                 user.IdNavigation.AccessRight = AccessRight;
                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Changed access rights of {user.Login} to {AccessRight} ");
                 context.TLogin.Update(user);
@@ -1209,6 +1240,31 @@ namespace Service
                 else
                     throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
             }
+        }
+
+        public void SendMail(Mail mail)
+        {
+
+        }
+
+        public void ChangeComment(Comment comment)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Формируем новый комментарий
+                TComments Tcomment = context.TComments.FirstOrDefault(u=>u.IdUser == comment.idUser && u.IdProduct == comment.idProduct);
+                Tcomment.Comment = comment.comment;
+                Tcomment.Score = comment.Score;
+
+                //Добавляем комментарий в БД
+                context.TComments.Update(Tcomment);
+
+                //Сохранием изменения в БД
+                context.SaveChanges();
+            }
+
+            //Высчитываем новый рейтинг для игры
+            dp.CalculateGameScore(comment.idProduct);
         }
     }
 }

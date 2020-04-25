@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/System" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://25.78.76.9:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Service" />
   <xs:complexType name="ArrayOfTupleOfintint">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="TupleOfintint" nillable="true" type="tns:TupleOfintint" />
@@ -21,4 +22,25 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TupleOfintint" nillable="true" type="tns:TupleOfintint" />
+  <xs:complexType name="ArrayOfTupleOfCommentProfilejiC3iO_P0">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TupleOfCommentProfilejiC3iO_P0" nillable="true" type="tns:TupleOfCommentProfilejiC3iO_P0" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTupleOfCommentProfilejiC3iO_P0" nillable="true" type="tns:ArrayOfTupleOfCommentProfilejiC3iO_P0" />
+  <xs:complexType name="TupleOfCommentProfilejiC3iO_P0">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="TupleOf{0}{1}{#}" Namespace="http://schemas.datacontract.org/2004/07/System" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="Comment" Namespace="http://schemas.datacontract.org/2004/07/Service" />
+          <GenericParameter Name="Profile" Namespace="http://schemas.datacontract.org/2004/07/Service" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Service" name="m_Item1" nillable="true" type="q1:Comment" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Service" name="m_Item2" nillable="true" type="q2:Profile" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TupleOfCommentProfilejiC3iO_P0" nillable="true" type="tns:TupleOfCommentProfilejiC3iO_P0" />
 </xs:schema>

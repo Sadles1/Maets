@@ -225,6 +225,9 @@
   <wsdl:message name="IWCFService_GetProductByFilter_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetProductByFilterResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_ChangeAccessRight_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeAccessRight" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_FriendOffline_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:FriendOffline" />
   </wsdl:message>
@@ -407,6 +410,9 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetProductByFilter">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetProductByFilter" message="tns:IWCFService_GetProductByFilter_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetProductByFilterResponse" message="tns:IWCFService_GetProductByFilter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeAccessRight">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeAccessRight" message="tns:IWCFService_ChangeAccessRight_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FriendOffline">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/FriendOffline" message="tns:IWCFService_FriendOffline_OutputCallbackMessage" />
@@ -766,6 +772,12 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeAccessRight">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeAccessRight" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="FriendOffline">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/FriendOffline" style="document" />

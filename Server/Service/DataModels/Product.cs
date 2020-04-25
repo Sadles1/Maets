@@ -9,6 +9,7 @@ namespace Service
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public double? Rate { get; set; }
         public byte[] MainImage { get; set; }
         public List<string> GameGenre { get; set; }
         public List<string> MinGameSysReq { get; set; }

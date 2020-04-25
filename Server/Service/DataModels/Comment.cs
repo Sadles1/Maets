@@ -8,7 +8,6 @@ namespace Service
 {
     public class Comment
     {
-        public int id { get; set; }
         public int idUser { get; set; }
         public int idProduct { get; set; }
         public string comment { get; set;}

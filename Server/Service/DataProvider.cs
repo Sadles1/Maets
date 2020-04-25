@@ -136,6 +136,7 @@ namespace Service
                 product.Publisher = TProduct.IdPublisherNavigation.Name;
                 product.Developer = TProduct.IdDeveloperNavigation.Name;
                 product.ReleaseDate = TProduct.ReleaseDate.Date;
+                product.Rate = TProduct.Rate;
                 product.RetailPrice = TProduct.RetailPrice;
                 product.WholesalePrice = TProduct.WholesalePrice;
 
@@ -145,11 +146,11 @@ namespace Service
 
                 product.MinGameSysReq = new List<string>();
                 foreach (TMinGameSysReq req in minGameSysReq)
-                    product.MinGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
+                    product.MinGameSysReq.Add(req.IdSysReqNavigation.Name + ": " + req.Description);
 
                 product.RecGameSysReq = new List<string>();
                 foreach (TRecGameSysReq req in recGameSysReq)
-                    product.RecGameSysReq.Add(req.IdSysReqNavigation.Name + req.Description);
+                    product.RecGameSysReq.Add(req.IdSysReqNavigation.Name + ": " + req.Description);
 
                 //Получаем основное изображение игры
                 using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Products\{product.Id}\MainImage.encr"))
@@ -194,17 +195,6 @@ namespace Service
                 //Сохраняем изменения в БД
                 context.SaveChanges();
             }
-        }
-
-        public Comment FormComment(TComments TComment)
-        {
-            Comment comment = new Comment();
-            comment.id = TComment.Id;
-            comment.idProduct = TComment.IdProduct;
-            comment.idUser = TComment.IdUser;
-            comment.Score = TComment.Score;
-            comment.comment = TComment.Comment;
-            return comment;
         }
 
         public string GenRandomString(string Alphabet, int Length)

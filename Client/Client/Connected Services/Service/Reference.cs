@@ -580,9 +580,6 @@ namespace Client.Service {
         private string commentField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int idField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int idProductField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -620,19 +617,6 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.commentField, value) != true)) {
                     this.commentField = value;
                     this.RaisePropertyChanged("comment");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int id {
-            get {
-                return this.idField;
-            }
-            set {
-                if ((this.idField.Equals(value) != true)) {
-                    this.idField = value;
-                    this.RaisePropertyChanged("id");
                 }
             }
         }
@@ -840,16 +824,16 @@ namespace Client.Service {
         System.Threading.Tasks.Task<byte[][]> GetGameImagesAsync(int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
-        void AddComment(int idUSer, int idGame, string Comment, int Score);
+        void AddComment(Client.Service.Comment comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
-        System.Threading.Tasks.Task AddCommentAsync(int idUSer, int idGame, string Comment, int Score);
+        System.Threading.Tasks.Task AddCommentAsync(Client.Service.Comment comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllGameComments", ReplyAction="http://tempuri.org/IWCFService/GetAllGameCommentsResponse")]
-        Client.Service.Comment[] GetAllGameComments(int idGame);
+        System.Tuple<Client.Service.Comment, Client.Service.Profile>[] GetAllGameComments(int idGame);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllGameComments", ReplyAction="http://tempuri.org/IWCFService/GetAllGameCommentsResponse")]
-        System.Threading.Tasks.Task<Client.Service.Comment[]> GetAllGameCommentsAsync(int idGame);
+        System.Threading.Tasks.Task<System.Tuple<Client.Service.Comment, Client.Service.Profile>[]> GetAllGameCommentsAsync(int idGame);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetEasyProfile", ReplyAction="http://tempuri.org/IWCFService/GetEasyProfileResponse")]
         Client.Service.Profile GetEasyProfile(int id);
@@ -900,10 +884,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task ChangeProfileInformationAsync(Client.Service.Profile profile);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteComment")]
-        void DeleteComment(int idComment);
+        void DeleteComment(int idUser, int idProduct);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteComment")]
-        System.Threading.Tasks.Task DeleteCommentAsync(int idComment);
+        System.Threading.Tasks.Task DeleteCommentAsync(int idUser, int idProduct);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changeProfileImage")]
         void changeProfileImage(int idUser, byte[] MainImage);
@@ -935,6 +919,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProductByFilterResponse")]
         System.Threading.Tasks.Task<Client.Service.Product[]> GetProductByFilterAsync(string filter);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeAccessRight")]
+        void ChangeAccessRight(int idUser, int AccessRight);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeAccessRight")]
+        System.Threading.Tasks.Task ChangeAccessRightAsync(int idUser, int AccessRight);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1224,19 +1214,19 @@ namespace Client.Service {
             return base.Channel.GetGameImagesAsync(id);
         }
         
-        public void AddComment(int idUSer, int idGame, string Comment, int Score) {
-            base.Channel.AddComment(idUSer, idGame, Comment, Score);
+        public void AddComment(Client.Service.Comment comment) {
+            base.Channel.AddComment(comment);
         }
         
-        public System.Threading.Tasks.Task AddCommentAsync(int idUSer, int idGame, string Comment, int Score) {
-            return base.Channel.AddCommentAsync(idUSer, idGame, Comment, Score);
+        public System.Threading.Tasks.Task AddCommentAsync(Client.Service.Comment comment) {
+            return base.Channel.AddCommentAsync(comment);
         }
         
-        public Client.Service.Comment[] GetAllGameComments(int idGame) {
+        public System.Tuple<Client.Service.Comment, Client.Service.Profile>[] GetAllGameComments(int idGame) {
             return base.Channel.GetAllGameComments(idGame);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Comment[]> GetAllGameCommentsAsync(int idGame) {
+        public System.Threading.Tasks.Task<System.Tuple<Client.Service.Comment, Client.Service.Profile>[]> GetAllGameCommentsAsync(int idGame) {
             return base.Channel.GetAllGameCommentsAsync(idGame);
         }
         
@@ -1304,12 +1294,12 @@ namespace Client.Service {
             return base.Channel.ChangeProfileInformationAsync(profile);
         }
         
-        public void DeleteComment(int idComment) {
-            base.Channel.DeleteComment(idComment);
+        public void DeleteComment(int idUser, int idProduct) {
+            base.Channel.DeleteComment(idUser, idProduct);
         }
         
-        public System.Threading.Tasks.Task DeleteCommentAsync(int idComment) {
-            return base.Channel.DeleteCommentAsync(idComment);
+        public System.Threading.Tasks.Task DeleteCommentAsync(int idUser, int idProduct) {
+            return base.Channel.DeleteCommentAsync(idUser, idProduct);
         }
         
         public void changeProfileImage(int idUser, byte[] MainImage) {
@@ -1366,6 +1356,14 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Product[]> GetProductByFilterAsync(string filter) {
             return base.Channel.GetProductByFilterAsync(filter);
+        }
+        
+        public void ChangeAccessRight(int idUser, int AccessRight) {
+            base.Channel.ChangeAccessRight(idUser, AccessRight);
+        }
+        
+        public System.Threading.Tasks.Task ChangeAccessRightAsync(int idUser, int AccessRight) {
+            return base.Channel.ChangeAccessRightAsync(idUser, AccessRight);
         }
     }
     

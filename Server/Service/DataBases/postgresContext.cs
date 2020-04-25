@@ -46,7 +46,8 @@ namespace Service
             {
                 entity.ToTable("t_Comments");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasKey(e => new { e.IdProduct, e.IdUser })
+                    .HasName("t_GameGenre_pkey");
 
                 entity.Property(e => e.Comment)
                     .IsRequired()

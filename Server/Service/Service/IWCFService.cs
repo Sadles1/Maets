@@ -89,11 +89,11 @@ namespace Service
         [OperationContract]
         List<byte[]> GetGameImages(int id);
 
-        [OperationContract]
-        void AddComment(int idUSer, int idGame, string Comment, int Score);
+        [OperationContract(IsOneWay = true)]
+        void AddComment(Comment comment);
 
         [OperationContract]
-        List<Comment> GetAllGameComments(int idGame);
+        List<Tuple<Comment, Profile>> GetAllGameComments(int idGame);
 
         [OperationContract]
         Profile GetEasyProfile(int id);
@@ -120,7 +120,7 @@ namespace Service
         void ChangeProfileInformation(Profile profile);
 
         [OperationContract(IsOneWay = true)]
-        void DeleteComment(int idComment);
+        void DeleteComment(int idUser, int idProduct);
 
         [OperationContract(IsOneWay = true)]
         void changeProfileImage(int idUser, byte[] MainImage);
@@ -139,6 +139,14 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void ChangeAccessRight(int idUser, int AccessRight);
+
+        [OperationContract(IsOneWay = true)]
+        void ChangeComment(Comment comment);
+
+        [OperationContract(IsOneWay = true)]
+        void Kick(int id);
+
+        //[OperationContract(IsOneWay = true)]
     }
 
     public interface IWCFServiceCalbback
