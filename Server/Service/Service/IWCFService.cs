@@ -29,8 +29,8 @@ namespace Service
         [OperationContract(IsOneWay = true)]
         void BuyProduct(List<int> Cart, int idProfile);
 
-        [OperationContract(IsOneWay = true)]
-        void BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile);
+        [OperationContract]
+        List<Product> BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile);
 
         [OperationContract]
         bool CheckBlacklist(int IdMainUser, int IdSeconUser);
@@ -104,7 +104,9 @@ namespace Service
         string GetWayToGame(int idUser, int idGame);
 
         [OperationContract]
-        string CheckMail(string Mail, string messageBody);
+        string CheckMail(string Mail);
+        [OperationContract]
+        string ResetPassword(string Mail);
 
         [OperationContract]
         List<Product> GetModerationProduct(int idUser);
@@ -113,12 +115,10 @@ namespace Service
         void ChangeModerationStatus(int idUser, int idModerationProduct, bool result);
 
         [OperationContract(IsOneWay = true)]
-        void changePassword(int idUser, string password);
-
+        void changePassword(int idUser, string password, string newPassword);
 
         [OperationContract(IsOneWay = true)]
         void ChangeProfileInformation(Profile profile);
-
 
         [OperationContract(IsOneWay = true)]
         void DeleteComment(int idComment);
@@ -128,6 +128,15 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void SetMessageRead(int id, int idChatedUser);
+
+        [OperationContract(IsOneWay = true)]
+        void ActivateLicenseKey(int id, string Key);
+
+        [OperationContract(IsOneWay = true)]
+        void resetPassword(int idUser, string newPassword);
+
+        [OperationContract]
+        List<Product> GetProductByFilter(string filter);
     }
 
     public interface IWCFServiceCalbback
@@ -146,6 +155,11 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void FriendOnline(int idUser);
+
+        [OperationContract(IsOneWay = true)]
+        void AcceptFriendRequest(Profile pr);
+
+
     }
 
     [ServiceContract(SessionMode = SessionMode.Allowed)]

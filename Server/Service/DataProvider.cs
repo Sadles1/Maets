@@ -250,6 +250,10 @@ namespace Service
             return sb.ToString();
         }
 
+
+        /// <summary>
+        /// Метод для удаления товара с модерации
+        /// </summary>
         public void RemoveFromModeration(int idModerationProduct)
         {
             using(postgresContext context = new postgresContext())
@@ -318,6 +322,18 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Метод для предоставления скидки пользователю
+        /// </summary>
+        /// <param name="id"></param>
+        public void CheckDiscount(int id)
+        {
+            using(postgresContext context = new postgresContext())
+            {
+                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == id);
 
+
+            }
+        }
     }
 }

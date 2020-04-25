@@ -10,11 +10,12 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
     public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
         DataProvider dp = new DataProvider();
+        //readonly object ThisLock = new object();
 
         /// <summary>
         /// Метод для покупки товаров
@@ -38,7 +39,7 @@ namespace Service
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == id);
                     Product pr = new Product { Id = product.Id, RetailPrice = product.RetailPrice };
 
-                    context.TUsersGames.Add(new TUsersGames {Idproduct = product.Id,Iduser = idProfile });
+                    context.TUsersGames.Add(new TUsersGames { Idproduct = product.Id, Iduser = idProfile });
 
                     TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, 1, false);
                     context.TDeals.Add(deal);
@@ -59,7 +60,7 @@ namespace Service
         /// Метод для оптовой покупки товаров
         /// </summary>
         /// <param name="Cart">Необходимо передать пары Product + количество</param>
-        public void BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile)
+        public List<Product> BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile)
         {
             using (postgresContext context = new postgresContext())
             {
@@ -70,25 +71,61 @@ namespace Service
                 TUsers profile = context.TUsers.FirstOrDefault(u => u.Id == idProfile);
 
                 int idDeal = TDeals.Count > 0 ? (TDeals.Max(u => u.Id) + 1) : 1;
-
+                List<Product> ProductAbsent = new List<Product>();
+                List<TProductKeys> soldKeys = new List<TProductKeys>();
+                string mailMessage = "Купленные вами игры: ";
                 //Записываем все сделки в БД
                 foreach (Tuple<int, int> tuple in Cart)
                 {
+
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == tuple.Item1);
-                    Product pr = new Product { Id = product.Id, WholesalePrice = product.WholesalePrice };
+                    if (product.Quantity >= tuple.Item2)
+                    {
+                        mailMessage += product.Name + ": \n";
+                        Product pr = new Product { Id = product.Id, WholesalePrice = product.WholesalePrice };
 
-                    TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, tuple.Item2, true);
-                    context.TDeals.Add(deal);
-                    profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
-                    profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+                        List<TProductKeys> productKeys = context.TProductKeys.Where(u => u.IdProduct == product.Id && u.IsSold == false).ToList();
+                        for (int i = 0; i < tuple.Item2; i++)
+                        {
+                            soldKeys.Add(productKeys[i]);
+                            productKeys[i].IsSold = true;
+                            context.TProductKeys.Update(productKeys[i]);
+                            mailMessage += Convert.ToString(productKeys[i].Key + " \n");
+                        }
+                        product.Quantity -= tuple.Item2;
+                        context.TProducts.Update(product);
 
-                    idDeal++;
+                        TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, tuple.Item2, true);
+                        context.TDeals.Add(deal);
+                        profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+                        profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
+
+                        idDeal++;
+                    }
+                    else
+                        ProductAbsent.Add(new Product { Id = product.Id, Name = product.Name });
                 }
+
+                MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
+                MailAddress to = new MailAddress(profile.Mail);
+                MailMessage message = new MailMessage(from, to);
+                message.Subject = "Покупка на Maets";
+                // текст письма
+                message.Body = mailMessage;
+                message.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
+                    EnableSsl = true
+                };
+                smtp.Send(message);
 
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
                 //Сохраняем БД
                 context.SaveChanges();
+
+                return ProductAbsent;
             }
         }
 
@@ -321,8 +358,19 @@ namespace Service
             friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Add(id);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
-        }
 
+            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == idFriend);
+            if (OnlineFriend != null)
+            {
+                Profile pr;
+                using (postgresContext context = new postgresContext())
+                {
+                    TLogin login = context.TLogin.FirstOrDefault(u => u.Id == id);
+                    pr = dp.SimpleFormProfile(login);
+                }
+                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().AcceptFriendRequest(pr);
+            }
+        }
 
         /// <summary>
         /// Метод для удаления пользователя из друзей
@@ -374,15 +422,15 @@ namespace Service
         /// <summary>
         /// Метод выполняет проверку почты
         /// </summary>
-        public string CheckMail(string Mail, string messageBody)
+        public string CheckMail(string Mail)
         {
             string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
-            MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
+            MailAddress from = new MailAddress("maetsofficial@gmail.com", "Maets");
             MailAddress to = new MailAddress(Mail);
             MailMessage message = new MailMessage(from, to);
-            message.Subject = "Регистрация на Maets";
+            message.Subject = "Регистрация Maets";
             // текст письма
-            message.Body = messageBody;
+            message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p> Если вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
             message.IsBodyHtml = true;
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
             {
@@ -392,6 +440,27 @@ namespace Service
             smtp.Send(message);
             return Code;
         }
+
+
+        public string ResetPassword(string Mail)
+        {
+            string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
+            MailAddress from = new MailAddress("maetsofficial@gmail.com", "Maets");
+            MailAddress to = new MailAddress(Mail);
+            MailMessage message = new MailMessage(from, to);
+            message.Subject = "Смена пароля Maets";
+            // текст письма
+            message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p>Если вы видите это письмо, значит происходит смена пароля Вашего аккаунта на Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
+            message.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
+                EnableSsl = true
+            };
+            smtp.Send(message);
+            return Code;
+        }
+
 
 
         /// <summary>
@@ -470,7 +539,13 @@ namespace Service
                 {
                     //Формируем профиль
                     Profile profile = dp.FormActiveUser(Tlogin);
-                    profile.status = "Online";
+                    profile.status = "Online";                 
+                    
+                    //Сохраняем изменения в БД
+                    context.SaveChanges();
+
+                    //Выводим сообщение в серверную консоль
+                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
                     //Записываем подключеного пользователя
                     OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
@@ -480,29 +555,29 @@ namespace Service
                         onlineUsers.Remove(ActiveUser);
                     }
 
+                    lock (this)
+                    {
+                        //Отсылаем уведомления друзьям находящимся в онлайне
+                        if (profile.Friends != null)
+                        {
+                            foreach (Profile friend in profile.Friends)
+                            {
+
+                                OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
+                                if (OnlineFriend != null)
+                                    OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
+                            }
+                        }
+                    }
+
                     ActiveUser = new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current };
                     ActiveUser.sessionID = OperationContext.Current.Channel;
                     ActiveUser.sessionID.Faulted += new EventHandler(ClientFault);
 
                     onlineUsers.Add(ActiveUser);
 
-                    //Отсылаем уведомления друзьям находящимся в онлайне
-                    if (profile.Friends != null)
-                    {
-                        foreach (Profile friend in profile.Friends)
-                        {
+                    
 
-                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
-                            if (OnlineFriend != null)
-                                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
-                        }
-                    }
-
-                    //Сохраняем изменения в БД
-                    context.SaveChanges();
-
-                    //Выводим сообщение в серверную консоль
-                    Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
                     return profile;
                 }
@@ -577,13 +652,13 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 //Получаем всех пользователей из БД
-                List<TLogin> AllUsers = context.TLogin.Include(u => u.IdNavigation).Where(u => u.Login.Contains(filter)).ToList();
+                List<TLogin> Tlogin = context.TLogin.Where(u => u.Login.Contains(filter)).ToList();
 
                 //Создаём пустой список в который будем записывать всех пользователей
                 List<Profile> AllProfile = new List<Profile>();
 
                 //Для каждого пользователя формируем профиль
-                foreach (TLogin user in AllUsers)
+                foreach (TLogin user in Tlogin)
                 {
                     Profile pr = dp.SimpleFormProfile(user);
 
@@ -591,6 +666,34 @@ namespace Service
                     AllProfile.Add(pr);
                 }
                 return AllProfile;
+            }
+        }
+
+        public List<Product> GetProductByFilter(string filter)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Получаем всех пользователей из БД
+                List<TProducts> TProducts = context.TProducts.Where(u => u.Name.Contains(filter) || u.Description.Contains(filter)).ToList();
+
+                //Создаём пустой список в который будем записывать всех пользователей
+                List<Product> AllProducts = new List<Product>();
+
+                //Для каждого пользователя формируем профиль
+                foreach (TProducts product in TProducts)
+                {
+                    Product pr = new Product { Id = product.Id, Name = product.Name, Description = product.Description };
+
+                    using (FileStream fstream = File.OpenRead($@"{BaseSettings.Default.SourcePath}\Products\{product.Id}\MainImage.encr"))
+                    {
+                        pr.MainImage = new byte[fstream.Length];
+                        fstream.Read(pr.MainImage, 0, pr.MainImage.Length);
+                    }
+
+                    //Добавляем сформированный профиль в общий список
+                    AllProducts.Add(pr);
+                }
+                return AllProducts;
             }
         }
 
@@ -672,20 +775,16 @@ namespace Service
                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} disconnect");
 
 
-                using (postgresContext context = new postgresContext())
+                string path = $@"{BaseSettings.Default.SourcePath}\Users\{Id}\";
+                //List<TLogin> Tlogins = context.TLogin.ToList();
+                if (File.Exists($@"{path}Friends.json"))
                 {
-
-                    string path = $@"{BaseSettings.Default.SourcePath}\Users\{Id}\";
-                    //List<TLogin> Tlogins = context.TLogin.ToList();
-                    if (File.Exists($@"{path}Friends.json"))
+                    List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
+                    foreach (int id in IdFriends)
                     {
-                        List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
-                        foreach (int id in IdFriends)
-                        {
-                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == id);
-                            if (OnlineFriend != null)
-                                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOffline(Id);
-                        }
+                        OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == id);
+                        if (OnlineFriend != null)
+                            OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOffline(Id);
                     }
                 }
 
@@ -796,11 +895,11 @@ namespace Service
         }
 
         /// <summary>
-        /// Метод для смены пароля
+        /// Метод для восстановления пароля
         /// </summary>
         /// <param name="idUser">ID пользователя</param>
         /// <param name="password">пароль в хэшшированом виде</param>
-        public void changePassword(int idUser, string password)
+        public void resetPassword(int idUser, string newPassword)
         {
             using (postgresContext context = new postgresContext())
             {
@@ -808,7 +907,7 @@ namespace Service
                 TLogin login = context.TLogin.FirstOrDefault(u => u.Id == idUser);
 
                 //Меняем пароль
-                login.Password = password;
+                login.Password = newPassword;
 
                 //Добавляем изменения в БД
                 context.TLogin.Update(login);
@@ -818,6 +917,28 @@ namespace Service
             }
         }
 
+        public void changePassword(int idUser, string password, string newPassword)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Ищем пользователя в БД
+                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == idUser);
+
+                if (password == login.Password)
+                {
+                    //Меняем пароль
+                    login.Password = newPassword;
+
+                    //Добавляем изменения в БД
+                    context.TLogin.Update(login);
+
+                    //Сохраняем изменения в БД
+                    context.SaveChanges();
+                }
+                else
+                    throw new FaultException("Cтарый пароль введён неверно");
+            }
+        }
 
         /// <summary>
         /// Метод для смены Логина, пароля, почты, и телефона
@@ -861,7 +982,7 @@ namespace Service
             //Десериализуем файл, если файла нет то создаём пустой список
             List<UserMessage> newMessages;
             if (File.Exists(path))
-                newMessages = JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.isRead == false).ToList();
+                newMessages = JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.isRead == false && u.IDReceiver == id).ToList();
             else
                 newMessages = new List<UserMessage>();
             return newMessages;
@@ -876,7 +997,6 @@ namespace Service
             List<Product> games = dp.GetUserGames(id);
             return games;
         }
-
 
         /// <summary>
         /// Метод для добавления нового комментария
@@ -1055,6 +1175,23 @@ namespace Service
                     currentMessage.isRead = true;
             }
             File.WriteAllText(path, JsonConvert.SerializeObject(allMessages));
+        }
+
+        public void ActivateLicenseKey(int idUser, string Key)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TProductKeys key = context.TProductKeys.FirstOrDefault(u => u.Key == Key);
+                if (key.IsSold == true)
+                {
+                    key.IsActivate = true;
+                    context.TProductKeys.Update(key);
+                    context.TUsersGames.Add(new TUsersGames { Idproduct = key.IdProduct, Iduser = idUser });
+                    context.SaveChanges();
+                }
+                else
+                    throw new FaultException("Ошибка, ключ недоступен");
+            }
         }
     }
 }
