@@ -31,7 +31,6 @@ namespace Client
         public profilefriend(Service.Profile tv1)
         {
             this.Title = "Maets";
-
             Sender = MainWindow.shopWindows.profile;
             Resiver = tv1;
             tv = tv1;
@@ -129,7 +128,12 @@ namespace Client
             tbFriendUser.Text = "Друзья пользователя " + productnow.Login;
             //Service.WCFServiceClient client1 = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
 
-            
+            if(Sender.AccessRight==4)
+            {
+                cng.Visibility = Visibility.Visible;
+                ttt.Visibility = Visibility.Visible;
+                right.Visibility = Visibility.Visible;
+            }
             // tbgame.Text = productnow.Name;
             // tbgame1.Text = productnow.Login;
             imMainImage.Source = dp.GetImageFromByte(productnow.MainImage);
@@ -281,6 +285,13 @@ namespace Client
             btnnewfriend.Visibility = Visibility.Visible;
             newreqest.Visibility = Visibility.Hidden;
             ShopWindows.client.DeleteFriendReqest(Resiver.ID,Sender.ID);
+        }
+
+
+        private void Cng_Click(object sender, RoutedEventArgs e)
+        {
+            ShopWindows.client.ChangeAccessRight(tv.ID, right.SelectedIndex+1);
+            MessageBox.Show("Уровень доступа успешно изменен");
         }
     }
 }

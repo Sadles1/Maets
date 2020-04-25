@@ -307,11 +307,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="AddCommentResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
   <xs:element name="GetAllGameComments">
     <xs:complexType>
       <xs:sequence>
@@ -489,6 +484,13 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="ChangeComment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="comment" nillable="true" type="q26:Comment" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="FriendOffline">
     <xs:complexType>
       <xs:sequence>
@@ -499,7 +501,7 @@
   <xs:element name="GetMessage">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q26:UserMessage" />
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="msg" nillable="true" type="q27:UserMessage" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -511,7 +513,7 @@
   <xs:element name="GetFriendRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q27:Profile" />
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q28:Profile" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -525,7 +527,7 @@
   <xs:element name="AcceptFriendRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q28:Profile" />
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/Service" minOccurs="0" name="pr" nillable="true" type="q29:Profile" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -542,7 +544,7 @@
   <xs:element name="DownloadProductResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q29="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q29:StreamBody" />
+        <xs:element xmlns:q30="http://schemas.microsoft.com/Message" name="DownloadProductResult" type="q30:StreamBody" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

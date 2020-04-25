@@ -24,8 +24,11 @@ namespace Client
         public static Korzina buyProduct;
         public Service.Product tv1 = new Service.Product();
         List<byte[]> screns;
+        int qqqq=0;
         List<ModelImage> modelProducts;
+        List<ModelProfileComment> modelComments;
         DataProvider dp = new DataProvider();
+        List<Tuple<Service.Comment,Service.Profile>> cms;
         public bool check(Service.Product pr)
         {
             this.Title = "Maets";
@@ -72,13 +75,26 @@ namespace Client
         }
         private void Inicialize(Service.Product productnow)
         {
-            screns = new List<byte[]>();
+            ocenka.Text = Convert.ToString(productnow.Rate);
+               screns = new List<byte[]>();
             screns.Add(productnow.MainImage);
             for (int i = 0; i < ShopWindows.client.GetGameImages(productnow.Id).ToList().Count; i++)
             {
                 screns.Add(ShopWindows.client.GetGameImages(productnow.Id).ToList()[i]);
             }
             ;
+            foreach(string janr in productnow.GameGenre)
+            {
+                janrs.Text += " " + janr + " ";
+            }
+            foreach (string minr in productnow.MinGameSysReq)
+            {
+                sysmin.Text +=" "+ minr + "\n";
+            }
+            foreach (string recr in productnow.RecGameSysReq)
+            {
+                sysrec.Text += " " + recr + "\n";
+            }
              modelProducts = new List<ModelImage>();
             foreach (byte[] product in screns)
             {
@@ -86,6 +102,35 @@ namespace Client
                 modelProducts.Add(modelProduct.MakeModelImage(product));
             }
             Back.IsEnabled = false;
+            cms = ShopWindows.client.GetAllGameComments(tv1.Id).ToList();
+            modelComments = new List<ModelProfileComment>();
+            foreach (Tuple<Service.Comment, Service.Profile> product in cms)
+            {
+                ModelProfileComment modelComment = new ModelProfileComment();
+                modelComments.Add(modelComment.MakeModelProfileComment(product));
+            }
+            for(int i=0;i<modelComments.Count;i++)
+            {
+                if(modelComments[i].ID!=MainWindow.shopWindows.profile.ID) Lvcomment.Items.Add(modelComments[i]);
+                else
+                {
+                    qqqq = 1;
+                    mycom_hint.Text = modelComments[i].Comment;
+                    com.ToolTip = "Вы можете оставить только один комментарий";
+                }
+            }
+            Back.IsEnabled = false;
+            if (modelComments.Count == 0)
+            {
+                Lvcomment.Visibility = Visibility.Hidden;
+            }
+            if (!inmylibrary())
+            {
+                mycom_hint.Text = "Только купившие игру пользователи могут оставлять на нее комментарии";
+                mycomm.IsEnabled = false;
+                com.IsEnabled = false;
+                ocenka.IsEnabled = false;
+            }
 
             Screenshoot.Items.Add(modelProducts[ishop]);
             Screenshoot1.Items.Add(modelProducts[ishop + 1]);
@@ -102,6 +147,18 @@ namespace Client
             price.ToolTip = "Тут должна быть цена другая, но она пока не рабоатет";
             // Screenshoot.Source = dp.GetImageFromByte(tv.MainImage);
         }
+        public bool inmylibrary()
+        {
+            int no = 0;
+            for (int i = 0; i < prof.Games.ToList().Count; i++)
+            {
+                if (tv1.Id == prof.Games.ToList()[i].Id) no++;
+            }
+            if (no != 0) return true;
+            else return false;
+        }
+
+
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.shopWindows.Visibility = Visibility.Visible;
@@ -169,6 +226,48 @@ namespace Client
                     //Back.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private void Lvcomment_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Com_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Service.Comment cm = new Service.Comment();
+                if (mycomm.Text != "")
+                    cm.comment = mycomm.Text;
+                else throw new Exception("Вы ничего не написали");
+                cm.idProduct = tv1.Id;
+                cm.idUser = MainWindow.shopWindows.profile.ID;
+                cm.Score = howstar.SelectedIndex + 1;
+                if (qqqq == 0 && cm.comment!="")
+                    ShopWindows.client.AddComment(cm);
+                else
+                    ShopWindows.client.ChangeComment(cm);
+                if (cm.comment != "") ShopWindows.client.DeleteComment(cm.idUser, cm.idUser);
+                mycomm.Text = "";
+                mycom_hint.Text = cm.comment;
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Mycomm_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (mycomm.Text != "") mycom_hint.Visibility = Visibility.Hidden;
+            else mycom_hint.Visibility = Visibility.Visible;
         }
     }
 }

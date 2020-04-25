@@ -25,7 +25,7 @@ namespace Client
         /// </summary>
         public void ConnectionFromAnotherDevice()
         {
-            //ShopWindows.client.Disconnect(shopWindows.profile.ID);
+            ShopWindows.client.Disconnect(shopWindows.profile.ID);
             shopWindows.Close();
             MessageBox.Show(string.Format("Connection from another device\nYou have been kicked"), "ERROR");
         }

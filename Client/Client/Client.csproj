@@ -88,6 +88,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Data\Models\ModelProfileComment.cs" />
     <Compile Include="Data\Models\ModelProfileMessage.cs" />
     <Compile Include="Data\Options.Designer.cs">
       <AutoGen>True</AutoGen>

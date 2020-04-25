@@ -268,6 +268,9 @@ namespace Client.Service {
         private string PublisherField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<double> RateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string[] RecGameSysReqField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -389,6 +392,19 @@ namespace Client.Service {
                 if ((object.ReferenceEquals(this.PublisherField, value) != true)) {
                     this.PublisherField = value;
                     this.RaisePropertyChanged("Publisher");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<double> Rate {
+            get {
+                return this.RateField;
+            }
+            set {
+                if ((this.RateField.Equals(value) != true)) {
+                    this.RateField = value;
+                    this.RaisePropertyChanged("Rate");
                 }
             }
         }
@@ -823,10 +839,10 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetGameImages", ReplyAction="http://tempuri.org/IWCFService/GetGameImagesResponse")]
         System.Threading.Tasks.Task<byte[][]> GetGameImagesAsync(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddComment")]
         void AddComment(Client.Service.Comment comment);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/AddComment", ReplyAction="http://tempuri.org/IWCFService/AddCommentResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddComment")]
         System.Threading.Tasks.Task AddCommentAsync(Client.Service.Comment comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetAllGameComments", ReplyAction="http://tempuri.org/IWCFService/GetAllGameCommentsResponse")]
@@ -925,6 +941,12 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeAccessRight")]
         System.Threading.Tasks.Task ChangeAccessRightAsync(int idUser, int AccessRight);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeComment")]
+        void ChangeComment(Client.Service.Comment comment);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeComment")]
+        System.Threading.Tasks.Task ChangeCommentAsync(Client.Service.Comment comment);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1364,6 +1386,14 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task ChangeAccessRightAsync(int idUser, int AccessRight) {
             return base.Channel.ChangeAccessRightAsync(idUser, AccessRight);
+        }
+        
+        public void ChangeComment(Client.Service.Comment comment) {
+            base.Channel.ChangeComment(comment);
+        }
+        
+        public System.Threading.Tasks.Task ChangeCommentAsync(Client.Service.Comment comment) {
+            return base.Channel.ChangeCommentAsync(comment);
         }
     }
     

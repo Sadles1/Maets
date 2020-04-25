@@ -103,15 +103,14 @@ namespace Client
         {
             if (RememberPassword.IsChecked == true)
             {
+                File.WriteAllText(data, "");
                 StreamWriter f = new StreamWriter(data);
+              
                 f.WriteLine(tbLogin.Text);
                 f.WriteLine(tbPassword.Password);
                 f.Close();
             }
-            else
-            {
-                File.WriteAllText(data, "");
-            }
+
         }
         private void RememberPassword_Click(object sender, RoutedEventArgs e)
         {
@@ -134,7 +133,6 @@ namespace Client
             {
                 ResetPassword rp = new ResetPassword(tbLogin.Text);
                 rp.Show();
-                this.Close();
             }
             catch(Exception ex)
             {

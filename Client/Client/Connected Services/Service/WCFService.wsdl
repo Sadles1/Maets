@@ -153,9 +153,6 @@
   <wsdl:message name="IWCFService_AddComment_InputMessage">
     <wsdl:part name="parameters" element="tns:AddComment" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_AddComment_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AddCommentResponse" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_GetAllGameComments_InputMessage">
     <wsdl:part name="parameters" element="tns:GetAllGameComments" />
   </wsdl:message>
@@ -227,6 +224,9 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_ChangeAccessRight_InputMessage">
     <wsdl:part name="parameters" element="tns:ChangeAccessRight" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ChangeComment_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeComment" />
   </wsdl:message>
   <wsdl:message name="IWCFService_FriendOffline_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:FriendOffline" />
@@ -356,7 +356,6 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddComment">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/AddComment" message="tns:IWCFService_AddComment_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AddCommentResponse" message="tns:IWCFService_AddComment_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllGameComments">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetAllGameComments" message="tns:IWCFService_GetAllGameComments_InputMessage" />
@@ -413,6 +412,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeAccessRight">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeAccessRight" message="tns:IWCFService_ChangeAccessRight_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeComment">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeComment" message="tns:IWCFService_ChangeComment_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FriendOffline">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/FriendOffline" message="tns:IWCFService_FriendOffline_OutputCallbackMessage" />
@@ -655,9 +657,6 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetAllGameComments">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetAllGameComments" style="document" />
@@ -775,6 +774,12 @@
     </wsdl:operation>
     <wsdl:operation name="ChangeAccessRight">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeAccessRight" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeComment">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeComment" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

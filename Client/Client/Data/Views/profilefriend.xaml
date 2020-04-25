@@ -81,8 +81,22 @@
                     <RowDefinition Height="2*"></RowDefinition>
                     <RowDefinition Height="8*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Уровень доступа:" FontSize="10" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="80" HorizontalAlignment="Left"></TextBlock>
-                <TextBox></TextBox>
+                <TextBlock Name="ttt" Visibility="Hidden" Text="Уровень доступа:" FontSize="7" TextAlignment="Center" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="40" Height="20" TextWrapping="Wrap" HorizontalAlignment="Left"></TextBlock>
+                <ComboBox Name="right" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3"   Height="20" Margin="60,0,0,5" Width="60" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsReadOnly="True">
+                    <ComboBoxItem>
+                        <TextBlock>1</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>2</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>3</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>4</TextBlock>
+                    </ComboBoxItem>
+                </ComboBox>
+                <Button Name="cng" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3" Click="Cng_Click" Content="Изменить" FontSize="8" Height="20" Margin="5" HorizontalAlignment="Right" Width="40" ></Button>
                 <Button x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
 
                 <Button x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow"></Button>

@@ -99,17 +99,3 @@ C:\Users\p4shark\Desktop\MTPProject-UI\Client\Client\obj\Debug\Data\Views\Change
 C:\Users\p4shark\Desktop\MTPProject-UI\Client\Client\obj\Debug\Data\Views\Changepassword.baml
 C:\Users\p4shark\Desktop\MTPProject-UI\Client\Client\obj\Debug\Data\Views\ResetPassword.g.cs
 C:\Users\p4shark\Desktop\MTPProject-UI\Client\Client\obj\Debug\Data\Views\ResetPassword.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\NewGameAdd.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\ResetPassword.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Chat.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Changepassword.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\MailConfirmation.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\NewGameAdd.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\messagefriends.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Reqestfriends.g.cs
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\ResetPassword.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Chat.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Changepassword.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\MailConfirmation.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\messagefriends.baml
-C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\obj\Debug\Data\Views\Reqestfriends.baml

@@ -24,9 +24,7 @@ namespace Client
         public Changepassword(string Login)
         {
             this.Title = "Maets";
-
             InitializeComponent();
-
         }
 
         private void TbExit_Click(object sender, RoutedEventArgs e)
@@ -43,7 +41,6 @@ namespace Client
                     throw new Exception("Пароли не совпадают");
                 ShopWindows.client.changePassword(MainWindow.shopWindows.profile.ID, dp.HashPassword(tbPasswordold.Password), dp.HashPassword(tbPassword1.Password));
                 MessageBox.Show("Пароль успешно изменён");
-               
                 this.Close();
             }
             catch (FaultException exs)
@@ -54,7 +51,7 @@ namespace Client
             {
                 MessageBox.Show(ex.Message);
             }
-
+           
 
         }
     }

@@ -741,7 +741,7 @@ namespace Service
             return file.Length;
         }
 
-        public void Kicked(int id)
+        public void Kick(int id)
         {
 //             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
 // 

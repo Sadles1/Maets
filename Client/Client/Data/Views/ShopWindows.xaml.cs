@@ -70,6 +70,7 @@ namespace Client
                     //      // listrigth;
                     //    }
                     //}
+                    
                     if(profile.AccessRight>=2)
                         {
                             AddGame.Visibility = Visibility.Visible;
