@@ -25,22 +25,50 @@ namespace Client
 
         public MailConfirmation(Service.Profile profile, string hashpassword)
         {
-            client = new Service.WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
-            this.profile = profile;
-            this.hashpassword = hashpassword; 
-            InitializeComponent();
-            tb.Text = "Введите код подтвержения, отправленный на почту \n" + profile.Mail;
-            string message = $"Доброго времени суток!\nЕсли вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.\nВаш код подтверждения: { Code}\nЕсли вы не ожидали получить это письмо, то просто игнорируйте его.\nС уважением, команда Maets";
-            code = client.CheckMail(profile.Mail,message);
+          
+                client = new Service.WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
+
+                this.Title = "Maets";
+                List<Service.Profile> profiles = client.GetAllUsers().ToList();
+
+                for (int i = 0; i < profiles.Count; i++)
+                {
+                    if (profiles[i].Login == profile.Login)
+                    {
+                        throw new Exception("Этот логин занят!");
+                    }
+                    
+                }
+
+                this.profile = profile;
+                this.hashpassword = hashpassword;
+                InitializeComponent();
+                tb.Text = "Введите код подтвержения, отправленный на почту " + profile.Mail;
+                code = client.CheckMail(profile.Mail);
             
+          
+            
+        }
+        private void TbExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+
+
+        private void Codee_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Codee.Text != "") Codeef.Visibility = Visibility.Hidden;
+            else Codeef.Visibility = Visibility.Visible;
+
         }
 
         private void Go_Click(object sender, RoutedEventArgs e)
         {
-            if (Code.Text == code)
+            if (Codee.Text == code)
             {
                 client.Register(profile, hashpassword);
-                MessageBox.Show("Success");
+                MessageBox.Show("Регистрация прошла успешно");
                 this.Close();
                 MainWindow.register.Close();
             }

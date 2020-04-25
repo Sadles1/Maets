@@ -28,6 +28,8 @@ namespace Client
         DataProvider dp = new DataProvider();
         public bool check(Service.Product pr)
         {
+            this.Title = "Maets";
+
             List<Service.Product> listpr = prof.Games.ToList();
             int q=0;
             for( int i=0; i< listpr.Count;i++)
@@ -83,9 +85,9 @@ namespace Client
                 ModelImage modelProduct = new ModelImage();
                 modelProducts.Add(modelProduct.MakeModelImage(product));
             }
-            
+            Back.IsEnabled = false;
 
-           Screenshoot.Items.Add(modelProducts[ishop]);
+            Screenshoot.Items.Add(modelProducts[ishop]);
             Screenshoot1.Items.Add(modelProducts[ishop + 1]);
             Screenshoot2.Items.Add(modelProducts[ishop + 2]);
             Screenshoot3.Items.Add(modelProducts[ishop + 3]);
@@ -128,6 +130,8 @@ namespace Client
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
+            Next.IsEnabled = true;
+            Back.IsEnabled = true;
             if (ishop >= 0)
             {
                 ishop--;
@@ -135,7 +139,7 @@ namespace Client
                 Screenshoot.Items.Add(modelProducts[ishop]);
                 if (ishop == 0)
                 {
-                    Next.IsEnabled = true;
+
                     Back.IsEnabled = false;
                     Screenshoot.Items.Clear();
                     Screenshoot.Items.Add(modelProducts[0]);
@@ -148,17 +152,19 @@ namespace Client
 
         private void Next_Click(object sender, RoutedEventArgs e)
         {
-            if (modelProducts.Count >= ishop + 1)
+
+            Next.IsEnabled = true;
+            Back.IsEnabled = true;
+            if (5 >= ishop + 1)
             {
                 ishop++;
 
                 Screenshoot.Items.Clear();
 
                 Screenshoot.Items.Add(modelProducts[ishop]);
-                if ((ishop+1) == modelProducts.Count)
+                if ((ishop) == 5)
                 {
                     Next.IsEnabled = false;
-                    Back.IsEnabled = true;
                     // Next.Visibility = Visibility.Hidden;
                     //Back.Visibility = Visibility.Visible;
                 }

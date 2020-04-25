@@ -25,6 +25,7 @@ namespace Client
 
         public Korzina(Service.Profile profile)
         {
+            this.Title = "Maets";
 
             this.profile = profile;
             InitializeComponent();
@@ -66,7 +67,7 @@ namespace Client
 
                         List<int> Cartone = new List<int>();
                         List<Tuple<int, int>> CartWho = new List<Tuple<int, int>>();
-                        int i = 0;
+                        
                         foreach (ModelProductCart pr in ShopWindows.mainfprofile)
                         {
                             if (pr.How == 1) Cartone.Add(pr.Id);

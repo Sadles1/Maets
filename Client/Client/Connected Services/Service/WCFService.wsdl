@@ -30,8 +30,11 @@
   <wsdl:message name="IWCFService_Connect_InputMessage">
     <wsdl:part name="parameters" element="tns:Connect" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_Connect_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ConnectResponse" />
+  <wsdl:message name="IWCFService_ActiveProfile_InputMessage">
+    <wsdl:part name="parameters" element="tns:ActiveProfile" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ActiveProfile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ActiveProfileResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFService_Disconnect_InputMessage">
     <wsdl:part name="parameters" element="tns:Disconnect" />
@@ -62,6 +65,9 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_BuyProductWholesale_InputMessage">
     <wsdl:part name="parameters" element="tns:BuyProductWholesale" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_BuyProductWholesale_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BuyProductWholesaleResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFService_CheckBlacklist_InputMessage">
     <wsdl:part name="parameters" element="tns:CheckBlacklist" />
@@ -174,6 +180,12 @@
   <wsdl:message name="IWCFService_CheckMail_OutputMessage">
     <wsdl:part name="parameters" element="tns:CheckMailResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_ResetPassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPassword" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ResetPassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPasswordResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_GetModerationProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:GetModerationProduct" />
   </wsdl:message>
@@ -186,6 +198,9 @@
   <wsdl:message name="IWCFService_changePassword_InputMessage">
     <wsdl:part name="parameters" element="tns:changePassword" />
   </wsdl:message>
+  <wsdl:message name="IWCFService_changePassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:changePasswordResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFService_ChangeProfileInformation_InputMessage">
     <wsdl:part name="parameters" element="tns:ChangeProfileInformation" />
   </wsdl:message>
@@ -194,6 +209,24 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_changeProfileImage_InputMessage">
     <wsdl:part name="parameters" element="tns:changeProfileImage" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_SetMessageRead_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetMessageRead" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_ActivateLicenseKey_InputMessage">
+    <wsdl:part name="parameters" element="tns:ActivateLicenseKey" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_resetPassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:resetPassword" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetProductByFilter_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProductByFilter" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_GetProductByFilter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProductByFilterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_FriendOffline_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:FriendOffline" />
   </wsdl:message>
   <wsdl:message name="IWCFService_GetMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GetMessage" />
@@ -206,6 +239,9 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_FriendOnline_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:FriendOnline" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_AcceptFriendRequest_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:AcceptFriendRequest" />
   </wsdl:message>
   <wsdl:message name="IDownloadService_DownloadProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:DownloadProduct" />
@@ -222,7 +258,10 @@
   <wsdl:portType msc:usingSession="true" name="IWCFService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Connect" message="tns:IWCFService_Connect_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ConnectResponse" message="tns:IWCFService_Connect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ActiveProfile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ActiveProfile" message="tns:IWCFService_ActiveProfile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ActiveProfileResponse" message="tns:IWCFService_ActiveProfile_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/Disconnect" message="tns:IWCFService_Disconnect_InputMessage" />
@@ -247,6 +286,7 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="BuyProductWholesale">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/BuyProductWholesale" message="tns:IWCFService_BuyProductWholesale_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/BuyProductWholesaleResponse" message="tns:IWCFService_BuyProductWholesale_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckBlacklist">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckBlacklist" message="tns:IWCFService_CheckBlacklist_InputMessage" />
@@ -331,6 +371,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMail" message="tns:IWCFService_CheckMail_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailResponse" message="tns:IWCFService_CheckMail_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ResetPassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ResetPassword" message="tns:IWCFService_ResetPassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ResetPasswordResponse" message="tns:IWCFService_ResetPassword_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetModerationProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetModerationProduct" message="tns:IWCFService_GetModerationProduct_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetModerationProductResponse" message="tns:IWCFService_GetModerationProduct_OutputMessage" />
@@ -340,6 +384,7 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="changePassword">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/changePassword" message="tns:IWCFService_changePassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/changePasswordResponse" message="tns:IWCFService_changePassword_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeProfileInformation">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ChangeProfileInformation" message="tns:IWCFService_ChangeProfileInformation_InputMessage" />
@@ -349,6 +394,22 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="changeProfileImage">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/changeProfileImage" message="tns:IWCFService_changeProfileImage_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetMessageRead">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/SetMessageRead" message="tns:IWCFService_SetMessageRead_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ActivateLicenseKey">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ActivateLicenseKey" message="tns:IWCFService_ActivateLicenseKey_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="resetPassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/resetPassword" message="tns:IWCFService_resetPassword_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetProductByFilter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetProductByFilter" message="tns:IWCFService_GetProductByFilter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetProductByFilterResponse" message="tns:IWCFService_GetProductByFilter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FriendOffline">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/FriendOffline" message="tns:IWCFService_FriendOffline_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetMessage" message="tns:IWCFService_GetMessage_OutputCallbackMessage" />
@@ -361,6 +422,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FriendOnline">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/FriendOnline" message="tns:IWCFService_FriendOnline_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AcceptFriendRequest">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AcceptFriendRequest" message="tns:IWCFService_AcceptFriendRequest_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="IDownloadService">
@@ -378,6 +442,12 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="Connect">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/Connect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ActiveProfile">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ActiveProfile" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -435,6 +505,9 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="CheckBlacklist">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckBlacklist" style="document" />
@@ -616,6 +689,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ResetPassword">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ResetPassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetModerationProduct">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetModerationProduct" style="document" />
       <wsdl:input>
@@ -636,6 +718,9 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="ChangeProfileInformation">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/ChangeProfileInformation" style="document" />
@@ -654,6 +739,39 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="SetMessageRead">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/SetMessageRead" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLicenseKey">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/ActivateLicenseKey" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="resetPassword">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/resetPassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductByFilter">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetProductByFilter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FriendOffline">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/FriendOffline" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMessage">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/GetMessage" style="document" />
@@ -675,6 +793,12 @@
     </wsdl:operation>
     <wsdl:operation name="FriendOnline">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/FriendOnline" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AcceptFriendRequest">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/AcceptFriendRequest" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

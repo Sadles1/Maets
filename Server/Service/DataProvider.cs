@@ -95,30 +95,8 @@ namespace Service
             //Все данные получем через связанную таблицу
             profile.Mail = Tlogin.IdNavigation.Mail;
             profile.Name = Tlogin.IdNavigation.Name;
-            profile.Telephone = Tlogin.IdNavigation.Telephone;
-
-            //Определяем путь
-            string path = $@"{BaseSettings.Default.SourcePath}\Users\{profile.ID}\";
-
-            profile.Friends = new List<Profile>();
-
-            using (postgresContext context = new postgresContext())
-            {
-                //Загружаем таблицу TLogins
-                List<TLogin> TLogins = context.TLogin.ToList();
-
-                //Формируем список друзей
-                if (File.Exists($@"{path}Friends.json"))
-                {
-                    List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
-                    foreach (int id in IdFriends)
-                    {
-                        Profile friend = SimpleFormProfile(TLogins.FirstOrDefault(u => u.Id == id));
-                        if (friend != null)
-                            profile.Friends.Add(friend);
-                    }
-                }
-            }
+            profile.Telephone = Tlogin.IdNavigation.Telephone;          
+            profile.Friends = GetProfileFriends(profile.ID);          
 
             return profile;
         }
@@ -334,6 +312,30 @@ namespace Service
 
 
             }
+        }
+
+        public List<Profile> GetProfileFriends(int id)
+        {
+            List<Profile> Friends = new List<Profile>();
+            string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\";
+            using (postgresContext context = new postgresContext())
+            {
+                //Загружаем таблицу TLogins
+                List<TLogin> TLogins = context.TLogin.ToList();
+
+                //Формируем список друзей
+                if (File.Exists($@"{path}Friends.json"))
+                {
+                    List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
+                    foreach (int idFriend in IdFriends)
+                    {
+                        Profile friend = SimpleFormProfile(TLogins.FirstOrDefault(u => u.Id == idFriend));
+                        if (friend != null)
+                            Friends.Add(friend);
+                    }
+                }
+            }
+            return Friends;
         }
     }
 }

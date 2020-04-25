@@ -30,6 +30,8 @@ namespace Client
         
         public profilefriend(Service.Profile tv1)
         {
+            this.Title = "Maets";
+
             Sender = MainWindow.shopWindows.profile;
             Resiver = tv1;
             tv = tv1;
@@ -144,6 +146,8 @@ namespace Client
                 if (checkfriendsrequest())
                 {
                     FriendYN.Visibility = Visibility.Visible;
+                    btndelfriend.Visibility = Visibility.Hidden;
+                    btnnewfriend.Visibility = Visibility.Hidden;
                 }
                 if (checkfriends())
                 {
@@ -239,6 +243,8 @@ namespace Client
             FriendYN.Visibility = Visibility.Hidden;
             ShopWindows.client.DeleteFriendReqest(Sender.ID, Resiver.ID);
             ShopWindows.client.AddFriend(Sender.ID, Resiver.ID);
+            btndelfriend.Visibility = Visibility.Visible;
+            btnnewfriend.Visibility = Visibility.Hidden;
         }
 
 
@@ -247,7 +253,9 @@ namespace Client
             btnnewfriend.Visibility = Visibility.Visible;
             FriendYN.Visibility = Visibility.Hidden;
             ShopWindows.client.DeleteFriendReqest(Sender.ID, Resiver.ID);
-     
+            btndelfriend.Visibility = Visibility.Hidden;
+            btnnewfriend.Visibility = Visibility.Visible;
+
             //ShopWindows.client.AddFriend(Sender.ID, Resiver.ID);
         }
 

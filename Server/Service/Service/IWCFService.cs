@@ -8,8 +8,11 @@ namespace Service
     [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IWCFServiceCalbback))]
     public interface IWCFService
     {
+        [OperationContract(IsOneWay = true)]
+        void Connect(string Login, string Password);
+
         [OperationContract]
-        Profile Connect(string Login, string Password);
+        Profile ActiveProfile(string Login, string Password);
 
         [OperationContract(IsOneWay = true)]
         void Disconnect(int Id);
@@ -45,7 +48,6 @@ namespace Service
         void AddToBlacklist(int id, int idUserToBlacklist);
 
         [OperationContract(IsOneWay = true)]
-
         void DeleteFriendReqest(int id, int idRequest);
 
         [OperationContract(IsOneWay = true)]
@@ -82,17 +84,13 @@ namespace Service
         Profile CheckActiveProfile(int idUser);
 
         [OperationContract]
-
         List<Profile> GetProfileByFilter(string filter);
 
         [OperationContract]
-
         List<byte[]> GetGameImages(int id);
-
 
         [OperationContract]
         void AddComment(int idUSer, int idGame, string Comment, int Score);
-
 
         [OperationContract]
         List<Comment> GetAllGameComments(int idGame);
@@ -105,6 +103,7 @@ namespace Service
 
         [OperationContract]
         string CheckMail(string Mail);
+
         [OperationContract]
         string ResetPassword(string Mail);
 
@@ -114,7 +113,7 @@ namespace Service
         [OperationContract(IsOneWay = true)]
         void ChangeModerationStatus(int idUser, int idModerationProduct, bool result);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void changePassword(int idUser, string password, string newPassword);
 
         [OperationContract(IsOneWay = true)]
@@ -137,6 +136,9 @@ namespace Service
 
         [OperationContract]
         List<Product> GetProductByFilter(string filter);
+
+        [OperationContract(IsOneWay = true)]
+        void ChangeAccessRight(int idUser, int AccessRight);
     }
 
     public interface IWCFServiceCalbback

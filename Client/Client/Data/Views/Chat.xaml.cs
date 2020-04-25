@@ -26,6 +26,8 @@ namespace Client.Data.Views
         DataProvider dp = new DataProvider();
         public Chat(Service.Profile Sender, Service.Profile Resiver)
         {
+            this.Title = "Maets";
+
             Senderg = Sender;
             Resiverg = Resiver;
             InitializeComponent();
@@ -55,6 +57,9 @@ namespace Client.Data.Views
         }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
+            ShopWindows.client.SetMessageRead(Senderg.ID, Resiverg.ID);
+
+            MainWindow.shopWindows.Refreshmail.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             this.Close();
         }

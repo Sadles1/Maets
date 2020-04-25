@@ -24,6 +24,8 @@ namespace Client
         public RegisterWindows()
         {
             InitializeComponent();
+            this.Title = "Maets";
+
         }
 
         //async private void Register(string login, string name, string password, string mail, string telephone)//асинхронный метод для регистрации
@@ -34,9 +36,9 @@ namespace Client
         //    {
         //        try
         //        {
-                   
 
-                    
+
+
         //            result = true;
         //        }
         //        catch (Exception ex)
@@ -62,6 +64,8 @@ namespace Client
                     throw new Exception("Поле почта не может быть пустым");
                 if (tbPassword.Password == "")
                     throw new Exception("Поле пароль не может быть пустым");
+                if (tbPassword.Password != tbPassword2.Password)
+                    throw new Exception("Пароли не совпадают");
                 WCFServiceClient client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
                 Service.Profile profile = new Service.Profile();
                 profile.Login = tbLogin.Text;

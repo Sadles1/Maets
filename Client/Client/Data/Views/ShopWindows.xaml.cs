@@ -1,4 +1,5 @@
-﻿using Client.Service;
+﻿using Client.Data.Models;
+using Client.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,7 @@ namespace Client
     public partial class ShopWindows : Window
     {
         static public List<Service.Profile> fr;
-
+        static public List<UserMessage> frmail;
         public static List<ModelProductCart> mainfprofile = new List<ModelProductCart>();
         public static WCFServiceClient client;
         static public Korzina buyProduct;
@@ -28,23 +29,26 @@ namespace Client
         List<Service.Product> products;
         List<Service.Product> productsmoderation;
         int ishop = 0;
-
+        List<Service.Product> w;
+        List<Service.Profile> p;
         static public string imagesmaets;
         DataProvider dp = new DataProvider();
         int idxg;
-
+        List<Service.Profile> profilesq;
 
 
         public ShopWindows(string Login, string Password)
         {
+            this.Title = "Maets";
+
             client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass(this)), "NetTcpBinding_IWCFService");
             
-            profile = client.Connect(Login, Password);
-
+            client.Connect(Login, Password);
+            profile = client.ActiveProfile(Login, Password);
             if (profile != null)
             {
                 products = client.GetProductTable().ToList();
-
+                profilesq = client.GetAllUsers().ToList();
                 InitializeComponent();
                 Loaded += Window_Loaded;
                 Onlyforadmin.Visibility = Visibility.Hidden;
@@ -54,8 +58,22 @@ namespace Client
                     for(int i=0; i<productsmoderation.Count;i++)
                     {
                         Moderationproduct.Items.Add(productsmoderation[i]);
+                        
+                       // listuser.Items.Add(i);
                     }
                     Onlyforadmin.Visibility = Visibility.Visible;
+                    //if(profile.AccessRight==4)
+                    //{
+                    //    listuser.ItemsSource = products;
+                    //    for(idxg=1;idxg<5;idxg++)
+                    //    {
+                    //      // listrigth;
+                    //    }
+                    //}
+                    if(profile.AccessRight>=2)
+                        {
+                            AddGame.Visibility = Visibility.Visible;
+                        }
                 }
                 
             }
@@ -73,11 +91,69 @@ namespace Client
 
             }
         }
+
+        public void friendsonline(int id)
+        {
+            
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+            {
+                if (profile.Friends.ToList()[i].ID == id) profile.Friends.ToList()[i].status = "Online";
+                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+            }
+        }
+        public void friendsnew(Service.Profile id)
+        {
+            
+            Lvfriend.Items.Add(id);
+            profile.Friends.ToList().Add(id);
+        }
+
+
+        public void friendsoffline(int id)
+        {
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+            {
+                if (profile.Friends.ToList()[i].ID == id) profile.Friends.ToList()[i].status = "Offline";
+                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+            }
+        }
+
+
+
+        public void messagerefresh1(int idsender)
+        {
+            for (int i = 0; i < frmail.Count; i++)
+            {
+                if (frmail[i].IDSender == idsender)
+                {
+                    frmail.RemoveAt(i);
+                }
+            }
+            messagerefresh();
+        }
+            public void messagerefresh()
+        {
+           
+            if (frmail.Count != 0)
+            {
+                MailCount.Visibility = Visibility.Visible;
+                howmanymail.Text = "+" + frmail.Count;
+            }
+            else
+            {
+                MailCount.Visibility = Visibility.Hidden;
+                howmanymail.Text = "+" + frmail.Count;
+            }
+        }
         private void Window_Initialized(object sender, EventArgs e)
         {
             mail.Text = profile.Mail;
             telephone.Text = profile.Telephone;
             fr = client.GetFriendRequests(profile.ID).ToList();
+            frmail = client.GetNewMessages(profile.ID).ToList();
+            
             if (fr.Count != 0)
             {
                 Reaestfriends.Visibility = Visibility.Visible;
@@ -90,7 +166,11 @@ namespace Client
 
             tbLogin.Text = profile.Login;
             lbName.Text = profile.Name;
-            Lvfriend.ItemsSource = profile.Friends;
+            for(int i=0;i<profile.Friends.ToList().Count;i++)
+            {
+                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+            }
+            
             Back.IsEnabled = false;
            // ProductOne.DataContext = products[ishop];
             ProductOne.Items.Add(products[ishop]);
@@ -118,8 +198,8 @@ namespace Client
 
             }
             else Reaestfriends.Visibility = Visibility.Hidden;
-            searchlibrary.DataContext = new LibraryViewModel(pr.Games.ToList());
-            mylibrary.DataContext = searchlibrary.DataContext;
+         //   searchlibrary.DataContext = new LibraryViewModel(pr.Games.ToList());
+          //  mylibrary.DataContext = searchlibrary.DataContext;
             if (mainfprofile.Count != 0)
             {
                 KorzinaCount.Visibility = Visibility.Visible;
@@ -131,10 +211,14 @@ namespace Client
                 howmanyproduct.Text = Convert.ToString(0);
 
             }
-         //   imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
-           // tbLogin.Content = pr.Login;
-          //  lbName.Content = pr.Name;
-            Lvfriend.ItemsSource = pr.Friends;
+            //   imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
+            // tbLogin.Content = pr.Login;
+            //  lbName.Content = pr.Name;
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+            {
+                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+            }
             Back.IsEnabled = false;
            // Lvmylibrary.ItemsSource = pr.Games;
             btnMoney.Content = Convert.ToString(pr.Money) + " р";
@@ -166,12 +250,20 @@ namespace Client
         {
             imagesmaets = Environment.CurrentDirectory + @"\Content\";
             searchproduct.Focus();
-            searchproduct.DataContext = new ProductViewModel();
-            Lvm.DataContext = searchproduct.DataContext;
-            searchprofile.DataContext = new ProfileViewModel();
-            AllUser.DataContext = searchprofile.DataContext;
-            searchlibrary.DataContext = new LibraryViewModel(profile.Games.ToList());
-            mylibrary.DataContext = searchlibrary.DataContext;
+            foreach(Service.Product produc in products)
+            {
+                ModelProduct mp = new ModelProduct();
+                mp = mp.MakeModelProduct(produc);
+                Lvm.Items.Add(mp);
+            }
+                foreach (Service.Profile produc in profilesq)
+                {
+                    ModelProfile mp = new ModelProfile();
+                    mp = mp.MakeModelProfile(produc);
+                    AllUser.Items.Add(mp);
+                }
+           // searchlibrary.DataContext = new LibraryViewModel(profile.Games.ToList());
+           // mylibrary.DataContext = searchlibrary.DataContext;
             //searchprofile.DataContext = new ProfileViewModel();
             //searchproduct.DataContext = new ProductViewModel();
             //AllUser.DataContext = new ProfileViewModel();
@@ -207,17 +299,31 @@ namespace Client
 
         private void leftmouse(object sender, EventArgs e)
         {
-            List<Service.Product> products = ShopWindows.client.GetProductTable().ToList();
+            Product Pr;
             int i = Lvm.SelectedIndex;
-            if (i != -1)
+            if (products.Count == Lvm.Items.Count)
             {
-                //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
-                Product Pr = new Product(products[i], profile);
+
+
+
+                if (i != -1)
+                {
+                    //Service.Product d = products.FirstOrDefault(o => o.Id ==i);
+                     Pr = new Product(products[i], profile);
+                    Pr.Left = this.Left;
+                    Pr.Top = this.Top;
+                    Pr.Show();
+                }
+            }
+            else
+            {
+                 Pr = new Product(w[i], profile);
                 Pr.Left = this.Left;
                 Pr.Top = this.Top;
                 Pr.Show();
-                MainWindow.shopWindows.Visibility = Visibility.Hidden;
             }
+            
+            MainWindow.shopWindows.Visibility = Visibility.Hidden;
 
         }
         private void leftmouse1(object sender, EventArgs e)
@@ -292,7 +398,6 @@ namespace Client
 
         private void Lvm_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            idxg = Lvm.SelectedIndex;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -318,6 +423,8 @@ namespace Client
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
+            Next.IsEnabled = true;
+            Back.IsEnabled = true;
             if (ishop >= 0)
             {
                 ishop--;
@@ -329,7 +436,6 @@ namespace Client
                 ProductFree.Items.Add(products[ishop + 2]);
                 if (ishop == 0)
                 {
-                    Next.IsEnabled = true;
                     Back.IsEnabled = false;
                     //Back.Visibility = Visibility.Hidden;
                     //Next.Visibility = Visibility.Visible;
@@ -340,6 +446,8 @@ namespace Client
 
         private void Next_Click(object sender, RoutedEventArgs e)
         {
+            Next.IsEnabled = true;
+            Back.IsEnabled = true;
             if (products.Count > ishop + 3)
             {
                 ishop++;
@@ -349,10 +457,9 @@ namespace Client
                 ProductOne.Items.Add(products[ishop]);
                 ProductTwo.Items.Add(products[ishop + 1]);
                 ProductFree.Items.Add(products[ishop + 2]);
-                if ((ishop + 2) == products.Count - 1)
+                if ((ishop + 2) == products.Count +1)
                 {
                     Next.IsEnabled = false;
-                    Back.IsEnabled = true;
                     // Next.Visibility = Visibility.Hidden;
                     //Back.Visibility = Visibility.Visible;
                 }
@@ -380,25 +487,69 @@ namespace Client
 
         private void FilterUser_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (FilterUser.Text.Count() !=0) AllUser.Visibility = Visibility.Visible;
-          
+            if (FilterUser.Text != "")
+            {
+                AllUser.Items.Clear();
+                p = client.GetProfileByFilter(FilterUser.Text).ToList();
+                foreach (Service.Profile produc in p)
+                {
+                    ModelProfile mp = new ModelProfile();
+                    mp = mp.MakeModelProfile(produc);
+                    AllUser.Items.Add(mp);
+                }
+            }
+            else
+            {
+                AllUser.Items.Clear();
+                foreach (Service.Profile produc in profilesq)
+                {
+                    ModelProfile mp = new ModelProfile();
+                    mp = mp.MakeModelProfile(produc);
+                    AllUser.Items.Add(mp);
+                }
+            }
+
         }
 
         private void AllUser_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            List<Service.Profile> fr = client.GetAllUsers().ToList() ;
-
+            profilefriend r;
             int i = AllUser.SelectedIndex;
-            //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
-            if (i != -1)
-            { 
-                // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
-               // client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
-                profilefriend r = new profilefriend(ShopWindows.client.CheckProfile(fr[i].ID));
-                r.Left = this.Left;
-                r.Top = this.Top;
-                r.Show();
-                MainWindow.shopWindows.Visibility = Visibility.Hidden;
+            if (AllUser.Items.Count == profilesq.Count)
+
+            {
+                if (profilesq[i].ID != profile.ID)
+                {
+                    //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
+                    if (i != -1)
+                    {
+                        // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                        // client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                        r = new profilefriend(ShopWindows.client.CheckProfile(profilesq[i].ID));
+                        r.Left = this.Left;
+                        r.Top = this.Top;
+                        r.Show();
+                        MainWindow.shopWindows.Visibility = Visibility.Hidden;
+                    }
+                }
+                else myprofiletab.Focus();
+            }
+            else
+            {
+                if (p[i].ID != profile.ID)
+                {
+                    if (i != -1)
+                {
+                    // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                    // client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+                    r = new profilefriend(ShopWindows.client.CheckProfile(p[i].ID));
+                    r.Left = this.Left;
+                    r.Top = this.Top;
+                    r.Show();
+                    MainWindow.shopWindows.Visibility = Visibility.Hidden;
+                }
+                }
+                else myprofiletab.Focus();
             }
         }
 
@@ -609,16 +760,21 @@ namespace Client
                 if (tbLoginnew.Text == "" && tbmailnew.Text=="" && tbmailnew.Text == "" && lbNamenew.Text == "")
                     throw new Exception("Вы не заполнили ни одного поля!");
                 Profile newprof = new Profile();
+
                 newprof.ID = profile.ID;
-                newprof.Telephone = tbtelephonenew.Text;
-                newprof.Name = lbNamenew.Text;
-                newprof.Login = tbLoginnew.Text;
-                newprof.Mail = tbmailnew.Text;
+                    newprof.Telephone = tbtelephonenew.Text;
+                    newprof.Name = lbNamenew.Text;
+                    newprof.Login = tbLoginnew.Text;
+                    newprof.Mail = tbmailnew.Text;
+                if (tbLoginnew.Text != "")
+                    tbLogin.Text = newprof.Login;
+                if (lbNamenew.Text != "")
+                    lbName.Text = newprof.Name;
+                if (tbmailnew.Text != "")
+                    mail.Text = newprof.Mail;
+                if (tbtelephonenew.Text != "")
+                    telephone.Text = newprof.Telephone;
                 client.ChangeProfileInformation(newprof);
-                tbLogin.Text = newprof.Login;
-                lbName.Text = newprof.Name;
-                mail.Text = newprof.Mail;
-                telephone.Text = newprof.Telephone;
                 newprofilechange.Visibility = Visibility.Hidden;
                 btnBack.Visibility = Visibility.Hidden;
                 ChangeprofileSave.Visibility = Visibility.Hidden;
@@ -685,6 +841,55 @@ namespace Client
             }
             else lvimMainImage.SelectedItem = null;
             
+        }
+
+        private void Changerigth_Click(object sender, RoutedEventArgs e)
+        {
+            //ComboBoxItem selectedItem = (ComboBoxItem)listrigth.SelectedItem;
+            //int i = listrigth.SelectedIndex;
+            //int j = listuser.;
+        }
+
+        private void Btnmewmessage_Click(object sender, RoutedEventArgs e)
+        {
+            messagefriends mf = new messagefriends();
+            mf.Show();
+        }
+
+        private void Refreshmail_Click(object sender, RoutedEventArgs e)
+        {
+            messagerefresh();
+        }
+
+        private void Resetpassword_Click(object sender, RoutedEventArgs e)
+        {
+            Changepassword cp = new Changepassword(profile.Login);
+            cp.Show();
+        }
+
+        private void FilterProductText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (FilterProductText.Text != "")
+            {
+                Lvm.Items.Clear();
+               w = client.GetProductByFilter(FilterProductText.Text).ToList();
+                foreach (Service.Product produc in w )
+                {
+                    ModelProduct mp = new ModelProduct();
+                    mp = mp.MakeModelProduct(produc);
+                    Lvm.Items.Add(mp);
+                }
+            }
+            else
+            {
+                Lvm.Items.Clear();
+                foreach (Service.Product produc in products)
+                {
+                    ModelProduct mp = new ModelProduct();
+                    mp = mp.MakeModelProduct(produc);
+                    Lvm.Items.Add(mp);
+                }
+            }
         }
     }
 }

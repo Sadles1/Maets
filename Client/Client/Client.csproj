@@ -88,6 +88,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Data\Models\ModelProfileMessage.cs" />
     <Compile Include="Data\Options.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -104,11 +105,17 @@
     <Compile Include="Data\ViewModels\ProductViewModel.cs" />
     <Compile Include="Data\Models\ModelProduct.cs" />
     <Compile Include="Data\ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Data\Views\ResetPassword.xaml.cs">
+      <DependentUpon>ResetPassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Views\Chat.xaml.cs">
       <DependentUpon>Chat.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\Views\Korzina.xaml.cs">
       <DependentUpon>Korzina.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Views\Changepassword.xaml.cs">
+      <DependentUpon>Changepassword.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\Views\MailConfirmation.xaml.cs">
       <DependentUpon>MailConfirmation.xaml</DependentUpon>
@@ -122,6 +129,9 @@
     <Compile Include="Data\Views\profilefriend.xaml.cs">
       <DependentUpon>profilefriend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\Views\messagefriends.xaml.cs">
+      <DependentUpon>messagefriends.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Views\Reqestfriends.xaml.cs">
       <DependentUpon>Reqestfriends.xaml</DependentUpon>
     </Compile>
@@ -134,11 +144,19 @@
     <Compile Include="Data\Views\ShopWindows.xaml.cs">
       <DependentUpon>ShopWindows.xaml</DependentUpon>
     </Compile>
+    <Page Include="Data\Views\ResetPassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Data\Views\Chat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Data\Views\Korzina.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Data\Views\Changepassword.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -155,6 +173,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Data\Views\profilefriend.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Data\Views\messagefriends.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -236,11 +258,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\Service\WCFService.wsdl" />
-    <None Include="Data\Options.settings">
+    <Resource Include="Data\Options.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Options.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Client</CustomToolNamespace>
-    </None>
+    </Resource>
     <None Include="Data\Images\1.encr" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

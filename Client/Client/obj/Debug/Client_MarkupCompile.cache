@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\snayp\Documents\GitHub\MTPProject\Client\Client\App.xaml
-111514108481
+14-1065056766
 
-30-1888047746
+33-608263597
 201954697788
-Data\Views\Chat.xaml;Data\Views\Korzina.xaml;Data\Views\MailConfirmation.xaml;Data\Views\MainWindow.xaml;Data\Views\NewGameAdd.xaml;Data\Views\profilefriend.xaml;Data\Views\Reqestfriends.xaml;Data\Views\Test.xaml;Data\Views\RegisterWindows.xaml;Data\Views\ShopWindows.xaml;Data\Views\Product.xaml;
+Data\Views\ResetPassword.xaml;Data\Views\Chat.xaml;Data\Views\Korzina.xaml;Data\Views\Changepassword.xaml;Data\Views\MailConfirmation.xaml;Data\Views\MainWindow.xaml;Data\Views\NewGameAdd.xaml;Data\Views\profilefriend.xaml;Data\Views\messagefriends.xaml;Data\Views\Reqestfriends.xaml;Data\Views\Test.xaml;Data\Views\RegisterWindows.xaml;Data\Views\ShopWindows.xaml;Data\Views\Product.xaml;
 
-True
+False
 

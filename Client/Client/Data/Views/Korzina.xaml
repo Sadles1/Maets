@@ -18,10 +18,10 @@
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
+        <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин"  Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
         <TextBlock Grid.Column="0" Text="Оформление заказа" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
         <TextBlock x:Name="tbSumm" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Height="Auto" Width="200" FontSize="40"  ></TextBlock>
-        <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35"></TextBlock>
+        <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35" Margin="190,0,0,0"></TextBlock>
         <TextBlock Grid.Column="1" Grid.Row="0" Text="Стоимость" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
         <Grid Grid.Row="1" Grid.ColumnSpan="3">
             <ListView x:Name="lvProduct"   Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">

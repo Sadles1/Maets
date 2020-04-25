@@ -17,8 +17,29 @@
             <RowDefinition Height="7*"></RowDefinition>
         </Grid.RowDefinitions>
         <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-        <TextBlock x:Name="tbgame" Grid.Column="1" Grid.Row="1"></TextBlock>
-        <TextBlock x:Name="tbgame1" Grid.Column="1" Grid.Row="2"></TextBlock>
+        <TextBlock x:Name="tbFriendUser" FontFamily="Panton Bold" Grid.Row="3"  Grid.Column="1" VerticalAlignment="Top"  TextWrapping="Wrap" Height="24" Margin="10,5,10,0 " ></TextBlock>
+
+        <ListView x:Name="Lv" Grid.Row="3" Grid.Column="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5,30,5,5" >
+            <ListView.ItemTemplate>
+                <DataTemplate x:Name="DT">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="55"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Image x:Name="Image2" Grid.Column="0" HorizontalAlignment="Left" Margin="3,0,0,0" Height="50" Width="50" >
+                            <Image.Source >
+                                <CroppedBitmap Source="{Binding MainImage}"  ></CroppedBitmap>
+
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Grid.Column="1" x:Name="tbTest" Text="{Binding Login}" Margin="5,5,0,0"/>
+                        <TextBlock Grid.Column="1" Margin="5,15,0,0"  Text="{Binding status}" FontWeight="Bold"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
         <Image x:Name="Screenshoot" Grid.Column="0" Grid.Row="1" Source="{Binding Image}" />
         <Grid Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
@@ -56,11 +77,12 @@
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="2*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="1.3*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
                     <RowDefinition Height="8*"></RowDefinition>
                 </Grid.RowDefinitions>
-                
+                <TextBlock Text="Уровень доступа:" FontSize="10" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="80" HorizontalAlignment="Left"></TextBlock>
+                <TextBox></TextBox>
                 <Button x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
 
                 <Button x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow"></Button>
@@ -71,29 +93,11 @@
                 <Button x:Name="btnnewlfriendno" Click="Btnnewlfriendno_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="18.5,0,0,0" Content="Нет" HorizontalAlignment="Left" Background="Snow"></Button>
                 <TextBlock x:Name="Whonewfriend" Text="Добавить в друзья?" TextAlignment="Center"  VerticalAlignment="Top" Height="21"></TextBlock>
             </Grid>
-            <TextBlock x:Name="tbFriendUser" FontFamily="Panton Bold" Grid.Row="2" Height="20"  TextWrapping="Wrap" VerticalAlignment="Bottom" ></TextBlock>
-                <ListView x:Name="Lv" Grid.Row="3" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5" >
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:Name="DT">
-                            <WrapPanel Orientation="Horizontal">
-                                <Image x:Name="Image2"  Height="50" Width="50" >
-                                    <Image.Source >
-                                        <CroppedBitmap Source="{Binding MainImage}" ></CroppedBitmap>
-
-                                    </Image.Source>
-                                </Image>
-                                <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="5"/>
-                                <TextBlock x:Name="tbTest2" Text="{Binding Name}" Margin="5"/>
-                                <TextBlock  Text="{Binding status}" Margin="5"/>
-                            </WrapPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
 
             </Grid>
         </Grid>
-        <Button x:Name="blacklistgo" Click="Blacklistgo_Click" Grid.Row="0" Grid.Column="1" Content="Добавить пользователя в Чёрный список"  Background="White" BorderThickness="0" Height="30" VerticalAlignment="Center"></Button>
-        <Button x:Name="blacklistout" Click="Blacklistout_Click" Grid.Row="0" Grid.Column="1" Visibility="Hidden"  Background="White" BorderThickness="0" Height="30" VerticalAlignment="Center"></Button>
+        <Button x:Name="blacklistgo" Grid.RowSpan="2" Click="Blacklistgo_Click" Grid.Row="0" Grid.Column="1" Content="Добавить пользователя в Чёрный список"  Background="White" BorderThickness="0" VerticalAlignment="Top"></Button>
+        <Button x:Name="blacklistout" Click="Blacklistout_Click" Grid.RowSpan="2" Grid.Column="1" Visibility="Hidden"  Background="White" BorderThickness="0"  VerticalAlignment="Top"></Button>
 
     </Grid>
 </Window>

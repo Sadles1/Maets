@@ -10,12 +10,11 @@ using System.ServiceModel;
 
 namespace Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class WCFService : IWCFService, IDownloadService
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
         DataProvider dp = new DataProvider();
-        //readonly object ThisLock = new object();
 
         /// <summary>
         /// Метод для покупки товаров
@@ -528,58 +527,46 @@ namespace Service
         /// <param name="Login">Логин</param>
         /// <param name="Password">Пароль</param>
         /// <returns></returns>
-        public Profile Connect(string Login, string Password)
+        public void Connect(string Login, string Password)
         {
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя, если находим, то подключаем
-                TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Login == Login && u.Password == Password);
+                TLogin Tlogin = context.TLogin.FirstOrDefault(u => u.Login == Login && u.Password == Password);
 
                 if (Tlogin != null)
                 {
-                    //Формируем профиль
-                    Profile profile = dp.FormActiveUser(Tlogin);
-                    profile.status = "Online";                 
-                    
-                    //Сохраняем изменения в БД
-                    context.SaveChanges();
 
                     //Выводим сообщение в серверную консоль
                     Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Tlogin.Login} connect to server with channel {OperationContext.Current.SessionId}");
 
                     //Записываем подключеного пользователя
-                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == profile.ID);
+                    OnlineUser ActiveUser = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Tlogin.Id);
                     if (ActiveUser != null)
                     {
                         ActiveUser.operationContext.GetCallbackChannel<IWCFServiceCalbback>().ConnectionFromAnotherDevice();
                         onlineUsers.Remove(ActiveUser);
                     }
 
-                    lock (this)
-                    {
-                        //Отсылаем уведомления друзьям находящимся в онлайне
-                        if (profile.Friends != null)
-                        {
-                            foreach (Profile friend in profile.Friends)
-                            {
+                    string path = $@"{BaseSettings.Default.SourcePath}\Users\{Tlogin.Id}\";
 
-                                OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
-                                if (OnlineFriend != null)
-                                    OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(profile.ID);
-                            }
+                    List<Profile> Friends = dp.GetProfileFriends(Tlogin.Id);
+
+                    if (Friends != null)
+                    {
+                        foreach (Profile friend in Friends)
+                        {
+                            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == friend.ID);
+                            if (OnlineFriend != null)
+                                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOnline(Tlogin.Id);
                         }
                     }
 
-                    ActiveUser = new OnlineUser { UserProfile = profile, operationContext = OperationContext.Current };
+                    ActiveUser = new OnlineUser { UserProfile = new Profile { ID = Tlogin.Id,Login = Tlogin.Login }, operationContext = OperationContext.Current };
                     ActiveUser.sessionID = OperationContext.Current.Channel;
                     ActiveUser.sessionID.Faulted += new EventHandler(ClientFault);
 
                     onlineUsers.Add(ActiveUser);
-
-                    
-
-
-                    return profile;
                 }
                 else
                     throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
@@ -922,9 +909,9 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
-                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == idUser);
+                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == idUser && u.Password == password);
 
-                if (password == login.Password)
+                if (login != null)
                 {
                     //Меняем пароль
                     login.Password = newPassword;
@@ -1042,7 +1029,6 @@ namespace Service
             }
         }
 
-
         /// <summary>
         /// Метод возвращает все комментарии кокретной игры
         /// </summary>
@@ -1086,6 +1072,18 @@ namespace Service
                 }
             }
             return null;
+        }
+
+        public void ChangeAccessRight(int idUser, int AccessRight)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                TLogin user = context.TLogin.Include(u=>u.IdNavigation).FirstOrDefault(u=>u.Id == idUser);
+                user.IdNavigation.AccessRight = AccessRight;
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Changed access rights of {user.Login} to {AccessRight} ");
+                context.TLogin.Update(user);
+                context.SaveChanges();
+            }
         }
 
         public void ChangeModerationStatus(int idUser, int idModerationProduct, bool result)
@@ -1191,6 +1189,25 @@ namespace Service
                 }
                 else
                     throw new FaultException("Ошибка, ключ недоступен");
+            }
+        }
+
+        public Profile ActiveProfile(string Login, string Password)
+        {
+            using (postgresContext context = new postgresContext())
+            {
+                //Ищем пользователя, если находим, то подключаем
+                TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Login == Login && u.Password == Password);
+
+                if (Tlogin != null)
+                {
+                    //Формируем профиль
+                    Profile profile = dp.FormActiveUser(Tlogin);
+                    profile.status = "Online";
+                    return profile;
+                }
+                else
+                    throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
             }
         }
     }

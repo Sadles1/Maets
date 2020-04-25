@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+            MouseLeftButtonDown="Window_MouseLeftButtonDown"
         mc:Ignorable="d"
         Title="Reqestfriends" Height="300" Width="300" WindowStyle="None">
     <Grid>
@@ -11,6 +12,7 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="13*"></RowDefinition>
         </Grid.RowDefinitions>
+        <TextBlock Text="Новые заявки в друзья" FontSize="15" FontWeight="Bold" Margin="10,0,0,0"></TextBlock>
         <Button x:Name="btnExit" Click="BtnExit_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0" Padding="0" HorizontalAlignment="Right" Height="20" Width="20" FontWeight="Bold" Grid.RowSpan="2">
             <Viewbox Width="10" Height="10">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >

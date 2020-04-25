@@ -21,6 +21,8 @@ namespace Client
     {
         public Reqestfriends()
         {
+            this.Title = "Заявки в друзья";
+
             InitializeComponent();
             Lvfriendnew.ItemsSource = ShopWindows.fr;
 
@@ -28,7 +30,10 @@ namespace Client
         }
 
 
-
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
             Close();

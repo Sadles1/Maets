@@ -19,6 +19,7 @@
             <RowDefinition Height="15*"></RowDefinition>
         </Grid.RowDefinitions>
         <Button x:Name="Refresh" Visibility="Hidden" Click="Button_Click_1"></Button>
+        <Button x:Name="Refreshmail" Visibility="Hidden" Click="Refreshmail_Click"></Button>
         <Button x:Name="Refreshmoderation" Visibility="Hidden" Click="Refreshmoderation_Click"></Button>
         <Button x:Name="btnExit" Click="TbExit_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold" Grid.RowSpan="2">
             <Viewbox Width="10" Height="10">
@@ -28,6 +29,32 @@
                 </Grid>
             </Viewbox>
         </Button>
+        <Grid x:Name="MailCount" Visibility="Hidden" Panel.ZIndex="1" Grid.Column="2" Grid.Row="0" Margin="0,0,160,0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="howmanymail" Panel.ZIndex="1"  FontSize="12" HorizontalAlignment="Center"  Margin="0,0,1,1" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Text="1" Foreground="White" FontWeight="Bold"></TextBlock>
+            <Ellipse  HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Fill="#FF002965" Height="17" Width="17"  >
+            </Ellipse>
+        </Grid>
+        <Button x:Name="btnmewmessage" Click="Btnmewmessage_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0,5,180,0" Padding="0" HorizontalAlignment="Right" Height="20" Width="30" FontWeight="Bold" Grid.RowSpan="2">
+            <Viewbox Width="30" Height="20">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <Line Width="75" Height="50" X1="0" Y1="0" X2="75" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="6" />
+                    <Line Width="75" Height="50" X1="0" Y1="50" X2="75" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="75" Height="50" X1="0" Y1="0" X2="0" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="6" />
+                    <Line Width="75" Height="50" X1="75" Y1="0" X2="75" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
+                    <Line Width="75" Height="50" X1="75" Y1="0" X2="34.3" Y2="25" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="6" />
+                    <Line Width="75" Height="50" X1="0" Y1="0" X2="37.5" Y2="25" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="6" />
+                </Grid>
+            </Viewbox>
+        </Button>
+        
         <Button x:Name="btnMoney" Background="White" BorderThickness="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" Margin="0,0,120,440" Padding="0" HorizontalAlignment="Right" Height="30" Width="60"  Grid.RowSpan="2" Grid.Column="1"/>
         <Button x:Name="btnexitProfile" Click="BtnexitProfile_Click" Background="White" BorderThickness="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" Margin="0,0,65,440" Padding="0" HorizontalAlignment="Right" Height="30" Width="60" Content="выйти" Grid.RowSpan="2" Grid.Column="1"/>
         <Button x:Name="btnFull" Click="BtnFull_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontSize="30" Margin="0,0,30,0" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold" Grid.RowSpan="2">
@@ -79,7 +106,7 @@
                         <Button x:Name="Buy" FontSize="17" Click="Buy_Click" Grid.Column="2" Grid.Row="0" Background="White" BorderThickness="0" Content="Корзина"></Button>
                         <StackPanel x:Name="searchproduct" Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="Фильтр: " Margin="10" TextAlignment="Left"/>
-                            <TextBox x:Name="FilterProductText" Height="20" PreviewMouseDown="TextBox_PreviewMouseDown" Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}"  Width="200" TextAlignment="Left" VerticalAlignment="Center" FontSize="15" Margin="5"/>
+                            <TextBox x:Name="FilterProductText" TextChanged="FilterProductText_TextChanged" Height="20" PreviewMouseDown="TextBox_PreviewMouseDown" Width="200" TextAlignment="Left" VerticalAlignment="Center" FontSize="15" Margin="5"/>
                             <Button Visibility="Hidden" x:Name="btnSearchBack" Click="BtnSearchBack_Click" Background="White" BorderThickness="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0,5,0,0" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold">
                                 <Viewbox Width="10" Height="10">
                                     <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
@@ -92,7 +119,7 @@
                         <ListView x:Name="Lvm"  Visibility="Hidden"  SelectionChanged="Lvm_SelectionChanged" MouseLeftButtonUp="leftmouse"  ItemsSource="{Binding Items}" SelectedItem="{Binding Items}" Margin="5" Grid.ColumnSpan ="3" Grid.Row="1">
                             <ListView.ItemTemplate>
                                 <DataTemplate >
-                                    <Grid>
+                                    <Grid Width="780">
                                         <Image x:Name="tvI" Source="{Binding Path =Image}" Width="100" Height="100" HorizontalAlignment="Left"/>
                                         <TextBlock x:Name="tvN" Text="{Binding Path =Name}" Margin="110,5,0,10" VerticalAlignment="Top" FontSize="20"/>
                                         <TextBlock Text="{Binding Path =Description}" TextWrapping="Wrap" Margin="150,30,0,10" VerticalAlignment="Center"/>
@@ -172,9 +199,10 @@
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="8*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"  >
-                                <TextBox x:Name="searchlibrary" Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Margin="5" Width="200"/>
+                            <StackPanel Visibility="Hidden" Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"  >
+                                <TextBox  x:Name="searchlibrary"  Margin="5" Width="200"/>
                             </StackPanel>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="30" > Ваши игры</TextBlock>
                             <ListView x:Name="mylibrary" MouseLeftButtonUp="leftmouse_mylibrary" ItemsSource="{Binding LibraryItems}" Margin="5" Grid.Row ="1" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -224,11 +252,12 @@
 
 
                 </TabItem>
-                <TabItem Focusable="True" Padding="5,0,5,0" Header="Профиль" Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
+                <TabItem Name="myprofiletab" Focusable="True" Padding="5,0,5,0" Header="Профиль" Background="White" BorderThickness="0" FontFamily="Panton Bold" Width="100" Height="45">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"></ColumnDefinition>
-                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="2*"></RowDefinition>
@@ -239,8 +268,9 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate >
                                     <Grid >
-                                        <Image  Source="{Binding MainImage}" Height="150" Width="130" />
-                                      
+                                        <Border BorderThickness="1">
+                                            <Image  Source="{Binding MainImage}" Height="150" Width="130" />
+                                        </Border>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -248,7 +278,7 @@
 
                         <Grid Grid.Column="1" Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="1.1*"></ColumnDefinition>
                                 <ColumnDefinition Width="15*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -306,6 +336,13 @@
                                 </Grid.RowDefinitions>
                                 
                             </Grid>
+                            <Button Name="Changeprofile" Background="White" Grid.Column="1" Grid.Row="0" Click="Changeprofile_Click" Height="25" Content="Редактировать профиль" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Center"></Button>
+                            <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" FontSize="9" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                            <TextBlock Text="Вы можете "></TextBlock>
+                            <TextBlock Text="удалить свой аккаунт" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" ></TextBlock>
+
+                        </TextBlock>
+
                             <Button x:Name="Reaestfriends" Visibility="Hidden" Height="23" VerticalAlignment="Top" BorderThickness="0" Click="Button_Click_2" Background="White" Width="22" HorizontalAlignment="Right" Margin="0,0,20,0">
                             <Grid Panel.ZIndex="3" HorizontalAlignment="Right">
                                     <TextBlock x:Name="howmanynewfriends" Panel.ZIndex="2"  FontSize="15" Margin="2,2,1,0"  Text="+1" Foreground="White"></TextBlock>
@@ -314,31 +351,29 @@
                                 </Ellipse>
                             </Grid>
                             </Button>
-                            <TextBlock Grid.Row="0" Text="Ваши друзья" VerticalAlignment="Center" TextAlignment="Center" FontSize="15"/>
-                            <ListView x:Name="Lvfriend" Grid.Row="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Items1}" Margin="5" >
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:Name="DT">
-                                        <Grid >
-                                            <Image x:Name="Image2" Source="{Binding MainImage}" Height="50" Width="50" HorizontalAlignment="Left">
-                                            </Image>
-                                            <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="55,10,0,0"/>
-                                            <TextBlock  x:Name="status" Text="{Binding status}" Margin="55,30,0,0" >
-                                            
-                                            </TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
 
                         </Grid>
-                        <Button Name="Changeprofile" Background="White" Grid.Column="1" Grid.Row="1" Click="Changeprofile_Click" Content="Редактировать профиль" Margin="0,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Button>
+                        <Button Name="Resetpassword" Grid.Column="2" Height="20" Click="Resetpassword_Click" Width="120" VerticalAlignment="Top"  Margin="5"  Background="Transparent"  Content="Сменить пароль"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Ваши друзья" VerticalAlignment="Bottom" TextAlignment="Center" FontSize="15"/>
+                        <ListView x:Name="Lvfriend" Grid.Row="1" Grid.Column="2" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Items1}" Margin="5" >
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:Name="DT">
+                                    <Grid >
+                                        <Border BorderThickness="1">
+                                            <Image x:Name="Image2" Source="{Binding MainImage}" Height="50" Width="50" HorizontalAlignment="Left">
+                                            </Image>
+                                        </Border>
+                                        <TextBlock x:Name="tbTest" Text="{Binding Login}" Margin="55,10,0,0"/>
+                                        <TextBlock  x:Name="status" Text="{Binding status}" Margin="55,30,0,0" >
+
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
                         <Button Name="btnBack" Background="White" Grid.Column="1" Grid.Row="1" Click="BtnBack_Click" Content="Отмена" Visibility="Hidden" Margin="0,0,155,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Button>
                         <Button Name="ChangeprofileSave" Background="White" Grid.Column="1" Grid.Row="1" Click="ChangeprofileSave_Click" Content="Сохранить изменения" Visibility="Hidden" Margin="0,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Button>
-                        <TextBlock Grid.Column="1" Grid.Row="1"  VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                            <TextBlock Text="Вы можете "></TextBlock>
-                            <TextBlock Text="удалить свой аккаунт" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" ></TextBlock>
-
-                        </TextBlock>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="SearchUser" Padding="5,0,5,0"  Header="Поиск"  Background="White" BorderThickness="0" Height="45" Width="120"  Grid.RowSpan="2" FontFamily="Panton Bold" FontWeight="Bold" >
@@ -349,7 +384,7 @@
                         </Grid.RowDefinitions>
                         <StackPanel Height="30" x:Name="searchprofile" Orientation="Horizontal">
                             <TextBlock Text="Фильтр: " Margin="5" VerticalAlignment="Center" FontSize="15"/>
-                            <TextBox x:Name="FilterUser"  TextChanged="FilterUser_TextChanged" Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
+                            <TextBox x:Name="FilterUser"  TextChanged="FilterUser_TextChanged"  Width="200" Margin="5"/>
                         </StackPanel>
                         <ListView x:Name="AllUser" MouseLeftButtonUp="AllUser_MouseLeftButtonUp"  ItemsSource="{Binding Items1}" Margin="5" Grid.Row ="1">
                             <ListView.ItemTemplate>
@@ -380,7 +415,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Width="417.75" Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20"  Text="Продукт на рассмотрении" TextAlignment="Center"></TextBlock>
                         <TextBlock  Margin="417.75,0,0,0" Text="Решение" Grid.ColumnSpan="5" TextAlignment="Center" VerticalAlignment="Center" FontSize="20"  Width="417.75" Grid.Row="0"></TextBlock>
-                        <ListView x:Name="Moderationproduct" Grid.ColumnSpan="5" Grid.Row="2" Width="835.5" Margin="0,0,0,0">
+                        <ListView x:Name="Moderationproduct" Grid.ColumnSpan="5" Grid.Row="1" Width="835.5" Margin="0,0,0,0">
                           
                             <ListView.ItemTemplate>
                                 <DataTemplate>

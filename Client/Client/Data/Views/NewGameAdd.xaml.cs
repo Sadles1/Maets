@@ -28,7 +28,8 @@ namespace Client
       
         public NewGameAdd()
         {
-            
+            this.Title = "Maets";
+
             InitializeComponent();
             modelProducts = new List<ModelImage>();
             btnAdd.Content = "Отправить заявку\n на добаление";

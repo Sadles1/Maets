@@ -17,7 +17,7 @@ namespace Host
             {
                 host.Description.Behaviors.Add(new MainErrorHandlerBehaviour());
                 host.Open();
-                Console.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}: Server start!");
+                Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: Server start!");
                 Console.ReadLine();
             }
         }

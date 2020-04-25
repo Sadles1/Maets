@@ -32,9 +32,13 @@ namespace Client
 
         public void FriendOnline(int idUser)
         {
-           //SendFriendsRequest
+            MainWindow.shopWindows.friendsonline(idUser);
         }
 
+        public void FriendOffline(int idUser)
+        {
+            MainWindow.shopWindows.friendsoffline(idUser);
+        }
         /// <summary>
         /// Вызывается при получении заявки в друзья
         /// </summary>
@@ -53,10 +57,21 @@ namespace Client
         /// <param name="msg"></param>
         public void GetMessage(UserMessage msg)
         {
-            Chat.chatnow.get_user(msg.IDSender, msg.date);
-           // Chat.chatnow.get_user(msg.IDSender,msg.date);
-            Chat.chatnow.tbChat.Text +=  msg.message +"\n";
+            if (Chat.chatnow != null)
+            {
+                
+                Chat.chatnow.get_user(msg.IDSender, msg.date);
 
+                // Chat.chatnow.get_user(msg.IDSender,msg.date);
+                Chat.chatnow.tbChat.Text += msg.message + "\n";
+            }
+            ShopWindows.frmail.Add(msg);
+            MainWindow.shopWindows.messagerefresh1(msg.IDSender);
+        }
+
+        public void AcceptFriendRequest(Service.Profile User)
+        {
+            MainWindow.shopWindows.friendsnew(User);
         }
     }
 }

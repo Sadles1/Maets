@@ -277,9 +277,6 @@ namespace Client.Service {
         private double RetailPriceField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[][] ScreenshotsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double WholesalePriceField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -431,19 +428,6 @@ namespace Client.Service {
                 if ((this.RetailPriceField.Equals(value) != true)) {
                     this.RetailPriceField = value;
                     this.RaisePropertyChanged("RetailPrice");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[][] Screenshots {
-            get {
-                return this.ScreenshotsField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ScreenshotsField, value) != true)) {
-                    this.ScreenshotsField = value;
-                    this.RaisePropertyChanged("Screenshots");
                 }
             }
         }
@@ -693,11 +677,17 @@ namespace Client.Service {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Service.IWCFService", CallbackContract=typeof(Client.Service.IWCFServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IWCFService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
-        Client.Service.Profile Connect(string Login, string Password);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Connect")]
+        void Connect(string Login, string Password);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/Connect", ReplyAction="http://tempuri.org/IWCFService/ConnectResponse")]
-        System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Connect")]
+        System.Threading.Tasks.Task ConnectAsync(string Login, string Password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ActiveProfile", ReplyAction="http://tempuri.org/IWCFService/ActiveProfileResponse")]
+        Client.Service.Profile ActiveProfile(string Login, string Password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ActiveProfile", ReplyAction="http://tempuri.org/IWCFService/ActiveProfileResponse")]
+        System.Threading.Tasks.Task<Client.Service.Profile> ActiveProfileAsync(string Login, string Password);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/Disconnect")]
         void Disconnect(int Id);
@@ -735,11 +725,11 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProduct")]
         System.Threading.Tasks.Task BuyProductAsync(int[] Cart, int idProfile);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
-        void BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/BuyProductWholesale", ReplyAction="http://tempuri.org/IWCFService/BuyProductWholesaleResponse")]
+        Client.Service.Product[] BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/BuyProductWholesale")]
-        System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/BuyProductWholesale", ReplyAction="http://tempuri.org/IWCFService/BuyProductWholesaleResponse")]
+        System.Threading.Tasks.Task<Client.Service.Product[]> BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckBlacklist", ReplyAction="http://tempuri.org/IWCFService/CheckBlacklistResponse")]
         bool CheckBlacklist(int IdMainUser, int IdSeconUser);
@@ -874,10 +864,16 @@ namespace Client.Service {
         System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        string CheckMail(string Mail, string messageBody);
+        string CheckMail(string Mail);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail, string messageBody);
+        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ResetPassword", ReplyAction="http://tempuri.org/IWCFService/ResetPasswordResponse")]
+        string ResetPassword(string Mail);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ResetPassword", ReplyAction="http://tempuri.org/IWCFService/ResetPasswordResponse")]
+        System.Threading.Tasks.Task<string> ResetPasswordAsync(string Mail);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetModerationProduct", ReplyAction="http://tempuri.org/IWCFService/GetModerationProductResponse")]
         Client.Service.Product[] GetModerationProduct(int idUser);
@@ -891,11 +887,11 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeModerationStatus")]
         System.Threading.Tasks.Task ChangeModerationStatusAsync(int idUser, int idModerationProduct, bool result);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changePassword")]
-        void changePassword(int idUser, string password);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/changePassword", ReplyAction="http://tempuri.org/IWCFService/changePasswordResponse")]
+        void changePassword(int idUser, string password, string newPassword);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changePassword")]
-        System.Threading.Tasks.Task changePasswordAsync(int idUser, string password);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/changePassword", ReplyAction="http://tempuri.org/IWCFService/changePasswordResponse")]
+        System.Threading.Tasks.Task changePasswordAsync(int idUser, string password, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ChangeProfileInformation")]
         void ChangeProfileInformation(Client.Service.Profile profile);
@@ -914,10 +910,38 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/changeProfileImage")]
         System.Threading.Tasks.Task changeProfileImageAsync(int idUser, byte[] MainImage);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SetMessageRead")]
+        void SetMessageRead(int id, int idChatedUser);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/SetMessageRead")]
+        System.Threading.Tasks.Task SetMessageReadAsync(int id, int idChatedUser);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ActivateLicenseKey")]
+        void ActivateLicenseKey(int id, string Key);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ActivateLicenseKey")]
+        System.Threading.Tasks.Task ActivateLicenseKeyAsync(int id, string Key);
+        
+        // CODEGEN: Контракт генерации сообщений с именем упаковщика (resetPassword) сообщения resetPassword не соответствует значению по умолчанию (resetPassword1).
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/resetPassword")]
+        void resetPassword1(Client.Service.resetPassword request);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/resetPassword")]
+        System.Threading.Tasks.Task resetPassword1Async(Client.Service.resetPassword request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProductByFilterResponse")]
+        Client.Service.Product[] GetProductByFilter(string filter);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProductByFilterResponse")]
+        System.Threading.Tasks.Task<Client.Service.Product[]> GetProductByFilterAsync(string filter);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IWCFServiceCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/FriendOffline")]
+        void FriendOffline(int idUser);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/GetMessage")]
         void GetMessage(Client.Service.UserMessage msg);
@@ -930,6 +954,30 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/FriendOnline")]
         void FriendOnline(int idUser);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AcceptFriendRequest")]
+        void AcceptFriendRequest(Client.Service.Profile pr);
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="resetPassword", WrapperNamespace="http://tempuri.org/", IsWrapped=true)]
+    public partial class resetPassword {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=0)]
+        public int idUser;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=1)]
+        public string newPassword;
+        
+        public resetPassword() {
+        }
+        
+        public resetPassword(int idUser, string newPassword) {
+            this.idUser = idUser;
+            this.newPassword = newPassword;
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -960,12 +1008,20 @@ namespace Client.Service {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public Client.Service.Profile Connect(string Login, string Password) {
-            return base.Channel.Connect(Login, Password);
+        public void Connect(string Login, string Password) {
+            base.Channel.Connect(Login, Password);
         }
         
-        public System.Threading.Tasks.Task<Client.Service.Profile> ConnectAsync(string Login, string Password) {
+        public System.Threading.Tasks.Task ConnectAsync(string Login, string Password) {
             return base.Channel.ConnectAsync(Login, Password);
+        }
+        
+        public Client.Service.Profile ActiveProfile(string Login, string Password) {
+            return base.Channel.ActiveProfile(Login, Password);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Profile> ActiveProfileAsync(string Login, string Password) {
+            return base.Channel.ActiveProfileAsync(Login, Password);
         }
         
         public void Disconnect(int Id) {
@@ -1016,11 +1072,11 @@ namespace Client.Service {
             return base.Channel.BuyProductAsync(Cart, idProfile);
         }
         
-        public void BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile) {
-            base.Channel.BuyProductWholesale(Cart, idProfile);
+        public Client.Service.Product[] BuyProductWholesale(System.Tuple<int, int>[] Cart, int idProfile) {
+            return base.Channel.BuyProductWholesale(Cart, idProfile);
         }
         
-        public System.Threading.Tasks.Task BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile) {
+        public System.Threading.Tasks.Task<Client.Service.Product[]> BuyProductWholesaleAsync(System.Tuple<int, int>[] Cart, int idProfile) {
             return base.Channel.BuyProductWholesaleAsync(Cart, idProfile);
         }
         
@@ -1200,12 +1256,20 @@ namespace Client.Service {
             return base.Channel.GetWayToGameAsync(idUser, idGame);
         }
         
-        public string CheckMail(string Mail, string messageBody) {
-            return base.Channel.CheckMail(Mail, messageBody);
+        public string CheckMail(string Mail) {
+            return base.Channel.CheckMail(Mail);
         }
         
-        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail, string messageBody) {
-            return base.Channel.CheckMailAsync(Mail, messageBody);
+        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail) {
+            return base.Channel.CheckMailAsync(Mail);
+        }
+        
+        public string ResetPassword(string Mail) {
+            return base.Channel.ResetPassword(Mail);
+        }
+        
+        public System.Threading.Tasks.Task<string> ResetPasswordAsync(string Mail) {
+            return base.Channel.ResetPasswordAsync(Mail);
         }
         
         public Client.Service.Product[] GetModerationProduct(int idUser) {
@@ -1224,12 +1288,12 @@ namespace Client.Service {
             return base.Channel.ChangeModerationStatusAsync(idUser, idModerationProduct, result);
         }
         
-        public void changePassword(int idUser, string password) {
-            base.Channel.changePassword(idUser, password);
+        public void changePassword(int idUser, string password, string newPassword) {
+            base.Channel.changePassword(idUser, password, newPassword);
         }
         
-        public System.Threading.Tasks.Task changePasswordAsync(int idUser, string password) {
-            return base.Channel.changePasswordAsync(idUser, password);
+        public System.Threading.Tasks.Task changePasswordAsync(int idUser, string password, string newPassword) {
+            return base.Channel.changePasswordAsync(idUser, password, newPassword);
         }
         
         public void ChangeProfileInformation(Client.Service.Profile profile) {
@@ -1254,6 +1318,54 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task changeProfileImageAsync(int idUser, byte[] MainImage) {
             return base.Channel.changeProfileImageAsync(idUser, MainImage);
+        }
+        
+        public void SetMessageRead(int id, int idChatedUser) {
+            base.Channel.SetMessageRead(id, idChatedUser);
+        }
+        
+        public System.Threading.Tasks.Task SetMessageReadAsync(int id, int idChatedUser) {
+            return base.Channel.SetMessageReadAsync(id, idChatedUser);
+        }
+        
+        public void ActivateLicenseKey(int id, string Key) {
+            base.Channel.ActivateLicenseKey(id, Key);
+        }
+        
+        public System.Threading.Tasks.Task ActivateLicenseKeyAsync(int id, string Key) {
+            return base.Channel.ActivateLicenseKeyAsync(id, Key);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        void Client.Service.IWCFService.resetPassword1(Client.Service.resetPassword request) {
+            base.Channel.resetPassword1(request);
+        }
+        
+        public void resetPassword1(int idUser, string newPassword) {
+            Client.Service.resetPassword inValue = new Client.Service.resetPassword();
+            inValue.idUser = idUser;
+            inValue.newPassword = newPassword;
+            ((Client.Service.IWCFService)(this)).resetPassword1(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task Client.Service.IWCFService.resetPassword1Async(Client.Service.resetPassword request) {
+            return base.Channel.resetPassword1Async(request);
+        }
+        
+        public System.Threading.Tasks.Task resetPassword1Async(int idUser, string newPassword) {
+            Client.Service.resetPassword inValue = new Client.Service.resetPassword();
+            inValue.idUser = idUser;
+            inValue.newPassword = newPassword;
+            return ((Client.Service.IWCFService)(this)).resetPassword1Async(inValue);
+        }
+        
+        public Client.Service.Product[] GetProductByFilter(string filter) {
+            return base.Channel.GetProductByFilter(filter);
+        }
+        
+        public System.Threading.Tasks.Task<Client.Service.Product[]> GetProductByFilterAsync(string filter) {
+            return base.Channel.GetProductByFilterAsync(filter);
         }
     }
     

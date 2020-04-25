@@ -24,6 +24,8 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        string data;
+        int cnt = 0;
         static public ShopWindows shopWindows;
         static public RegisterWindows register;
         DataProvider dp = new DataProvider();
@@ -36,19 +38,18 @@ namespace Client
         private void Window_Initialized(object sender, EventArgs e)
         {
             this.Title = "Maets";
-            // tbLogin.Text = "p4shark";
-             tbLogin.Text = "admin";
-            //  tbPassword.Password = "qwerty90";
-             tbPassword.Password = "admin";
-            if (Options.Default.localUN == "" || Options.Default.localPW == "")
+           
+            data = Environment.CurrentDirectory + @"\options.txt";
+            FileInfo file = new FileInfo(data);
+            if (!File.Exists(data))
             {
                 RememberPassword.IsChecked = false;
             }
-            else if (Options.Default.localUN != "" || Options.Default.localPW != "")
+            else if (file.Length!=0)
             {
                 RememberPassword.IsChecked = true;
-                tbLogin.Text = Options.Default.localUN;
-                tbPassword.Password = Options.Default.localPW;
+                tbLogin.Text = File.ReadLines(data).Skip(0).First();
+                tbPassword.Password = File.ReadLines(data).Skip(1).First(); ;
             }
 
 
@@ -59,12 +60,14 @@ namespace Client
             try
             {
                 remember();
+                cnt++;
                 shopWindows = new ShopWindows(tbLogin.Text, dp.HashPassword(tbPassword.Password));
                 shopWindows.Show();
                 Close();
             }
             catch (FaultException ex)
             {
+                if (cnt != 0) resetpassword.Visibility = Visibility.Visible;
                 MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message), "ERROR", MessageBoxButton.OK);
             }
             catch (Exception ex)
@@ -100,34 +103,43 @@ namespace Client
         {
             if (RememberPassword.IsChecked == true)
             {
-                string a = Convert.ToString(tbPassword.Password);
-                Options.Default.localUN = tbLogin.Text;
-                Options.Default.Save();
-                Options.Default.Reload();
-                Options.Default.localPW = a;
-                Options.Default.Save();
-                Options.Default.Reload();
+                StreamWriter f = new StreamWriter(data);
+                f.WriteLine(tbLogin.Text);
+                f.WriteLine(tbPassword.Password);
+                f.Close();
             }
             else
             {
-                Options.Default.localUN = "";
-                Options.Default.localPW = "";
-                Options.Default.Save();
+                File.WriteAllText(data, "");
             }
         }
         private void RememberPassword_Click(object sender, RoutedEventArgs e)
         {
-            remember();
+        
         }
 
         private void TbLogin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            remember();
+           
         }
 
         private void TbPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            remember();
+            
+        }
+
+        private void Resetpassword_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ResetPassword rp = new ResetPassword(tbLogin.Text);
+                rp.Show();
+                this.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
