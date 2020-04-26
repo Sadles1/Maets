@@ -171,17 +171,17 @@
   <wsdl:message name="IWCFService_GetWayToGame_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetWayToGameResponse" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_CheckMail_InputMessage">
-    <wsdl:part name="parameters" element="tns:CheckMail" />
+  <wsdl:message name="IWCFService_CheckMailRegister_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMailRegister" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_CheckMail_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CheckMailResponse" />
+  <wsdl:message name="IWCFService_CheckMailRegister_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMailRegisterResponse" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_ResetPassword_InputMessage">
-    <wsdl:part name="parameters" element="tns:ResetPassword" />
+  <wsdl:message name="IWCFService_CheckMailResetPassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMailResetPassword" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_ResetPassword_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ResetPasswordResponse" />
+  <wsdl:message name="IWCFService_CheckMailResetPassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMailResetPasswordResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFService_GetModerationProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:GetModerationProduct" />
@@ -369,13 +369,13 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetWayToGame" message="tns:IWCFService_GetWayToGame_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetWayToGameResponse" message="tns:IWCFService_GetWayToGame_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckMail">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMail" message="tns:IWCFService_CheckMail_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailResponse" message="tns:IWCFService_CheckMail_OutputMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckMailRegister">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMailRegister" message="tns:IWCFService_CheckMailRegister_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailRegisterResponse" message="tns:IWCFService_CheckMailRegister_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ResetPassword">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/ResetPassword" message="tns:IWCFService_ResetPassword_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/ResetPasswordResponse" message="tns:IWCFService_ResetPassword_OutputMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckMailResetPassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMailResetPassword" message="tns:IWCFService_CheckMailResetPassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailResetPasswordResponse" message="tns:IWCFService_CheckMailResetPassword_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetModerationProduct">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetModerationProduct" message="tns:IWCFService_GetModerationProduct_InputMessage" />
@@ -685,8 +685,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="CheckMail">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckMail" style="document" />
+    <wsdl:operation name="CheckMailRegister">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckMailRegister" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -694,8 +694,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ResetPassword">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/ResetPassword" style="document" />
+    <wsdl:operation name="CheckMailResetPassword">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckMailResetPassword" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

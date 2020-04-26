@@ -26,7 +26,9 @@ namespace Client
         public messagefriends()
         {
             this.Title = "Заявки в друзья";
-
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             InitializeComponent();
             foreach (Service.UserMessage person in ShopWindows.frmail)
             {

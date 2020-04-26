@@ -28,6 +28,9 @@ namespace Client
       
         public NewGameAdd()
         {
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new System.Windows.Input.Cursor(data1);
+            this.Cursor = cursor;
             this.Title = "Maets";
 
             InitializeComponent();

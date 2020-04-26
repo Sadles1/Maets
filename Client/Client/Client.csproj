@@ -325,5 +325,32 @@
   <ItemGroup>
     <Resource Include="maets.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="maets.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="exit1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="plus1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="right1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="left1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

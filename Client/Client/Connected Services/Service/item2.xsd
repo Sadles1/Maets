@@ -350,31 +350,31 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="CheckMail">
+  <xs:element name="CheckMailRegister">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="CheckMailResponse">
+  <xs:element name="CheckMailRegisterResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="CheckMailResult" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="CheckMailRegisterResult" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ResetPassword">
+  <xs:element name="CheckMailResetPassword">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ResetPasswordResponse">
+  <xs:element name="CheckMailResetPasswordResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="ResetPasswordResult" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="CheckMailResetPasswordResult" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -39,7 +39,7 @@ namespace Service
         bool CheckBlacklist(int IdMainUser, int IdSeconUser);
 
         [OperationContract(IsOneWay = true)]
-        void AddModerationProduct(Product product, List<byte[]> Images);
+        void AddModerationProduct(string mail, Product product, List<byte[]> Images);
 
         [OperationContract(IsOneWay = true)]
         void DeleteAccount(int id);
@@ -102,10 +102,10 @@ namespace Service
         string GetWayToGame(int idUser, int idGame);
 
         [OperationContract]
-        string CheckMail(string Mail);
+        string CheckMailRegister(string Mail);
 
         [OperationContract]
-        string ResetPassword(string Mail);
+        string CheckMailResetPassword(string Mail);
 
         [OperationContract]
         List<Product> GetModerationProduct(int idUser);
@@ -142,11 +142,6 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void ChangeComment(Comment comment);
-
-        [OperationContract(IsOneWay = true)]
-        void Kick(int id);
-
-        //[OperationContract(IsOneWay = true)]
     }
 
     public interface IWCFServiceCalbback
@@ -168,7 +163,6 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void AcceptFriendRequest(Profile pr);
-
 
     }
 

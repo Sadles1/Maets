@@ -298,9 +298,15 @@ namespace Service
         {
             using(postgresContext context = new postgresContext())
             {
-                TLogin login = context.TLogin.FirstOrDefault(u => u.Id == id);
-
-
+                TUsers user = context.TUsers.FirstOrDefault(u => u.Id == id);
+                if (user.TotalSpentMoney >= 1500 && user.TotalSpentMoney <3000)
+                    user.PersonalDiscount = 0.03;
+                if (user.TotalSpentMoney >= 3000 && user.TotalSpentMoney < 6000)
+                    user.PersonalDiscount = 0.05;
+                if (user.TotalSpentMoney >= 15000)
+                    user.PersonalDiscount = 0.1;
+                context.TUsers.Update(user);
+                context.SaveChanges();
             }
         }
 

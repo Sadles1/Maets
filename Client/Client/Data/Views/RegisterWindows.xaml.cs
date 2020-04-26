@@ -23,6 +23,9 @@ namespace Client
         DataProvider dp = new DataProvider();
         public RegisterWindows()
         {
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             InitializeComponent();
             this.Title = "Maets";
 

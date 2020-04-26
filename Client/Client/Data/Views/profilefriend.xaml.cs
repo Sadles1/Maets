@@ -30,6 +30,9 @@ namespace Client
         
         public profilefriend(Service.Profile tv1)
         {
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             this.Title = "Maets";
             Sender = MainWindow.shopWindows.profile;
             Resiver = tv1;

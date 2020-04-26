@@ -155,7 +155,6 @@
     <Compile Include="DataBases\TProductKeys.cs" />
     <Compile Include="DataBases\TUsersGames.cs" />
     <Compile Include="DataModels\Comment.cs" />
-    <Compile Include="DataModels\MailTest.cs" />
     <Compile Include="DataModels\Message.cs" />
     <Compile Include="DataModels\OnlineUser.cs" />
     <Compile Include="DataModels\Product.cs" />

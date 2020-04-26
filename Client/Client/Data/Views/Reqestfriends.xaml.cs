@@ -25,7 +25,9 @@ namespace Client
 
             InitializeComponent();
             Lvfriendnew.ItemsSource = ShopWindows.fr;
-
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
 
         }
 

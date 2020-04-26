@@ -38,7 +38,11 @@ namespace Client
         private void Window_Initialized(object sender, EventArgs e)
         {
             this.Title = "Maets";
-           
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            string data2 = Environment.CurrentDirectory + "\\Content\\maets.encr";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
+            //maetsimage.DataContext= dp.GetImageFromByte(File.ReadAllBytes(data2));
             data = Environment.CurrentDirectory + @"\options.txt";
             FileInfo file = new FileInfo(data);
             if (!File.Exists(data))

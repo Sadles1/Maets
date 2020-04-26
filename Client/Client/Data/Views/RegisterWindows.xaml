@@ -3,46 +3,166 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        AllowsTransparency="True" Background="Transparent"
         xmlns:local="clr-namespace:Client"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="RegisterWindows" Height="330" Width="320" ResizeMode="NoResize"    WindowStyle="None" Closing="Window_Closing"  >
-    <Grid Margin="0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="8*" ></ColumnDefinition>
-            <ColumnDefinition Width="19*"></ColumnDefinition>
-            <ColumnDefinition Width="5*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="9*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBox x:Name="tbLogin" Grid.Row="1" Grid.Column="1" FontSize="19" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="15,20,0,0" HorizontalAlignment="Left" Height="30"   VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
-        <PasswordBox x:Name="tbPassword"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,60,0,0" FontSize="19" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,1.913" Grid.ColumnSpan="2"/>
-        <PasswordBox x:Name="tbPassword2"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,100,0,0" FontSize="19" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,1.913" Grid.ColumnSpan="2"/>
-       
-        <TextBox x:Name="tbMail"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,140,0,0" FontSize="19"  VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="tbTelephone"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,180,0,0" FontSize="19"  VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="tbName"   Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,220,0,0" FontSize="19" VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
-        <Button x:Name="btnRegister"  Grid.Row="1" Grid.Column="1" Content="Register" HorizontalAlignment="Right" Margin="0,260,24,0" VerticalAlignment="Top" Width="76" Click="btnRegister_Click" Height="23" Grid.ColumnSpan="2"/>
-        <TextBlock x:Name="lbLoginR" Grid.Column="0" Grid.Row="1" TextAlignment="Right" Height="30" Width="60" Text="Логин" FontSize="15" Margin="0,20,10,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-        <TextBlock x:Name="tbPasswordR" Grid.Row="1" Grid.Column="0" TextAlignment="Right"  Text="Пароль" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,60,10,0" VerticalAlignment="Top" Width="60"/>
-        <TextBlock x:Name="tbPasswordR2" Grid.Row="1" Grid.Column="0" TextAlignment="Right"  Text="Повторите пароль" TextWrapping="Wrap" HorizontalAlignment="Right" Height="30" Margin="0,100,10,0" VerticalAlignment="Top" Width="60"/>
-        
-        <TextBlock x:Name="tbEmailR" Grid.Row="1" Grid.Column="0"  TextAlignment="Right" Text="email" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,140,10,0" VerticalAlignment="Top" Width="60"/>
-        <TextBlock x:Name="tbPhoneR" Grid.Row="1" Grid.Column="0" TextAlignment="Right" Text="Телефон" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,180,10,0" VerticalAlignment="Top" Width="60"/>
-        <TextBlock x:Name="tbRealNameR" Grid.Row="1" Grid.Column="0" TextAlignment="Right" Height="30" Width="60" Margin="0,220,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" TextWrapping="Wrap" Text="Имя" FontSize="15"/>
-        <TextBlock x:Name="tbNameForm"  Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="30" Width="Auto" FontSize="15" HorizontalAlignment="Center" Margin="41,10,41,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Регистрация Нового пользователя" Grid.RowSpan="2"></TextBlock>
-        <Button x:Name="btnExit" Click="TbExit_Click" Background="White" BorderThickness="0" Grid.Column="2" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0" Padding="0" HorizontalAlignment="Right" Height="30" Width="30" FontWeight="Bold" Grid.RowSpan="2">
-            <Viewbox Width="10" Height="10">
-                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                    <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
-                    <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
-                </Grid>
-            </Viewbox>
-        </Button>
+    <Window.Resources>
+        <ControlTemplate x:Key="TextBoxBaseControlTemplate" TargetType="{x:Type TextBoxBase}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="PasswordBoxBaseControlTemplate" TargetType="{x:Type PasswordBox}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                         >
+                                </ContentPresenter>
+                            </Border>
 
-    </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
 
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="exitRoundCorner" TargetType="{x:Type Button}">
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="Aqua" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           >
+                                </ContentPresenter>
+                            </Border>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+    </Window.Resources>
+    <Border Width="Auto" Height="Auto" Name="windowFrame"
+    Background="#FF0D0A4A"
+          BorderBrush="#395984"
+          BorderThickness="1"
+           CornerRadius="12">
+        <Grid Background="Transparent" >
+            <Grid Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*" ></ColumnDefinition>
+                    <ColumnDefinition Width="19*"></ColumnDefinition>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="9*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" x:Name="tbLogin" Grid.Row="1" Grid.Column="1" FontSize="19" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="15,20,0,0" HorizontalAlignment="Left" Height="30"   VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
+                <PasswordBox Template="{StaticResource PasswordBoxBaseControlTemplate}" x:Name="tbPassword"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,60,0,0" FontSize="19" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,1.913" Grid.ColumnSpan="2"/>
+                <PasswordBox  Template="{StaticResource PasswordBoxBaseControlTemplate}" x:Name="tbPassword2"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,100,0,0" FontSize="19" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,1.913" Grid.ColumnSpan="2"/>
+
+                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" x:Name="tbMail"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,140,0,0" FontSize="19"  VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
+                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" x:Name="tbTelephone"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,180,0,0" FontSize="19"  VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
+                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" x:Name="tbName"   Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="15,220,0,0" FontSize="19" VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
+                <Button Style="{DynamicResource RoundCorner}" x:Name="btnRegister" Foreground="White"  Grid.Row="1" Grid.Column="1" Content="Регистрация" HorizontalAlignment="Right" Margin="0,260,24,0" VerticalAlignment="Top" Width="76" Click="btnRegister_Click" Height="23" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="lbLoginR" Grid.Column="0" Grid.Row="1" TextAlignment="Right" Height="30" Width="60" Text="Логин" FontSize="15" Margin="0,20,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="White"/>
+                <TextBlock x:Name="tbPasswordR" Grid.Row="1" Grid.Column="0" TextAlignment="Right"  Text="Пароль" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,60,10,0" VerticalAlignment="Top" Width="60" Foreground="White"/>
+                <TextBlock x:Name="tbPasswordR2" Grid.Row="1" Grid.Column="0" TextAlignment="Right"  Text="Повторите пароль" TextWrapping="Wrap" HorizontalAlignment="Right" Height="30" Margin="0,100,10,0" VerticalAlignment="Top" Width="60" Foreground="White"/>
+
+                <TextBlock x:Name="tbEmailR" Grid.Row="1" Grid.Column="0"  TextAlignment="Right" Text="email" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,140,10,0" VerticalAlignment="Top" Width="60" Foreground="White"/>
+                <TextBlock x:Name="tbPhoneR" Grid.Row="1" Grid.Column="0" TextAlignment="Right" Text="Телефон" FontSize="15" HorizontalAlignment="Right" Height="30" Margin="0,180,10,0" VerticalAlignment="Top" Width="60" Foreground="White"/>
+                <TextBlock x:Name="tbRealNameR" Grid.Row="1" Grid.Column="0" TextAlignment="Right" Height="30" Width="60" Margin="0,220,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" TextWrapping="Wrap" Text="Имя" FontSize="15" Foreground="White"/>
+                <TextBlock x:Name="tbNameForm"  Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="30" Width="Auto" FontSize="15" HorizontalAlignment="Center" Margin="39,10,41,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Регистрация Нового пользователя" Grid.RowSpan="2" Foreground="White"></TextBlock>
+                <Button Style="{DynamicResource exitRoundCorner}" x:Name="btnExit" Click="TbExit_Click" Background="White" BorderThickness="0" Grid.Column="2" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0,5,5,0" Padding="0" HorizontalAlignment="Right" Height="20" Width="20"  FontWeight="Bold" Grid.RowSpan="2">
+                    <Image >
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="/Client;component/exit.png" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Source" Value="/Client;component/exit1.png" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
+
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

@@ -863,17 +863,17 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetWayToGame", ReplyAction="http://tempuri.org/IWCFService/GetWayToGameResponse")]
         System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        string CheckMail(string Mail);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMailRegister", ReplyAction="http://tempuri.org/IWCFService/CheckMailRegisterResponse")]
+        string CheckMailRegister(string Mail);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMail", ReplyAction="http://tempuri.org/IWCFService/CheckMailResponse")]
-        System.Threading.Tasks.Task<string> CheckMailAsync(string Mail);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMailRegister", ReplyAction="http://tempuri.org/IWCFService/CheckMailRegisterResponse")]
+        System.Threading.Tasks.Task<string> CheckMailRegisterAsync(string Mail);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ResetPassword", ReplyAction="http://tempuri.org/IWCFService/ResetPasswordResponse")]
-        string ResetPassword(string Mail);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMailResetPassword", ReplyAction="http://tempuri.org/IWCFService/CheckMailResetPasswordResponse")]
+        string CheckMailResetPassword(string Mail);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/ResetPassword", ReplyAction="http://tempuri.org/IWCFService/ResetPasswordResponse")]
-        System.Threading.Tasks.Task<string> ResetPasswordAsync(string Mail);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMailResetPassword", ReplyAction="http://tempuri.org/IWCFService/CheckMailResetPasswordResponse")]
+        System.Threading.Tasks.Task<string> CheckMailResetPasswordAsync(string Mail);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetModerationProduct", ReplyAction="http://tempuri.org/IWCFService/GetModerationProductResponse")]
         Client.Service.Product[] GetModerationProduct(int idUser);
@@ -923,12 +923,11 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/ActivateLicenseKey")]
         System.Threading.Tasks.Task ActivateLicenseKeyAsync(int id, string Key);
         
-        // CODEGEN: Контракт генерации сообщений с именем упаковщика (resetPassword) сообщения resetPassword не соответствует значению по умолчанию (resetPassword1).
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/resetPassword")]
-        void resetPassword1(Client.Service.resetPassword request);
+        void resetPassword(int idUser, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/resetPassword")]
-        System.Threading.Tasks.Task resetPassword1Async(Client.Service.resetPassword request);
+        System.Threading.Tasks.Task resetPasswordAsync(int idUser, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetProductByFilter", ReplyAction="http://tempuri.org/IWCFService/GetProductByFilterResponse")]
         Client.Service.Product[] GetProductByFilter(string filter);
@@ -969,27 +968,6 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AcceptFriendRequest")]
         void AcceptFriendRequest(Client.Service.Profile pr);
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="resetPassword", WrapperNamespace="http://tempuri.org/", IsWrapped=true)]
-    public partial class resetPassword {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=0)]
-        public int idUser;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=1)]
-        public string newPassword;
-        
-        public resetPassword() {
-        }
-        
-        public resetPassword(int idUser, string newPassword) {
-            this.idUser = idUser;
-            this.newPassword = newPassword;
-        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1268,20 +1246,20 @@ namespace Client.Service {
             return base.Channel.GetWayToGameAsync(idUser, idGame);
         }
         
-        public string CheckMail(string Mail) {
-            return base.Channel.CheckMail(Mail);
+        public string CheckMailRegister(string Mail) {
+            return base.Channel.CheckMailRegister(Mail);
         }
         
-        public System.Threading.Tasks.Task<string> CheckMailAsync(string Mail) {
-            return base.Channel.CheckMailAsync(Mail);
+        public System.Threading.Tasks.Task<string> CheckMailRegisterAsync(string Mail) {
+            return base.Channel.CheckMailRegisterAsync(Mail);
         }
         
-        public string ResetPassword(string Mail) {
-            return base.Channel.ResetPassword(Mail);
+        public string CheckMailResetPassword(string Mail) {
+            return base.Channel.CheckMailResetPassword(Mail);
         }
         
-        public System.Threading.Tasks.Task<string> ResetPasswordAsync(string Mail) {
-            return base.Channel.ResetPasswordAsync(Mail);
+        public System.Threading.Tasks.Task<string> CheckMailResetPasswordAsync(string Mail) {
+            return base.Channel.CheckMailResetPasswordAsync(Mail);
         }
         
         public Client.Service.Product[] GetModerationProduct(int idUser) {
@@ -1348,28 +1326,12 @@ namespace Client.Service {
             return base.Channel.ActivateLicenseKeyAsync(id, Key);
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        void Client.Service.IWCFService.resetPassword1(Client.Service.resetPassword request) {
-            base.Channel.resetPassword1(request);
+        public void resetPassword(int idUser, string newPassword) {
+            base.Channel.resetPassword(idUser, newPassword);
         }
         
-        public void resetPassword1(int idUser, string newPassword) {
-            Client.Service.resetPassword inValue = new Client.Service.resetPassword();
-            inValue.idUser = idUser;
-            inValue.newPassword = newPassword;
-            ((Client.Service.IWCFService)(this)).resetPassword1(inValue);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task Client.Service.IWCFService.resetPassword1Async(Client.Service.resetPassword request) {
-            return base.Channel.resetPassword1Async(request);
-        }
-        
-        public System.Threading.Tasks.Task resetPassword1Async(int idUser, string newPassword) {
-            Client.Service.resetPassword inValue = new Client.Service.resetPassword();
-            inValue.idUser = idUser;
-            inValue.newPassword = newPassword;
-            return ((Client.Service.IWCFService)(this)).resetPassword1Async(inValue);
+        public System.Threading.Tasks.Task resetPasswordAsync(int idUser, string newPassword) {
+            return base.Channel.resetPasswordAsync(idUser, newPassword);
         }
         
         public Client.Service.Product[] GetProductByFilter(string filter) {

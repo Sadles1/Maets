@@ -2,9 +2,11 @@
 using Client.Service;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,7 +42,10 @@ namespace Client
         public ShopWindows(string Login, string Password)
         {
             this.Title = "Maets";
-
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new System.Windows.Input.Cursor(data1);
+            this.Cursor = cursor;
+            this.Title = "Maets";
             client = new WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass(this)), "NetTcpBinding_IWCFService");
             
             client.Connect(Login, Password);
@@ -71,6 +76,11 @@ namespace Client
                     //    }
                     //}
                     
+                    foreach(Service.Product p in profile.Games.ToList())
+                    {
+                        mylibrary.Items.Add(p);
+                    }
+
                     if(profile.AccessRight>=2)
                         {
                             AddGame.Visibility = Visibility.Visible;
@@ -199,8 +209,16 @@ namespace Client
 
             }
             else Reaestfriends.Visibility = Visibility.Hidden;
-         //   searchlibrary.DataContext = new LibraryViewModel(pr.Games.ToList());
-          //  mylibrary.DataContext = searchlibrary.DataContext;
+
+            mylibrary.Items.Clear();
+            foreach (Service.Product p in pr.Games.ToList())
+            {
+                mylibrary.Items.Add(p);
+            }
+
+
+            //   searchlibrary.DataContext = new LibraryViewModel(pr.Games.ToList());
+            //  mylibrary.DataContext = searchlibrary.DataContext;
             if (mainfprofile.Count != 0)
             {
                 KorzinaCount.Visibility = Visibility.Visible;
@@ -220,7 +238,6 @@ namespace Client
             {
                 Lvfriend.Items.Add(profile.Friends.ToList()[i]);
             }
-            Back.IsEnabled = false;
            // Lvmylibrary.ItemsSource = pr.Games;
             btnMoney.Content = Convert.ToString(pr.Money) + " р";
             profile = pr;
@@ -458,7 +475,7 @@ namespace Client
                 ProductOne.Items.Add(products[ishop]);
                 ProductTwo.Items.Add(products[ishop + 1]);
                 ProductFree.Items.Add(products[ishop + 2]);
-                if ((ishop + 2) == products.Count +1)
+                if ((ishop) == products.Count-3)
                 {
                     Next.IsEnabled = false;
                     // Next.Visibility = Visibility.Hidden;
@@ -608,9 +625,38 @@ namespace Client
                 System.Diagnostics.Process.Start(file);
             else WinForms.MessageBox.Show("Файл не найден");
         }
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            dwnload.Value = e.ProgressPercentage;
+            dnmtext.Text = (string)e.UserState;
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var worker = sender as BackgroundWorker;
+            worker.ReportProgress(0, String.Format("Processing Iteration 1"));
+            for(int i=0;i<10;i++)
+            {
+                Thread.Sleep(1000);
+            }
+            worker.ReportProgress(100, "All");
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Загружено");
+            dwnload.Value = 0;
+            dnmtext.Text = "";
+        }
 
         async public void DownloadGame(string path, int idGame, int idUser)
         {
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.WorkerReportsProgress = true;
+            worker.ProgressChanged += worker_ProgressChanged;
+                worker.RunWorkerAsync();
+           // var worker = send
             Play.IsEnabled = false;
             await Task.Run(() =>
             {
@@ -643,6 +689,8 @@ namespace Client
                             int bytesRead = stream.Read(buffer, 0, bufferSize);
                             while (bytesRead > 0)
                             {
+                               // worker.ReportProgress((Convert.ToInt32(DownloadSize/FileSize)), String.Format("PI {0}", DownloadSize / FileSize));
+
                                 outputStream.Write(buffer, 0, bytesRead);
                                 bytesRead = stream.Read(buffer, 0, bufferSize);
                                 DownloadSize += buffer.Length;
@@ -666,6 +714,7 @@ namespace Client
             Play.IsEnabled = true;
         }
 
+       
         private void AddGame_Click(object sender, RoutedEventArgs e)
         {
             NewGameAdd ng = new NewGameAdd();

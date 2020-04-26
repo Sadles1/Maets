@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.ServiceModel;
+using System.Threading;
 
 namespace Service
 {
@@ -99,25 +100,18 @@ namespace Service
                         profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
                         profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
 
+                        dp.CheckDiscount(profile.Id);
+
                         idDeal++;
                     }
                     else
                         ProductAbsent.Add(new Product { Id = product.Id, Name = product.Name });
                 }
 
-                MailAddress from = new MailAddress("maetsofficial@gmail.com", "maets");
-                MailAddress to = new MailAddress(profile.Mail);
-                MailMessage message = new MailMessage(from, to);
-                message.Subject = "Покупка на Maets";
-                // текст письма
+                Mail message = new Mail(profile.Mail);
+                message.Head = "Покупка на Maets";
                 message.Body = mailMessage;
-                message.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
-                {
-                    Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
-                    EnableSsl = true
-                };
-                smtp.Send(message);
+                message.SendMsg();
 
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
@@ -182,7 +176,7 @@ namespace Service
         /// Метод для добавления продукта на модерацию
         /// </summary>
         /// <param name="product"></param>
-        public void AddModerationProduct(Product product, List<byte[]> Images)
+        public void AddModerationProduct(string mail,Product product, List<byte[]> Images)
         {
             using (postgresContext context = new postgresContext())
             {
@@ -258,6 +252,12 @@ namespace Service
                 employer = new TModerateEmployers { IdEmployee = moderator2, IdModerateProduct = product.Id, Result = null };
                 TModerateProduct.TModerateEmployers.Add(employer);
                 context.TModerateEmployers.Add(employer);
+
+
+                Mail message = new Mail(mail);
+                message.Head = "Добавления товара на Maets";
+                message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p> Ваш товар был добавлен на проверку. Наши модераторы проверят его и если нарушений не будет, то мы добавим ваш товар в магазин</p><p> Ваш код подтверждения: </p><p></p><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
+
 
                 context.TModerateProducts.Add(TModerateProduct);
                 context.SaveChanges();
@@ -419,44 +419,35 @@ namespace Service
 
 
         /// <summary>
-        /// Метод выполняет проверку почты
+        /// Метод выполняет проверку почты при регистрации
         /// </summary>
-        public string CheckMail(string Mail)
+        public string CheckMailRegister(string email)
         {
-            string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
-            MailAddress from = new MailAddress("maetsofficial@gmail.com", "Maets");
-            MailAddress to = new MailAddress(Mail);
-            MailMessage message = new MailMessage(from, to);
-            message.Subject = "Регистрация Maets";
-            // текст письма
-            message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p> Если вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
-            message.IsBodyHtml = true;
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+            using(postgresContext context = new postgresContext())
             {
-                Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
-                EnableSsl = true
-            };
-            smtp.Send(message);
+                if (context.TUsers.FirstOrDefault(u => u.Mail == email) != null)
+                    throw new FaultException("Данная почта уже зарегистрирована");
+            }
+            string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
+            Mail message = new Mail(email);                    
+            message.Head = "Регистрация Maets";
+            message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p> Если вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
+            message.SendMsg();
             return Code;
         }
 
-
-        public string ResetPassword(string Mail)
+        /// <summary>
+        /// Метод выполняет проверку почты при сбросе пароля
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public string CheckMailResetPassword(string email)
         {
             string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
-            MailAddress from = new MailAddress("maetsofficial@gmail.com", "Maets");
-            MailAddress to = new MailAddress(Mail);
-            MailMessage message = new MailMessage(from, to);
-            message.Subject = "Смена пароля Maets";
-            // текст письма
+            Mail message = new Mail(email);
+            message.Head = "Смена пароля Maets";
             message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p>Если вы видите это письмо, значит происходит смена пароля Вашего аккаунта на Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
-            message.IsBodyHtml = true;
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
-            {
-                Credentials = new NetworkCredential("maetsofficial@gmail.com", "Zxcv1234zxcv12345"),
-                EnableSsl = true
-            };
-            smtp.Send(message);
+            message.SendMsg();
             return Code;
         }
 
@@ -719,7 +710,6 @@ namespace Service
         /// </summary>
         public Stream DownloadProduct(int idProduct, int idUser, string path, long startPoint)
         {
-
             string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
             List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
             GamesPath.Add(Tuple.Create(idProduct, path));
@@ -739,37 +729,6 @@ namespace Service
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
             FileInfo file = new FileInfo(pathToGame);
             return file.Length;
-        }
-
-        public void Kick(int id)
-        {
-//             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
-// 
-//             if (User != null)
-//             {
-//                 //Получаем id сессии
-//                 string sessionId = (OperationContext.Current.SessionId);
-//                 string Login = User.UserProfile.Login;
-//                 //Выводим сообщение в серверную консоль
-//                 Console.WriteLine($"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToShortTimeString()}: {Login} with Session Id {sessionId} disconnect");
-// 
-// 
-//                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{Id}\";
-//                 //List<TLogin> Tlogins = context.TLogin.ToList();
-//                 if (File.Exists($@"{path}Friends.json"))
-//                 {
-//                     List<int> IdFriends = JsonConvert.DeserializeObject<List<int>>(File.ReadAllText($@"{path}Friends.json"));
-//                     foreach (int id in IdFriends)
-//                     {
-//                         OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == id);
-//                         if (OnlineFriend != null)
-//                             OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().FriendOffline(Id);
-//                     }
-//                 }
-// 
-//                 //Удаляем пользователя из списка активных пользователей
-//                 onlineUsers.Remove(User);
-//             }
         }
 
         /// <summary>
@@ -1211,13 +1170,15 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 TProductKeys key = context.TProductKeys.FirstOrDefault(u => u.Key == Key);
-                if (key.IsSold == true)
+                if (key.IsSold == true && key.IsActivate == false)
                 {
                     key.IsActivate = true;
                     context.TProductKeys.Update(key);
                     context.TUsersGames.Add(new TUsersGames { Idproduct = key.IdProduct, Iduser = idUser });
                     context.SaveChanges();
                 }
+                else if(key.IsActivate == true)
+                    throw new FaultException("Ошибка, ключ уже активирован");
                 else
                     throw new FaultException("Ошибка, ключ недоступен");
             }
@@ -1229,7 +1190,6 @@ namespace Service
             {
                 //Ищем пользователя, если находим, то подключаем
                 TLogin Tlogin = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Login == Login && u.Password == Password);
-
                 if (Tlogin != null)
                 {
                     //Формируем профиль
@@ -1238,15 +1198,10 @@ namespace Service
                     return profile;
                 }
                 else
-                    throw new FaultException("Логин или пароль не верны");//Если пользователь не найден возвращаем null
+                    return null;
+                
             }
         }
-
-        public void SendMail(Mail mail)
-        {
-
-        }
-
         public void ChangeComment(Comment comment)
         {
             using (postgresContext context = new postgresContext())

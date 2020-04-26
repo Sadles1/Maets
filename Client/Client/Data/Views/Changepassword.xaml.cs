@@ -25,6 +25,9 @@ namespace Client
         {
             this.Title = "Maets";
             InitializeComponent();
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
         }
 
         private void TbExit_Click(object sender, RoutedEventArgs e)

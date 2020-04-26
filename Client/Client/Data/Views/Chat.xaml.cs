@@ -27,7 +27,9 @@ namespace Client.Data.Views
         public Chat(Service.Profile Sender, Service.Profile Resiver)
         {
             this.Title = "Maets";
-
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             Senderg = Sender;
             Resiverg = Resiver;
             InitializeComponent();

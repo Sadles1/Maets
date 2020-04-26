@@ -44,6 +44,9 @@ namespace Client
         }
         public Product(Service.Product tv, Service.Profile profile)
         {
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             tv1 = tv;
             InitializeComponent();
             prof = profile;

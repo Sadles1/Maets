@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,8 +26,10 @@ namespace Client
 
         public MailConfirmation(Service.Profile profile, string hashpassword)
         {
-          
-                client = new Service.WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
+            client = new Service.WCFServiceClient(new System.ServiceModel.InstanceContext(new CallbackClass()), "NetTcpBinding_IWCFService");
 
                 this.Title = "Maets";
                 List<Service.Profile> profiles = client.GetAllUsers().ToList();
@@ -44,7 +47,7 @@ namespace Client
                 this.hashpassword = hashpassword;
                 InitializeComponent();
                 tb.Text = "Введите код подтвержения, отправленный на почту " + profile.Mail;
-                code = client.CheckMail(profile.Mail);
+                code = client.CheckMailRegister(profile.Mail);
             
           
             
@@ -58,7 +61,7 @@ namespace Client
 
         private void Codee_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (Codee.Text != "") Codeef.Visibility = Visibility.Hidden;
+            if (Codee.Text != "") { Codee.Background = new SolidColorBrush(Colors.White); Codeef.Visibility = Visibility.Hidden; }
             else Codeef.Visibility = Visibility.Visible;
 
         }

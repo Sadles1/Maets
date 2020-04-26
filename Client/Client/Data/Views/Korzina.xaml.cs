@@ -25,6 +25,9 @@ namespace Client
 
         public Korzina(Service.Profile profile)
         {
+            string data1 = Environment.CurrentDirectory + "\\Content\\maets.cur";
+            var cursor = new Cursor(data1);
+            this.Cursor = cursor;
             this.Title = "Maets";
 
             this.profile = profile;
