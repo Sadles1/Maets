@@ -50,7 +50,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>maets.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto">
@@ -106,6 +107,7 @@
     <Compile Include="Data\ViewModels\ProductViewModel.cs" />
     <Compile Include="Data\Models\ModelProduct.cs" />
     <Compile Include="Data\ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Data\Models\DownloadProduct.cs" />
     <Compile Include="Data\Views\ResetPassword.xaml.cs">
       <DependentUpon>ResetPassword.xaml</DependentUpon>
     </Compile>
@@ -351,6 +353,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="left1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="down1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="up1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="down.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

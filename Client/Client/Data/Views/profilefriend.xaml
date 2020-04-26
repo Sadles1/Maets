@@ -5,113 +5,391 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+           AllowsTransparency="True" Background="Transparent"
         Title="profilefriend" Height="470" Width="835.5"  ResizeMode="NoResize" WindowStyle="None">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-        <TextBlock x:Name="tbFriendUser" FontFamily="Panton Bold" Grid.Row="3"  Grid.Column="1" VerticalAlignment="Top"  TextWrapping="Wrap" Height="24" Margin="10,5,10,0 " ></TextBlock>
+    <Window.Resources>
+        <ControlTemplate x:Key="TextBoxBaseControlTemplate" TargetType="{x:Type TextBoxBase}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="PasswordBoxBaseControlTemplate" TargetType="{x:Type PasswordBox}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
 
-        <ListView x:Name="Lv" Grid.Row="3" Grid.Column="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5,30,5,5" >
-            <ListView.ItemTemplate>
-                <DataTemplate x:Name="DT">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="55"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Image x:Name="Image2" Grid.Column="0" HorizontalAlignment="Left" Margin="3,0,0,0" Height="50" Width="50" >
-                            <Image.Source >
-                                <CroppedBitmap Source="{Binding MainImage}"  ></CroppedBitmap>
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
 
-                            </Image.Source>
-                        </Image>
-                        <TextBlock Grid.Column="1" x:Name="tbTest" Text="{Binding Login}" Margin="5,5,0,0"/>
-                        <TextBlock Grid.Column="1" Margin="5,15,0,0"  Text="{Binding status}" FontWeight="Bold"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                                <Setter Property="TextElement.FontWeight" TargetName="border" Value="Bold" >
+                                </Setter>
 
-        <Image x:Name="Screenshoot" Grid.Column="0" Grid.Row="1" Source="{Binding Image}" />
-        <Grid Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2">
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="moneyRoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextElement.FontStyle" TargetName="border" Value="Italic">
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ScrollBarLineButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Canvas Height="18">
+                            <Polygon Fill="LightBlue" Points="3,15 15,15 9,3"></Polygon>
+                        </Canvas>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarLineButtonBottomStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Canvas Height="18">
+                            <Polygon Fill="LightBlue" Points="3,3 9,15 15,3"></Polygon>
+                        </Canvas>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarPageButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border BorderBrush="Transparent"></Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="1,0,1,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Rectangle Fill="LightBlue" Margin="2"></Rectangle>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="18"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition MaxHeight="18"/>
+                </Grid.RowDefinitions>
+
+                <RepeatButton Grid.Row="0" Height="18"
+                          Style="{StaticResource ScrollBarLineButtonStyle}"
+                          Command="ScrollBar.LineUpCommand" >
+                </RepeatButton>
+                <Track Name="PART_Track" Grid.Row="1" 
+                   IsDirectionReversed="True">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollBarPageButtonStyle}">
+                        </RepeatButton>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbStyle}">
+                        </Thumb>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageDownCommand" Style="{StaticResource ScrollBarPageButtonStyle}">
+                        </RepeatButton>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Row="3" Height="18"
+                          Style="{StaticResource ScrollBarLineButtonBottomStyle}"
+                          Command="ScrollBar.LineDownCommand">
+                </RepeatButton>
+            </Grid>
+        </ControlTemplate>
+
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Template" Value="{StaticResource VerticalScrollBar}"/>
+        </Style>
+
+
+        <Style x:Key="exitRoundCorner" TargetType="{x:Type Button}">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="Aqua" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           >
+                                </ContentPresenter>
+                            </Border>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border Name="Border"  BorderBrush="White" BorderThickness="1" CornerRadius="12,12,0,0" Margin="0,11,0,0" Height="35" >
+                            <Grid Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Center" Height="25">
+                                <Label Name="L2" Content="{TemplateBinding Header}" Foreground="Gray" VerticalAlignment="Bottom" Height="28"></Label>
+                            </Grid>
+
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter TargetName="L2" Property="Foreground" Value="White"/>
+                                <!--<Setter TargetName="Icon" Property="Source" Value="C:\\test.png"></Setter>-->
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="FontWeight" Value="Light"/>
+                                <Setter Property="Height" TargetName="L2" Value="28"></Setter>
+                                <!--<Setter TargetName="Icon" Property="Source" Value=""></Setter>-->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+    <Border Width="Auto" Height="Auto" Name="windowFrame"
+    
+          BorderBrush="#395984"
+          BorderThickness="1"
+           CornerRadius="12">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStopCollection>
+                    <GradientStop Offset="0"  Color="#081272"></GradientStop>
+                    <GradientStop Offset="1" Color="#717BD8"></GradientStop>
+                </GradientStopCollection>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"></RowDefinition>
-                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Image x:Name="imMainImage" Grid.Column="0" Grid.Row="0" />
-            <Grid Grid.Column="1" Grid.Row="0">
+            <Button Style="{DynamicResource RoundCorner}" x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom" Foreground="White"></Button>
+            <TextBlock x:Name="tbFriendUser" FontFamily="Panton Bold" Grid.Row="3"  Grid.Column="1" VerticalAlignment="Top" FontSize="15"  TextWrapping="Wrap" Height="24" Margin="10,0,10,0 " Foreground="White" ></TextBlock>
+
+            <ListView x:Name="Lv" Grid.Row="3" Grid.Column="1" MouseLeftButtonUp="leftmousefriend" ItemsSource="{Binding Friends}" Margin="5,30,5,5" Foreground="White" Background="{x:Null}" >
+                <ListView.ItemTemplate>
+                    <DataTemplate x:Name="DT">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Image x:Name="Image2" Grid.Column="0" HorizontalAlignment="Left" Margin="3,0,0,0" Height="50" Width="50" >
+                                <Image.Source >
+                                    <CroppedBitmap Source="{Binding MainImage}"  ></CroppedBitmap>
+
+                                </Image.Source>
+                            </Image>
+                            <TextBlock Grid.Column="1" x:Name="tbTest" FontFamily="Panton Bold" Text="{Binding Login}" Margin="3,5,0,0" Foreground="White"/>
+                            <TextBlock Grid.Column="1" Margin="5,15,0,0"  FontFamily="Panton Bold" Text="{Binding status}" FontWeight="Bold" Foreground="White"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Image x:Name="Screenshoot" Grid.Column="0" Grid.Row="1" Source="{Binding Image}" />
+            <Grid Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="15*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="4*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <TextBlock FontFamily="Panton Bold" x:Name="lbLogin"  Grid.ColumnSpan="2" Grid.Row="0"  FontSize="20" VerticalAlignment="Center"/>
-                <Label x:Name="lbStatus" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10"/>
-                <TextBlock Grid.Column="0" FontFamily="Panton Bold" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" FontSize="10" VerticalAlignment="Center"/>
-                <TextBlock FontFamily="Panton Bold" x:Name="tbName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <TextBlock FontFamily="Panton Bold" x:Name="tbmail" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <TextBlock FontFamily="Panton Bold" x:Name="tbPhone" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
-                <TextBlock Margin="5,0,0,0" FontFamily="Panton Bold" x:Name="lbEmail" Grid.Column="0" Grid.Row="3" Text="Email" FontSize="10" VerticalAlignment="Center"/>
-                <TextBlock Margin="5,0,0,0" FontFamily="Panton Bold" x:Name="lbPhone" Grid.Column="0" Grid.Row="4" Text="Phone" FontSize="10" VerticalAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Column="0" Grid.Row="1">
-                <Grid.RowDefinitions>
                     <RowDefinition Height="2*"></RowDefinition>
-                    <RowDefinition Height="1.3*"></RowDefinition>
-                    <RowDefinition Height="2*"></RowDefinition>
-                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="3*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock Name="ttt" Visibility="Hidden" Text="Уровень доступа:" FontSize="7" TextAlignment="Center" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="40" Height="20" TextWrapping="Wrap" HorizontalAlignment="Left"></TextBlock>
-                <ComboBox Name="right" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3"   Height="20" Margin="60,0,0,5" Width="60" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsReadOnly="True">
-                    <ComboBoxItem>
-                        <TextBlock>1</TextBlock>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock>2</TextBlock>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock>3</TextBlock>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock>4</TextBlock>
-                    </ComboBoxItem>
-                </ComboBox>
-                <Button Name="cng" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3" Click="Cng_Click" Content="Изменить" FontSize="8" Height="20" Margin="5" HorizontalAlignment="Right" Width="40" ></Button>
-                <Button x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow"></Button>
+                <Image x:Name="imMainImage" Grid.Column="0" Grid.Row="0" />
+                <Grid Grid.Column="1" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="42*"></ColumnDefinition>
+                        <ColumnDefinition Width="575*"></ColumnDefinition>
+                        <ColumnDefinition Width="51*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                <Button x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow"></Button>
-                <Button x:Name="newreqest" Grid.Row="0" Visibility="Hidden" ToolTip="Нажмите, чтобы отменить заявку" Click="Newreqest_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Заявка отправлена"  Background="#FF0068FF" Opacity="0.3"></Button>
-                <Button x:Name="btndelfriend" Grid.Row="0" Click="Btndelfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25"  Visibility="Hidden" Content="Удалить из друзей" Background="Snow"></Button>
-                <Grid x:Name="FriendYN" Grid.Row="0" Visibility="Hidden">
-                <Button x:Name="btnnewfriendyes" Click="Btnnewfriendyes_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="0,0,19,0" Content="Да" HorizontalAlignment="Right" Background="Snow"></Button>
-                <Button x:Name="btnnewlfriendno" Click="Btnnewlfriendno_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="18.5,0,0,0" Content="Нет" HorizontalAlignment="Left" Background="Snow"></Button>
-                <TextBlock x:Name="Whonewfriend" Text="Добавить в друзья?" TextAlignment="Center"  VerticalAlignment="Top" Height="21"></TextBlock>
-            </Grid>
+                    <TextBlock FontFamily="Panton Bold" x:Name="lbLogin"  Grid.ColumnSpan="3" Grid.Row="0"  FontSize="20" VerticalAlignment="Center" Foreground="White" Margin="0,6,-0.8,5.2"/>
+                    <Label x:Name="lbStatus" FontFamily="Panton Bold" VerticalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="1" Content="Здесь будет отображаться ваш статус" FontSize="10" Foreground="White" Margin="0,6.8,0.2,6.4"/>
+                    <TextBlock Grid.Column="0" FontFamily="Panton Bold" Grid.Row="2" Text="Имя" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,10.6,0,9.6" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                    <Label x:Name="lbName" Grid.Column="1" Grid.Row="2" FontSize="10" VerticalAlignment="Center" Foreground="White" Grid.ColumnSpan="2" Margin="0.4,12.6,0.2,12.6"/>
+                    <TextBlock FontFamily="Panton Bold" x:Name="tbName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15.4,10.6,0,9.6" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                    <TextBlock FontFamily="Panton Bold" x:Name="tbmail" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15.4,10.4,0,9" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                    <TextBlock FontFamily="Panton Bold" x:Name="tbPhone" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="15.4,10,0,10.2" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                    <TextBlock Margin="5,11.4,574.7,11" FontFamily="Panton Bold" x:Name="lbEmail" Grid.Column="0" Grid.Row="3" Text="Email" FontSize="10" VerticalAlignment="Center" Foreground="White" Grid.ColumnSpan="2"/>
+                    <TextBlock Margin="5,12,574.7,11.2" FontFamily="Panton Bold" x:Name="lbPhone" Grid.Column="0" Grid.Row="4" Text="Phone" FontSize="10" VerticalAlignment="Center" Foreground="White" Grid.ColumnSpan="2"/>
+                </Grid>
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="1.3*"></RowDefinition>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="8*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Name="ttt" Visibility="Hidden" Text="Уровень доступа:" FontSize="7" TextAlignment="Center" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="40" Height="20" TextWrapping="Wrap" HorizontalAlignment="Left"></TextBlock>
+                    <ComboBox Name="right" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3"   Height="20" Margin="60,0,0,5" Width="60" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsReadOnly="True">
+                        <ComboBoxItem>
+                            <TextBlock>1</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock>2</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock>3</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock>4</TextBlock>
+                        </ComboBoxItem>
+                    </ComboBox>
+                    <Button FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" Name="cng" Visibility="Hidden" VerticalAlignment="Bottom" Grid.Row="3" Click="Cng_Click" Content="Изменить" FontSize="8" Height="20" Margin="5" HorizontalAlignment="Right" Width="40" Foreground="White" ></Button>
+                    <Button FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" x:Name="btnChat"  Grid.Row="1" Width="130" Content="Написать сообщение" Click="BtnChat_Click" Background="Snow" Foreground="White"></Button>
 
+                    <Button  FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" x:Name="btnnewfriend" Grid.Row="0" Click="Btnnewfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Добавить в друзья" Background="Snow" Foreground="White"></Button>
+                    <Button  FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}"  x:Name="newreqest" Grid.Row="0" Visibility="Hidden" ToolTip="Нажмите, чтобы отменить заявку" Click="Newreqest_Click" Width="130" VerticalAlignment="Bottom" Height="25" Content="Заявка отправлена"  Background="{x:Null}" Opacity="0.3" Foreground="White"></Button>
+                    <Button FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" x:Name="btndelfriend" Grid.Row="0" Click="Btndelfriend_Click" Width="130" VerticalAlignment="Bottom" Height="25"  Visibility="Hidden" Content="Удалить из друзей" Background="Snow" Foreground="White"></Button>
+                    <Grid x:Name="FriendYN" Grid.Row="0" Visibility="Hidden">
+                        <Button FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" x:Name="btnnewfriendyes" Click="Btnnewfriendyes_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="0,0,19,0" Content="Да" HorizontalAlignment="Right" Background="Snow" Foreground="White"></Button>
+                        <Button FontFamily="Panton Bold" Style="{DynamicResource RoundCorner}" x:Name="btnnewlfriendno" Click="Btnnewlfriendno_Click" Width="65"  VerticalAlignment="Bottom" Height="23" Margin="18.5,0,0,0" Content="Нет" HorizontalAlignment="Left" Background="Snow" Foreground="White"></Button>
+                        <TextBlock x:Name="Whonewfriend" Text="Добавить в друзья?" TextAlignment="Center"  VerticalAlignment="Top" Height="21" Foreground="White"></TextBlock>
+                    </Grid>
+
+                </Grid>
             </Grid>
+            <Button FontFamily="Panton Bold" Style="{DynamicResource moneyRoundCorner}" x:Name="blacklistgo"  Click="Blacklistgo_Click" Grid.RowSpan="2" Grid.Column="1" Content="Добавить пользователя в Чёрный список" Margin="5"  Background="White" BorderThickness="0" VerticalAlignment="Top" Foreground="White"></Button>
+            <Button FontFamily="Panton Bold"  Style="{DynamicResource moneyRoundCorner}" x:Name="blacklistout" Click="Blacklistout_Click" Grid.RowSpan="2" Grid.Column="1" Visibility="Hidden"  Background="White" BorderThickness="0"  VerticalAlignment="Top" Foreground="White"></Button>
+
         </Grid>
-        <Button x:Name="blacklistgo" Grid.RowSpan="2" Click="Blacklistgo_Click" Grid.Row="0" Grid.Column="1" Content="Добавить пользователя в Чёрный список"  Background="White" BorderThickness="0" VerticalAlignment="Top"></Button>
-        <Button x:Name="blacklistout" Click="Blacklistout_Click" Grid.RowSpan="2" Grid.Column="1" Visibility="Hidden"  Background="White" BorderThickness="0"  VerticalAlignment="Top"></Button>
-
-    </Grid>
+    </Border>
 </Window>

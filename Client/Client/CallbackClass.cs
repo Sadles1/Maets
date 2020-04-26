@@ -71,7 +71,6 @@ namespace Client
 
         public void AcceptFriendRequest(Service.Profile User)
         {
-            MainWindow.shopWindows.friendsnew(User);
         }
     }
 }

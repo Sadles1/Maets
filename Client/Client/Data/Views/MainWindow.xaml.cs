@@ -71,12 +71,16 @@ namespace Client
             }
             catch (FaultException ex)
             {
-                if (cnt != 0) resetpassword.Visibility = Visibility.Visible;
+                
                 MessageBox.Show(string.Format("{0} - {1}", ex.Code.Name, ex.Message), "ERROR", MessageBoxButton.OK);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButton.OK);
+            }
+            finally
+            {
+                if (cnt != 0) resetpassword.Visibility = Visibility.Visible;
             }
         }
 

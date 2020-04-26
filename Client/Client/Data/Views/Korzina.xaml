@@ -4,65 +4,277 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+                        AllowsTransparency="True" Background="Transparent"
+
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="Korzina" Height="470" Width="835.5" Initialized="Window_Initialized" ResizeMode="NoResize" WindowStyle="None">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="14*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="8*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин"  Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-        <TextBlock Grid.Column="0" Text="Оформление заказа" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
-        <TextBlock x:Name="tbSumm" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Height="Auto" Width="200" FontSize="40"  ></TextBlock>
-        <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35" Margin="190,0,0,0"></TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="Стоимость" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
-        <Grid Grid.Row="1" Grid.ColumnSpan="3">
-            <ListView x:Name="lvProduct"   Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="820">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.8*"></ColumnDefinition>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition Width="2*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Image Source="{Binding Image}" Width="100" Height="100" Grid.Column="0"/>
-                            <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="15,5,0,0" FontSize="30" Width="400" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Price}" FontFamily="Panton Bold" Grid.Column="2" HorizontalAlignment="Center" FontSize="20"  TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Grid.Column="3" Text="{Binding How}" FontFamily="Panton Bold" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
-                            <Viewbox Width="30" Height="30" MouseLeftButtonUp="Viewbox_MouseLeftButtonUp_1"  Grid.Column="3"  VerticalAlignment="Center" Margin="15,0,0,10" HorizontalAlignment="Left"  >
-                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                                    <Line Width="70" Height="70" X1="0" Y1="35" X2="35" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
-                                    <Line Width="70" Height="70" X1="70" Y1="35" X2="35" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox MouseLeftButtonUp="Viewbox_MouseLeftButtonUp" Width="30" Height="30"  Grid.Column="3" VerticalAlignment="Center" Margin="15,10,0,0" HorizontalAlignment="Left"  >
-                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                                    <Line Width="70" Height="70" X1="0" Y1="35" X2="35" Y2="70" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
-                                    <Line Width="70" Height="70" X1="70" Y1="35" X2="35" Y2="70" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="13" />
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox MouseLeftButtonUp="BtnDelete_Click" Grid.Column="4" Width="10" Height="10"   VerticalAlignment="Top"  HorizontalAlignment="Right"  >
-                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                                    <Line Width="50" Height="50" X2="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
-                                    <Line Width="50" Height="50" X1="50" Y2="50" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="10" />
-                                </Grid>
-                            </Viewbox>
+    <Window.Resources>
+
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                                <Setter Property="TextElement.FontWeight" TargetName="border" Value="Bold" >
+                                </Setter>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="comRoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="0,8,8,0" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                                <Setter Property="TextElement.FontWeight" TargetName="border" Value="Bold" >
+                                </Setter>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="moneyRoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextElement.FontStyle" TargetName="border" Value="Italic">
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="exitRoundCorner" TargetType="{x:Type Button}">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="Aqua" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           >
+                                </ContentPresenter>
+                            </Border>
 
                         </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border Name="Border"  BorderBrush="White" BorderThickness="1" CornerRadius="12,12,0,0" Margin="0,11,0,0" Height="35" >
+                            <Grid Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Center" Height="25">
+                                <Label Name="L2" Content="{TemplateBinding Header}" Foreground="Gray" VerticalAlignment="Bottom" Height="28"></Label>
+                            </Grid>
+
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter TargetName="L2" Property="Foreground" Value="White"/>
+                                <!--<Setter TargetName="Icon" Property="Source" Value="C:\\test.png"></Setter>-->
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="FontWeight" Value="Light"/>
+                                <Setter Property="Height" TargetName="L2" Value="28"></Setter>
+                                <!--<Setter TargetName="Icon" Property="Source" Value=""></Setter>-->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+    <Border Width="Auto" Height="Auto" Name="windowFrame"
+    
+        BorderBrush="#395984"
+          BorderThickness="1"
+           CornerRadius="12">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStopCollection>
+                    <GradientStop Offset="0"  Color="#081272"></GradientStop>
+                    <GradientStop Offset="1" Color="#717BD8"></GradientStop>
+                </GradientStopCollection>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid Background="Transparent" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="14*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Style="{DynamicResource moneyRoundCorner}" x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин"  Margin="0,0,0,0.2" VerticalAlignment="Bottom" Foreground="White"></Button>
+            <TextBlock Grid.Column="0" Text="Оформление заказа" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Foreground="White"></TextBlock>
+            <TextBlock x:Name="tbSumm" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Height="Auto" Width="200" FontSize="40" Foreground="White"  ></TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Height="Auto" Width="200" Text="Итого" TextAlignment="Center" VerticalAlignment="Center" FontSize="35" Margin="190,0,0,0" Foreground="White"></TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="Стоимость" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Foreground="#FFFDFDFD"></TextBlock>
+            <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                <ListView BorderThickness="0,0,0,2" BorderBrush="White" x:Name="lvProduct"   Grid.Row ="1" DataContextChanged="LvProduct_DataContextChanged" Background="{x:Null}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="810">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.8*"></ColumnDefinition>
+                                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding Image}" Width="100" Height="100" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,5,0,0" FontSize="30" Width="400" TextWrapping="Wrap" Foreground="White"/>
+                                <TextBlock Text="{Binding Price}" FontFamily="Panton Bold" Grid.Column="2" HorizontalAlignment="Center" FontSize="20"  TextAlignment="Center" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                                <TextBlock Grid.Column="3" Text="{Binding How}" FontFamily="Panton Bold" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" ></TextBlock>
+                                <Viewbox Width="20" Height="20" MouseLeftButtonUp="Viewbox_MouseLeftButtonUp"  Grid.Column="3"  VerticalAlignment="Bottom" Margin="10,0,0,28" HorizontalAlignment="Right"  >
+                                    <Image >
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="Source" Value="/Client;component/down.png" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Source" Value="/Client;component/down1.png" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </Viewbox>
+                                <Viewbox MouseLeftButtonUp="Viewbox_MouseLeftButtonUp_1" Width="20" Height="20"  Grid.Column="3" VerticalAlignment="Top" Margin="0,28,0,0" HorizontalAlignment="Right"  >
+                                    <Image >
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="Source" Value="/Client;component/up.png" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Source" Value="/Client;component/up1.png" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </Viewbox>
+                                <Viewbox MouseLeftButtonUp="BtnDelete_Click" Grid.Column="4" Width="15" Height="15"   VerticalAlignment="Top"  HorizontalAlignment="Right"  >
+                                    <Image >
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="Source" Value="/Client;component/exit.png" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Source" Value="/Client;component/exit1.png" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </Viewbox>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Grid>
+            <Button Style="{DynamicResource RoundCorner}" x:Name="Buy" Margin="4" Click="Buy_Click" Grid.Row="2" Grid.Column="1" Background="Green" Content="Купить" FontSize="25" Foreground="White"></Button>
         </Grid>
-        <Button x:Name="Buy" Click="Buy_Click" Grid.Row="2" Grid.Column="1" Background="Green" Content="Купить" FontSize="25"></Button>
-    </Grid>
+    </Border>
 </Window>

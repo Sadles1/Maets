@@ -79,5 +79,11 @@ namespace Client
            
 
         }
+
+        private void Codee_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Code.Text != "") Codee.Visibility = Visibility.Visible;
+            else Codee.Visibility = Visibility.Hidden;
+        }
     }
 }

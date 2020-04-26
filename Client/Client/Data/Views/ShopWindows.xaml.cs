@@ -35,7 +35,6 @@ namespace Client
         List<Service.Profile> p;
         static public string imagesmaets;
         DataProvider dp = new DataProvider();
-        int idxg;
         List<Service.Profile> profilesq;
 
 
@@ -76,17 +75,18 @@ namespace Client
                     //    }
                     //}
                     
-                    foreach(Service.Product p in profile.Games.ToList())
-                    {
-                        mylibrary.Items.Add(p);
-                    }
+                    
 
                     if(profile.AccessRight>=2)
                         {
                             AddGame.Visibility = Visibility.Visible;
                         }
                 }
-                
+                foreach (Service.Product p in profile.Games.ToList())
+                {
+                    mylibrary.Items.Add(p);
+                }
+
             }
 
             else
@@ -194,6 +194,14 @@ namespace Client
             
 
         }
+        private void refreshf(Service.Profile pr)
+        {
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+            {
+                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+            }
+        }
         private void refresh(Service.Profile pr)
         {
             // searchproduct.DataContext = new ProductViewModel();
@@ -233,11 +241,7 @@ namespace Client
             //   imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
             // tbLogin.Content = pr.Login;
             //  lbName.Content = pr.Name;
-            Lvfriend.Items.Clear();
-            for (int i = 0; i < profile.Friends.ToList().Count; i++)
-            {
-                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
-            }
+            
            // Lvmylibrary.ItemsSource = pr.Games;
             btnMoney.Content = Convert.ToString(pr.Money) + " р";
             profile = pr;
@@ -492,8 +496,6 @@ namespace Client
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
           refresh(ShopWindows.client.CheckActiveProfile(profile.ID));
-          //  MyProfileVieModel phone = (MyProfileVieModel)this.Resources["nexusPhone"];
-           // phone.Company = "LG"; // Меняем с Google на LG
         }
 
      
@@ -600,20 +602,39 @@ namespace Client
             // openFileDialog.CheckFileExists = false;
             openFileDialog.ShowDialog();
            string s = openFileDialog.SelectedPath;
-            if (s != "")
+            if (s != "" )
             {
-                s += @"\" + idg.Name;
-
-                //if (openFileDialog.ShowDialog() == true)
-                //{
-                // profile.Games[0].Path = s;
-                //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
-                // System.Windows.MessageBox.Show(s);
-                DownloadGame(s, idg.Id, profile.ID);
-                MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
-                MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
-                //}
-                // dp.Download();
+                s += @"\" + idg.Name ;
+                if (!File.Exists(s +"\\"+ idg.Name + ".exe"))
+                {
+                    //if (openFileDialog.ShowDialog() == true)
+                    //{
+                    // profile.Games[0].Path = s;
+                    //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
+                    // System.Windows.MessageBox.Show(s);
+                    //  DownloadGame(s, idg.Id, profile.ID);
+                    BackgroundWorker worker = new BackgroundWorker();
+                    worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+                    worker.WorkerReportsProgress = true;
+                    worker.ProgressChanged += worker_ProgressChanged;
+                    worker.DoWork += worker_DoWork;
+                    DownloadProduct downloadProduct = new DownloadProduct();
+                    downloadProduct.path = s;
+                    downloadProduct.idUser = profile.ID;
+                    downloadProduct.idGame = idg.Id;
+                    worker.RunWorkerAsync(downloadProduct);
+                    MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
+                    MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
+                    //}
+                    // dp.Download();
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("По данному пути мы уже нашли эту игру, скачивать ничего не нужно");
+                    Download.Visibility = Visibility.Hidden;
+                    Play.Visibility = Visibility.Visible;
+                    //переназначить путь
+                }
             }
         }
 
@@ -633,15 +654,51 @@ namespace Client
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            DownloadProduct downloadProduct = (DownloadProduct)e.Argument;
             var worker = sender as BackgroundWorker;
             worker.ReportProgress(0, String.Format("Processing Iteration 1"));
-            for(int i=0;i<10;i++)
-            {
-                Thread.Sleep(1000);
-            }
-            worker.ReportProgress(100, "All");
-        }
 
+            DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
+            long DownloadSize;
+
+            using (FileStream outputStream = new FileStream($@"{downloadProduct.path}.zip", FileMode.OpenOrCreate, FileAccess.Write))
+            {
+               
+                if (File.Exists($@"{downloadProduct.path}.zip"))
+                {
+                    FileInfo file = new FileInfo($@"{downloadProduct.path}.zip");
+                    DownloadSize = file.Length;
+                    outputStream.Position = DownloadSize;
+                }
+                else
+                    DownloadSize = 0;
+
+                long FileSize = download.GetFileSize(downloadProduct.idGame);
+                const int bufferSize = 16 * 1024;
+
+                byte[] buffer = new byte[bufferSize];
+                using (Stream stream = download.DownloadProduct(downloadProduct.idGame, downloadProduct.idUser, downloadProduct.path, DownloadSize))
+                {
+
+                    int bytesRead = stream.Read(buffer, 0, bufferSize);
+                    while (bytesRead > 0)
+                    {
+                        FileInfo file = new FileInfo($@"{downloadProduct.path}.zip");
+                        DownloadSize = file.Length;
+                        worker.ReportProgress(Convert.ToInt32((double)DownloadSize / (double)FileSize * (double)100));
+                        outputStream.Write(buffer, 0, bytesRead);
+                        bytesRead = stream.Read(buffer, 0, bufferSize);
+                        outputStream.Flush();
+                    }
+                    outputStream.Close();
+                    worker.ReportProgress(100);
+                }
+            }
+            ZipFile.ExtractToDirectory($@"{downloadProduct.path}.zip", downloadProduct.path);
+            File.Delete($@"{downloadProduct.path}.zip");
+
+            download.Close();
+        }
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Windows.MessageBox.Show("Загружено");
@@ -649,72 +706,6 @@ namespace Client
             dnmtext.Text = "";
         }
 
-        async public void DownloadGame(string path, int idGame, int idUser)
-        {
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-            worker.WorkerReportsProgress = true;
-            worker.ProgressChanged += worker_ProgressChanged;
-                worker.RunWorkerAsync();
-           // var worker = send
-            Play.IsEnabled = false;
-            await Task.Run(() =>
-            {
-                try
-                {
-                    DownloadServiceClient download = new DownloadServiceClient("NetTcpBinding_IDownloadService");
-                    long DownloadSize;
-
-                    using (FileStream outputStream = new FileStream($@"{path}.zip", FileMode.OpenOrCreate, FileAccess.Write))
-                    {
-                        if (File.Exists($@"{path}.zip"))
-                        {
-                            FileInfo file = new FileInfo($@"{path}.zip");
-                            DownloadSize = file.Length;
-                            outputStream.Position = DownloadSize;
-                        }
-                        else
-                            DownloadSize = 0;
-
-
-
-
-                        long FileSize = download.GetFileSize(idGame);
-                        const int bufferSize = 16 * 1024;
-
-                        byte[] buffer = new byte[bufferSize];
-                        using (Stream stream = download.DownloadProduct(idGame, idUser, path, DownloadSize))
-                        {
-
-                            int bytesRead = stream.Read(buffer, 0, bufferSize);
-                            while (bytesRead > 0)
-                            {
-                               // worker.ReportProgress((Convert.ToInt32(DownloadSize/FileSize)), String.Format("PI {0}", DownloadSize / FileSize));
-
-                                outputStream.Write(buffer, 0, bytesRead);
-                                bytesRead = stream.Read(buffer, 0, bufferSize);
-                                DownloadSize += buffer.Length;
-                                outputStream.Flush();
-                            }
-                            outputStream.Close();
-
-                        }
-                    }
-                    ZipFile.ExtractToDirectory($@"{path}.zip", path);
-                    File.Delete($@"{path}.zip");
-                    System.Windows.MessageBox.Show("Загрузка завершена");
-
-                    download.Close();
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show(ex.Message);
-                }
-            });
-            Play.IsEnabled = true;
-        }
-
-       
         private void AddGame_Click(object sender, RoutedEventArgs e)
         {
             NewGameAdd ng = new NewGameAdd();
@@ -940,6 +931,11 @@ namespace Client
                     Lvm.Items.Add(mp);
                 }
             }
+        }
+
+        private void Reefreshf_Click(object sender, RoutedEventArgs e)
+        {
+            refreshf(client.CheckProfile(profile.ID));
         }
     }
 }

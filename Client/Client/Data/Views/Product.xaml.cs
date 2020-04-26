@@ -81,9 +81,11 @@ namespace Client
             ocenka.Text = Convert.ToString(productnow.Rate);
                screns = new List<byte[]>();
             screns.Add(productnow.MainImage);
-            for (int i = 0; i < ShopWindows.client.GetGameImages(productnow.Id).ToList().Count; i++)
+            List<byte[]> d = ShopWindows.client.GetGameImages(productnow.Id).ToList();
+
+            for (int i = 0; i < d.Count; i++)
             {
-                screns.Add(ShopWindows.client.GetGameImages(productnow.Id).ToList()[i]);
+                screns.Add(d.ToList()[i]);
             }
             ;
             foreach(string janr in productnow.GameGenre)
@@ -125,7 +127,13 @@ namespace Client
             Back.IsEnabled = false;
             if (modelComments.Count == 0)
             {
+                nocomments.Visibility = Visibility.Visible;
                 Lvcomment.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                nocomments.Visibility = Visibility.Hidden;
+                Lvcomment.Visibility = Visibility.Visible;
             }
             if (!inmylibrary())
             {
@@ -259,6 +267,7 @@ namespace Client
                 if (cm.comment != "") ShopWindows.client.DeleteComment(cm.idUser, cm.idUser);
                 mycomm.Text = "";
                 mycom_hint.Text = cm.comment;
+                nocomments.Visibility = Visibility.Hidden;
 
             }
             catch(Exception ex)

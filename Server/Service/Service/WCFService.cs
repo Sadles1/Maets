@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,12 +17,14 @@ namespace Service
     {
         public static List<OnlineUser> onlineUsers = new List<OnlineUser>();
         DataProvider dp = new DataProvider();
+        Logs log = new Logs();
 
         /// <summary>
         /// Метод для покупки товаров
         /// </summary>
         public void BuyProduct(List<int> Cart, int idProfile)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем таблицу TDeals из БД
@@ -62,6 +65,7 @@ namespace Service
         /// <param name="Cart">Необходимо передать пары Product + количество</param>
         public List<Product> BuyProductWholesale(List<Tuple<int, int>> Cart, int idProfile)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем таблицу TDeals из БД
@@ -130,6 +134,7 @@ namespace Service
         /// <returns></returns>
         public List<byte[]> GetGameImages(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 List<byte[]> Images = new List<byte[]>();
@@ -152,6 +157,7 @@ namespace Service
         /// </summary>
         public List<Product> GetProductTable()
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем таблицу TProducts из бд
@@ -176,8 +182,9 @@ namespace Service
         /// Метод для добавления продукта на модерацию
         /// </summary>
         /// <param name="product"></param>
-        public void AddModerationProduct(string mail,Product product, List<byte[]> Images)
+        public void AddModerationProduct(string mail, Product product, List<byte[]> Images)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 TModerateProducts TModerateProduct = new TModerateProducts();
@@ -271,6 +278,7 @@ namespace Service
         /// <param name="idComrade">ID пользователя с которым нужно получить сообщения</param>
         public List<UserMessage> GetChat(int idMain, int idComrade)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Прописываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{idMain}\Messages.json";
 
@@ -286,6 +294,7 @@ namespace Service
         /// <returns></returns>
         public bool CheckBlacklist(int IdMainUser, int IdSeconUser)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Прописываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{IdSeconUser}\Blacklist.json";
 
@@ -307,6 +316,7 @@ namespace Service
         /// <param name="idUserInBlacklist">ID пользователя которого необходимо удалить из чёрного списока</param>
         public void RemoveFromBlacklist(int id, int idUserInBlacklist)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Прописываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
 
@@ -327,6 +337,7 @@ namespace Service
         /// <param name="idUserToBlacklist">ID пользователя которого добавили в чёрный список</param>
         public void AddToBlacklist(int id, int idUserToBlacklist)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Указываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Blacklist.json";
 
@@ -345,6 +356,7 @@ namespace Service
         /// </summary>
         public void AddFriend(int id, int idFriend)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Обновляем файл с друзьями у одного аккаунта
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";
             List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
@@ -378,6 +390,7 @@ namespace Service
         /// <param name="idFriend"></param>
         public void DeleteFriend(int id, int idFriend)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Обновляем файл с друзьями у одного аккаунта
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Friends.json";
             List<int> friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
@@ -398,6 +411,7 @@ namespace Service
         /// </summary>
         public List<Profile> GetFriendRequests(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\FriendRequests.json";
@@ -423,13 +437,14 @@ namespace Service
         /// </summary>
         public string CheckMailRegister(string email)
         {
-            using(postgresContext context = new postgresContext())
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
+            using (postgresContext context = new postgresContext())
             {
                 if (context.TUsers.FirstOrDefault(u => u.Mail == email) != null)
                     throw new FaultException("Данная почта уже зарегистрирована");
             }
             string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
-            Mail message = new Mail(email);                    
+            Mail message = new Mail(email);
             message.Head = "Регистрация Maets";
             message.Body = $"<html><head></head><body><p><center> Доброго времени суток!</center></p><p> Если вы видите это письмо, значит вам нужно подтвердить свою личность для Maets.</p><p> Ваш код подтверждения: </p><p></p><h2><center>{Code}</center></h2><p> Если вы не ожидали получить это письмо, то просто игнорируйте его.</p><p></p><p> С уважением, команда Maets</p><p></p></body></html>";
             message.SendMsg();
@@ -443,6 +458,7 @@ namespace Service
         /// <returns></returns>
         public string CheckMailResetPassword(string email)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string Code = dp.GenRandomString("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890", 4);
             Mail message = new Mail(email);
             message.Head = "Смена пароля Maets";
@@ -459,6 +475,7 @@ namespace Service
         /// <param name="Password">Пароль</param>
         public void Register(Profile profile, string Password)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Создаём таблицы TUser и TLogin
@@ -496,6 +513,7 @@ namespace Service
         /// <param name="money">Сумма на которую измениться счёт</param>
         public void AddMoney(int id, int money)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Находим пользователя
@@ -518,6 +536,7 @@ namespace Service
         /// <returns></returns>
         public void Connect(string Login, string Password)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name,OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя, если находим, то подключаем
@@ -566,6 +585,7 @@ namespace Service
         /// </summary>
         private void ClientFault(object sender, EventArgs e)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Находим пользователя которого необходимо отключить
             OnlineUser User = onlineUsers.FirstOrDefault(u => u.sessionID == (IClientChannel)sender);
 
@@ -589,6 +609,7 @@ namespace Service
         /// <param name="id">ID аккаунта для удаления</param>
         public void DeleteAccount(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 TLogin login = context.TLogin.FirstOrDefault(u => u.Id == id);
@@ -608,6 +629,7 @@ namespace Service
         /// </summary>
         public void DeleteFriendReqest(int id, int idRequest)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Обновляем файл с запросами в друзьями у одного аккаунта
@@ -624,6 +646,7 @@ namespace Service
         /// </summary>
         public List<Profile> GetProfileByFilter(string filter)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем всех пользователей из БД
@@ -646,6 +669,7 @@ namespace Service
 
         public List<Product> GetProductByFilter(string filter)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем всех пользователей из БД
@@ -684,6 +708,7 @@ namespace Service
         /// </param>
         public void SendMsg(UserMessage msg)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             msg.date = DateTime.Now;
             msg.isRead = false;
 
@@ -710,13 +735,14 @@ namespace Service
         /// </summary>
         public Stream DownloadProduct(int idProduct, int idUser, string path, long startPoint)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
             List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
             GamesPath.Add(Tuple.Create(idProduct, path));
             File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
 
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
-            FileStream gameFile = new FileStream(pathToGame, FileMode.Open);
+            FileStream gameFile = new FileStream(pathToGame, FileMode.Open, FileAccess.Read);
 
             if (startPoint != 0)
                 gameFile.Position = startPoint;
@@ -726,6 +752,7 @@ namespace Service
 
         public long GetFileSize(int idProduct)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
             FileInfo file = new FileInfo(pathToGame);
             return file.Length;
@@ -737,6 +764,7 @@ namespace Service
         /// <param name="Id"></param>
         public void Disconnect(int Id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Находим пользователя которого необходимо отключить
             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
 
@@ -772,6 +800,7 @@ namespace Service
         /// </summary>
         public List<Profile> GetAllUsers()
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Получаем всех пользователей из БД
@@ -799,6 +828,7 @@ namespace Service
         /// <param name="Cart">Данные корзины</param>
         public void SaveCart(int idUser, List<Product> Cart)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Указываем путь
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\Cart.json";
 
@@ -813,6 +843,7 @@ namespace Service
         /// <param name="idReceiver">Id получателя</param>
         public void SendFriendRequest(int idSender, int idReceiver)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Обновляем файл с запросами в друзьями у одного аккаунта
@@ -836,6 +867,7 @@ namespace Service
         /// </summary>
         public Profile CheckProfile(int idUser)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
@@ -852,6 +884,7 @@ namespace Service
         /// </summary>
         public Profile CheckActiveProfile(int idUser)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
@@ -865,6 +898,7 @@ namespace Service
 
         public void changeProfileImage(int idUser, byte[] MainImage)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             File.WriteAllBytes($@"{BaseSettings.Default.SourcePath}\Users\{idUser}\MainImage.encr", MainImage);
         }
 
@@ -875,6 +909,7 @@ namespace Service
         /// <param name="password">пароль в хэшшированом виде</param>
         public void resetPassword(int idUser, string newPassword)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
@@ -893,6 +928,7 @@ namespace Service
 
         public void changePassword(int idUser, string password, string newPassword)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
@@ -920,6 +956,7 @@ namespace Service
         /// <param name="profile">Передавать только те параметры которые надо изменить</param>
         public void ChangeProfileInformation(Profile profile)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя в БД
@@ -951,6 +988,7 @@ namespace Service
         /// </summary>
         public List<UserMessage> GetNewMessages(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
 
             //Десериализуем файл, если файла нет то создаём пустой список
@@ -968,6 +1006,7 @@ namespace Service
         /// </summary>
         public List<Product> GetUserGames(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             List<Product> games = dp.GetUserGames(id);
             return games;
         }
@@ -977,8 +1016,9 @@ namespace Service
         /// </summary>
         public void AddComment(Comment comment)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
-            { 
+            {
                 //Формируем новый комментарий
                 TComments Tcomment = new TComments();
                 Tcomment.IdProduct = comment.idProduct;
@@ -1003,6 +1043,7 @@ namespace Service
         /// </summary>
         public void DeleteComment(int idUser, int idProduct)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 TComments comment = context.TComments.FirstOrDefault(u => u.IdUser == idUser && u.IdProduct == idProduct);
@@ -1018,6 +1059,7 @@ namespace Service
         /// <returns></returns>
         public List<Tuple<Comment, Profile>> GetAllGameComments(int idGame)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Находим и возвращаем список комментариев для определённой игры
@@ -1042,6 +1084,7 @@ namespace Service
 
         public Profile GetEasyProfile(int id)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 List<TLogin> TLogins = context.TLogin.ToList();
@@ -1052,6 +1095,7 @@ namespace Service
 
         public string GetWayToGame(int idUser, int idGame)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
             List<Tuple<int, string>> messages = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
             foreach (Tuple<int, string> tuple in messages)
@@ -1066,6 +1110,7 @@ namespace Service
 
         public void ChangeAccessRight(int idUser, int AccessRight)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 TLogin user = context.TLogin.Include(u => u.IdNavigation).FirstOrDefault(u => u.Id == idUser);
@@ -1078,6 +1123,7 @@ namespace Service
 
         public void ChangeModerationStatus(int idUser, int idModerationProduct, bool result)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 List<TModerateEmployers> employers = context.TModerateEmployers.Where(u => u.IdModerateProduct == idModerationProduct).ToList();
@@ -1136,6 +1182,7 @@ namespace Service
 
         public List<Product> GetModerationProduct(int idUser)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 List<int> idModerateProduct = context.TModerateEmployers.Where(u => u.IdEmployee == idUser && u.Result == null).Select(u => u.IdModerateProduct).ToList();
@@ -1155,6 +1202,7 @@ namespace Service
 
         public void SetMessageRead(int id, int idChatedUser)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\Messages.json";
             List<UserMessage> allMessages = JsonConvert.DeserializeObject<List<UserMessage>>(File.ReadAllText(path)).Where(u => u.IDSender == idChatedUser || u.IDReceiver == id).ToList();
             foreach (UserMessage currentMessage in allMessages)
@@ -1167,6 +1215,7 @@ namespace Service
 
         public void ActivateLicenseKey(int idUser, string Key)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 TProductKeys key = context.TProductKeys.FirstOrDefault(u => u.Key == Key);
@@ -1177,7 +1226,7 @@ namespace Service
                     context.TUsersGames.Add(new TUsersGames { Idproduct = key.IdProduct, Iduser = idUser });
                     context.SaveChanges();
                 }
-                else if(key.IsActivate == true)
+                else if (key.IsActivate == true)
                     throw new FaultException("Ошибка, ключ уже активирован");
                 else
                     throw new FaultException("Ошибка, ключ недоступен");
@@ -1186,6 +1235,7 @@ namespace Service
 
         public Profile ActiveProfile(string Login, string Password)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Ищем пользователя, если находим, то подключаем
@@ -1199,15 +1249,16 @@ namespace Service
                 }
                 else
                     return null;
-                
+
             }
         }
         public void ChangeComment(Comment comment)
         {
+            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
                 //Формируем новый комментарий
-                TComments Tcomment = context.TComments.FirstOrDefault(u=>u.IdUser == comment.idUser && u.IdProduct == comment.idProduct);
+                TComments Tcomment = context.TComments.FirstOrDefault(u => u.IdUser == comment.idUser && u.IdProduct == comment.idProduct);
                 Tcomment.Comment = comment.comment;
                 Tcomment.Score = comment.Score;
 

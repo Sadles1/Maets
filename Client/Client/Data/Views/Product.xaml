@@ -3,276 +3,650 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
+    
+                AllowsTransparency="True" Background="Transparent"
+mc:Ignorable="d"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="Product" Height="470" Width="835.5"  ResizeMode="NoResize"  WindowStyle="None">
+    <Window.Resources>
+        <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="0" Background="Transparent" BorderBrush="White" BorderThickness="0,1,0,1" />
+                                            <Border x:Name="qwe" Grid.Column="0" CornerRadius="0"  Margin="5" HorizontalAlignment="Center" Background="Transparent" BorderThickness="0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}" SelectionBrush="White" Foreground="Black"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#FF000F7F"  />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
 
-    <Grid>
+        <Style x:Key="ScrollBarLineButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Canvas Height="18">
+                            <Polygon Fill="LightBlue" Points="3,15 15,15 9,3"></Polygon>
+                        </Canvas>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom"></Button>
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
-            <Grid Height="940" >
-                <Grid Height="442" VerticalAlignment="Top">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="0"></RowDefinition>
-                        <RowDefinition Height="7*"></RowDefinition>
-                        <RowDefinition Height="7*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2">
+        <Style x:Key="ScrollBarLineButtonBottomStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Canvas Height="18">
+                            <Polygon Fill="LightBlue" Points="3,3 9,15 15,3"></Polygon>
+                        </Canvas>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarPageButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border BorderBrush="Transparent"></Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="1,0,1,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Rectangle Fill="LightBlue" Margin="2"></Rectangle>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="18"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition MaxHeight="18"/>
+                </Grid.RowDefinitions>
+
+                <RepeatButton Grid.Row="0" Height="18"
+                          Style="{StaticResource ScrollBarLineButtonStyle}"
+                          Command="ScrollBar.LineUpCommand" >
+                </RepeatButton>
+                <Track Name="PART_Track" Grid.Row="1" 
+                   IsDirectionReversed="True">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollBarPageButtonStyle}">
+                        </RepeatButton>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbStyle}">
+                        </Thumb>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageDownCommand" Style="{StaticResource ScrollBarPageButtonStyle}">
+                        </RepeatButton>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Row="3" Height="18"
+                          Style="{StaticResource ScrollBarLineButtonBottomStyle}"
+                          Command="ScrollBar.LineDownCommand">
+                </RepeatButton>
+            </Grid>
+        </ControlTemplate>
+
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Template" Value="{StaticResource VerticalScrollBar}"/>
+        </Style>
+        <ControlTemplate x:Key="TextBoxBaseControlTemplate" TargetType="{x:Type TextBoxBase}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="White"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,0,0,10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="PasswordBoxBaseControlTemplate" TargetType="{x:Type PasswordBox}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                                <Setter Property="TextElement.FontWeight" TargetName="border" Value="Bold" >
+                                </Setter>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style> 
+        <Style x:Key="comRoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="0,8,8,0" BorderBrush="White" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="White">
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="border" Value="#FF0D0A4A">
+                                </Setter>
+                                <Setter Property="TextElement.FontWeight" TargetName="border" Value="Bold" >
+                                </Setter>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="moneyRoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="White" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           
+                                                  />
+                            </Border>
+                            <Border Background="Transparent"></Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextElement.FontStyle" TargetName="border" Value="Italic">
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="exitRoundCorner" TargetType="{x:Type Button}">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="8" BorderBrush="Aqua" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                           >
+                                </ContentPresenter>
+                            </Border>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border Name="Border"  BorderBrush="White" BorderThickness="1" CornerRadius="12,12,0,0" Margin="0,11,0,0" Height="35" >
+                            <Grid Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Center" Height="25">
+                                <Label Name="L2" Content="{TemplateBinding Header}" Foreground="Gray" VerticalAlignment="Bottom" Height="28"></Label>
+                            </Grid>
+
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter TargetName="L2" Property="Foreground" Value="White"/>
+                                <!--<Setter TargetName="Icon" Property="Source" Value="C:\\test.png"></Setter>-->
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="FontWeight" Value="Light"/>
+                                <Setter Property="Height" TargetName="L2" Value="28"></Setter>
+                                <!--<Setter TargetName="Icon" Property="Source" Value=""></Setter>-->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+    <Border Width="Auto" Height="Auto" Name="windowFrame"
+    
+        BorderBrush="#395984"
+          BorderThickness="1"
+           CornerRadius="12">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStopCollection>
+                    <GradientStop Offset="0"  Color="#081272"></GradientStop>
+                    <GradientStop Offset="1" Color="#717BD8"></GradientStop>
+                </GradientStopCollection>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid Background="Transparent" >
+            
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Style="{DynamicResource moneyRoundCorner}" x:Name="btnBack" Width="150" Click="BtnBack_Click" HorizontalAlignment="Left" FontSize="15" Background="White" BorderThickness="0" Content="Вернуться в магазин" Height="31" Margin="0,0,0,0.2" VerticalAlignment="Bottom" Foreground="White"></Button>
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="2">
+                <Grid Height="940" >
+                    <Grid Height="442" VerticalAlignment="Top">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"></RowDefinition>
+                            <RowDefinition Height="0"></RowDefinition>
+                            <RowDefinition Height="7*"></RowDefinition>
+                            <RowDefinition Height="7*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Button Panel.ZIndex="1" x:Name="Back" Click="Back_Click" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Height="75" Width="30"  Margin="15,0,0,0" FontSize="30" >
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                                <Line Width="25" Height="25" X1="0" Y1="13" X2="25" Y2="0" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="4" />
-                                <Line Width="25" Height="25" X1="25" Y1="25" X2="0" Y2="14" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="4" />
-                            </Grid>
-
-                        </Button>
-                        <Button Panel.ZIndex="1" x:Name="Next" Click="Next_Click"  Grid.Column="0"  Grid.Row="0" HorizontalAlignment="Right" Height="75" Width="30"  Margin="0,0,15,0" FontSize="30">
-
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-                                <Line Width="25" Height="25" X2="25" Y2="13" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="4" />
-                                <Line Width="25" Height="25" X1="0" Y1="25" X2="25" Y2="13" Stroke="Black" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="4" />
-                            </Grid>
-
-                        </Button>
-
-                        <ListView x:Name="Screenshoot" ItemsSource="{Binding Items}" HorizontalAlignment="Center"  VerticalAlignment="Center" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Grid.Column="0" Grid.Row="0"   >
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Focusable" Value="false"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate >
-
-                                <DataTemplate>
-
-                                    <StackPanel Orientation="Vertical">
-                                        <Image Source="{Binding MainImage}" Width="290" Height="290" VerticalAlignment="Center"  HorizontalAlignment="Center"  />
-                                    </StackPanel>
-                                </DataTemplate>
-
-                            </ListView.ItemTemplate>
-
-                        </ListView>
-                        <Grid Grid.Column="0" Grid.Row="1">
+                        <Grid Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="5*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="5*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="5*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="5*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="5*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"></RowDefinition>
-                                <RowDefinition Height="5*"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-
-                            <ListView x:Name="Screenshoot1" ItemsSource="{Binding Items}" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Focusable" Value="false"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-
-
-                            </ListView>
-
-                            <ListView x:Name="Screenshoot2" ItemsSource="{Binding Items}"  Grid.Column="3" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Focusable" Value="false"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <ListView x:Name="Screenshoot3" ItemsSource="{Binding Items}"  Grid.Column="5" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center"  >
-                                <ListView.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <ListView x:Name="Screenshoot4" ItemsSource="{Binding Items}"  Grid.Column="7" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center"  >
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Focusable" Value="false"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <ListView x:Name="Screenshoot5" ItemsSource="{Binding Items}"  Grid.Column="9" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center"  >
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Focusable" Value="false"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.RowSpan="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="2*"></RowDefinition>
-                                <RowDefinition Height="8*"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="3*"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock x:Name="tbgameName" Grid.Column="0" Grid.Row="0"  FontSize="55" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                            <Button Style="{DynamicResource exitRoundCorner}" Panel.ZIndex="1" x:Name="Back" Click="Back_Click" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Height="75" Width="30"  Margin="15,0,0,0" FontSize="30" >
+                                <Image >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="/Client;component/left.png" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source" Value="/Client;component/left1.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+                            <Button Style="{DynamicResource exitRoundCorner}" Panel.ZIndex="1" x:Name="Next" Click="Next_Click"  Grid.Column="0"  Grid.Row="0" HorizontalAlignment="Right" Height="75" Width="30"  Margin="0,0,15,0" FontSize="30">
+
+                                <Image >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="/Client;component/right.png" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source" Value="/Client;component/right1.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+
+                            <ListView x:Name="Screenshoot" ItemsSource="{Binding Items}" HorizontalAlignment="Center"  VerticalAlignment="Center" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Grid.Column="0" Grid.Row="0" Background="{x:Null}"   >
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Focusable" Value="false"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate >
+
+                                    <DataTemplate>
+
+                                        <StackPanel Orientation="Vertical">
+                                            <Image Source="{Binding MainImage}" Width="290" Height="290" VerticalAlignment="Center"  HorizontalAlignment="Center"  />
+                                        </StackPanel>
+                                    </DataTemplate>
+
+                                </ListView.ItemTemplate>
+
+                            </ListView>
                             <Grid Grid.Column="0" Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="1*"></RowDefinition>
-                                    <RowDefinition Height="8*"></RowDefinition>
-
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="Описание:" Margin="5,0,0,0" FontSize="18"></TextBlock>
-                                <ScrollViewer Grid.Column="0" Grid.Row="1" Height="190" VerticalAlignment="Top">
-                                <TextBlock x:Name="tbDescription"   Text="{Binding Description}" Height="190" VerticalAlignment="Top" TextWrapping="Wrap" FontSize="14" ></TextBlock>
-                                </ScrollViewer>
-                                <TextBlock Text="Жанры" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" TextAlignment="Center" Width="45" Height="38" Margin="3,0,0,0" Padding="0,10,0,0" VerticalAlignment="Bottom"></TextBlock>
-                                <TextBlock x:Name="janrs"  Grid.Column="0" Margin="50,0,0,0" Grid.Row="1" HorizontalAlignment="Left"  TextAlignment="Center" Width="360" Height="38" Padding="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom"></TextBlock>
-                            </Grid>
-                            <Grid Grid.Column="0" Grid.Row="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Разработчик:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18"></TextBlock>
-                                <TextBlock x:Name="tbDeveloper" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18"></TextBlock>
-                            </Grid>
-                            <Grid Grid.Column="0" Grid.Row="3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"></ColumnDefinition>
-                                    <ColumnDefinition Width="7*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Издатель:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18"></TextBlock>
-                                <TextBlock x:Name="tbPublisher" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18"></TextBlock>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="5*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
 
+                                <ListView x:Name="Screenshoot1" ItemsSource="{Binding Items}" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" >
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Focusable" Value="false"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+
+
+                                </ListView>
+
+                                <ListView x:Name="Screenshoot2" ItemsSource="{Binding Items}"  Grid.Column="3" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" >
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Focusable" Value="false"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <ListView x:Name="Screenshoot3" ItemsSource="{Binding Items}"  Grid.Column="5" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <ListView x:Name="Screenshoot4" ItemsSource="{Binding Items}"  Grid.Column="7" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Focusable" Value="false"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <ListView x:Name="Screenshoot5" ItemsSource="{Binding Items}"  Grid.Column="9" Grid.Row="1" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Focusable" Value="false"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                            <Grid Grid.Column="1" Grid.RowSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="2*"></RowDefinition>
+                                    <RowDefinition Height="8*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="tbgameName" Grid.Column="0" Grid.Row="0"  FontSize="45" VerticalAlignment="Center" Text="{Binding Name}" Foreground="White"></TextBlock>
+                                <Grid Grid.Column="0" Grid.Row="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*"></RowDefinition>
+                                        <RowDefinition Height="8*"></RowDefinition>
+
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Описание:" Margin="5,0,0,0" FontSize="18" Foreground="White"></TextBlock>
+                                    <ScrollViewer Grid.Column="0" Grid.Row="1" Height="190" VerticalAlignment="Top">
+                                        <TextBlock x:Name="tbDescription"   Text="{Binding Description}" Height="190" VerticalAlignment="Top" TextWrapping="Wrap" FontSize="14" Foreground="White" ></TextBlock>
+                                    </ScrollViewer>
+                                    <TextBlock Text="Жанры" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" TextAlignment="Center" Width="45" Height="38" Margin="3,0,0,0" Padding="0,10,0,0" VerticalAlignment="Bottom" Foreground="White"></TextBlock>
+                                    <TextBlock x:Name="janrs"  Grid.Column="0" Margin="50,0,0,0" Grid.Row="1" HorizontalAlignment="Left"  TextAlignment="Center" Width="360" Height="38" Padding="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Foreground="White"></TextBlock>
+                                </Grid>
+                                <Grid Grid.Column="0" Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Разработчик:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18" Foreground="White"></TextBlock>
+                                    <TextBlock x:Name="tbDeveloper" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18" Foreground="White"></TextBlock>
+                                </Grid>
+                                <Grid Grid.Column="0" Grid.Row="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Издатель:" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18" Foreground="White"></TextBlock>
+                                    <TextBlock x:Name="tbPublisher" Grid.Column="1" Text="{Binding Publisher}" VerticalAlignment="Center"  FontSize="18" Foreground="White"></TextBlock>
+
+                                </Grid>
                             </Grid>
                         </Grid>
+                        <StackPanel x:Name="BuyAlready" Panel.ZIndex="2" Visibility="Hidden" VerticalAlignment="Bottom" Margin="0,0,135,15" Height="15" Width="30"  Grid.ColumnSpan="2" Grid.Row="2"  Grid.RowSpan="2" HorizontalAlignment="Right">
+                            <Rectangle Panel.ZIndex="3" Fill="#FF00B90F"  RadiusX="3" RadiusY="3"  Height="15" Width="30"  />
+                        </StackPanel>
+                        <Button Style="{DynamicResource RoundCorner}" x:Name="btnBuy" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="Купить" FontSize="15" Click="BtnBuy_Click" Foreground="White"></Button>
+                        <Button Style="{DynamicResource RoundCorner}" x:Name="btnkorzina" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="К корзине" FontSize="15" Visibility="Hidden" Click="Btnkorzina_Click" Foreground="White"></Button>
+                        <TextBlock x:Name="price" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="50" Margin="0,0,100,0" TextAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White" ></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Margin="0,0,155,0" Text="Цена:" TextAlignment="Right" FontSize="18" FontWeight="Bold" ToolTip="В стиме дешевле" Foreground="White" ></TextBlock>
+                        <TextBlock Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" Text="Оценка пользователей:" VerticalAlignment="Top" Foreground="White"></TextBlock>
+                        <TextBlock Name="ocenka" Width="30" FontSize="20" Grid.Row="3" HorizontalAlignment="Left" Margin="145,0,0,10" Text=""  VerticalAlignment="Center" FontWeight="Bold" Foreground="White" />
                     </Grid>
-                    <StackPanel x:Name="BuyAlready" Panel.ZIndex="2" Visibility="Hidden" VerticalAlignment="Bottom" Margin="0,0,135,15" Height="15" Width="30"  Grid.ColumnSpan="2" Grid.Row="2"  Grid.RowSpan="2" HorizontalAlignment="Right">
-                        <Rectangle Panel.ZIndex="3" Fill="#FF4848FF"  RadiusX="2" RadiusY="2"  Height="15" Width="30"  />
+                    <StackPanel Orientation="Vertical" Height="Auto"  Margin="0,420,0,0"  >
+                        <WrapPanel Margin="0,29,0,0">
+                            <TextBlock Text="Минимальные системные требования"  Padding="10" Width="375" FontWeight="Bold" Height="Auto" Foreground="White"></TextBlock>
+                            <TextBlock Text="Рекомендуемые системные требования"  Padding="10" Height="Auto" Width="375" FontWeight="Bold" Foreground="White"></TextBlock>
+                            <TextBlock Name="sysmin" Padding="10" Width="375" Height="Auto" Foreground="White"></TextBlock>
+
+                            <TextBlock Name="sysrec" Padding="10" Width="375" Height="Auto" Foreground="White"></TextBlock>
+                            <TextBlock  HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="700" Text=" Комментарии пользователей" VerticalAlignment="Top" Foreground="White"></TextBlock>
+
+                        </WrapPanel>
+                        <Grid  Height="350"  VerticalAlignment="Bottom" Margin="0,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="6*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Name="mycom_hint"   Background="Transparent" Opacity="0.6" Margin="10,10,0,0" Padding="10,0,0,0" Text="Напишите, что вы думаете об этой игре"  TextWrapping="Wrap" Width="670" Height="50" HorizontalAlignment="Left" Foreground="White"></TextBlock>
+                            <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" BorderBrush="White" Name="mycomm" Background="Transparent" Margin="10,10,0,0" TextChanged="Mycomm_TextChanged" Padding="10,0,0,0"  TextWrapping="Wrap" Width="670" HorizontalAlignment="Left" Height="50"  Foreground="White"></TextBox>
+                            <Button Style="{DynamicResource comRoundCorner}" Panel.ZIndex="1" Name="com" Background="#FFFFC8F7" Click="Com_Click" Content="Отправить" HorizontalAlignment="Right" Height="50" Width="75" Margin="0,0,5,0" FontSize="12" FontWeight="Bold" Foreground="White"></Button>
+                            <ComboBox Style="{DynamicResource ComboBoxTest2 }" VerticalAlignment="Center" Height="50" Width="60" HorizontalAlignment="Center" Name="howstar" Grid.Column="2" Margin="680,0,80,0" Background="Transparent"  BorderBrush="Transparent" FontWeight="Bold" FontSize="30" Foreground="White" >
+                                <ComboBoxItem Height="30" HorizontalAlignment="Center">
+                                    <TextBlock FontSize="20">1</TextBlock>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="30" HorizontalAlignment="Center">
+                                    <TextBlock FontSize="20">2</TextBlock>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="30" HorizontalAlignment="Center">
+                                    <TextBlock FontSize="20" >3</TextBlock>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="30" HorizontalAlignment="Center">
+                                    <TextBlock  FontSize="20">4</TextBlock>
+                                </ComboBoxItem>
+                                <ComboBoxItem IsSelected="True" Height="30" HorizontalAlignment="Center">
+                                    <TextBlock FontSize="20">5</TextBlock>
+                                </ComboBoxItem>
+                            </ComboBox>
+                            <TextBlock Name="nocomments" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Ещё никто не оставлял отзыв об этой игре, вы можете быть первым!" VerticalAlignment="Center" Grid.ColumnSpan ="3" Grid.Row="1" FontStyle="Italic" FontSize="30" Opacity="0.6" Foreground="White"></TextBlock>
+                            <ListView x:Name="Lvcomment" BorderThickness="0"  MouseLeftButtonUp="Lvcomment_MouseLeftButtonUp"  Margin="10,5,5,5" Height="300" Grid.ColumnSpan ="3" Grid.Row="1" Background="{x:Null}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate >
+                                        <Grid Width="780">
+                                            <Image x:Name="tvI" Source="{Binding Path =Image}" Width="50" Height="50" HorizontalAlignment="Left"/>
+                                            <TextBlock Name="tvN" Text="{Binding Path =Login}" Margin="60,2,0,10" VerticalAlignment="Top" FontSize="20" Foreground="White"/>
+                                            <TextBlock Text="{Binding Path =Comment}" TextWrapping="Wrap" Margin="60,30,0,10" Width="600" VerticalAlignment="Center" Foreground="White"/>
+                                            <Border BorderThickness="1">
+                                                <TextBlock Text="{Binding Path =Star}"  TextWrapping="Wrap" Margin="750,30,0,10"  VerticalAlignment="Center" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
                     </StackPanel>
-                    <Button x:Name="btnBuy" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="Купить" FontSize="15" Click="BtnBuy_Click"></Button>
-                    <Button x:Name="btnkorzina" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Content="К корзине" FontSize="15" Visibility="Hidden" Click="Btnkorzina_Click"></Button>
-                    <TextBlock x:Name="price" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="50" Margin="0,0,100,0" TextAlignment="Center" VerticalAlignment="Center" FontSize="15" ></TextBlock>
-                    <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Width="100" Margin="0,0,155,0" Text="Цена:" TextAlignment="Right" FontSize="18" FontWeight="Bold" ToolTip="В стиме дешевле" ></TextBlock>
-                    <TextBlock Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" Text="Оценка пользователей:" VerticalAlignment="Top"></TextBlock>
-                    <TextBlock Name="ocenka" Width="30" FontSize="20" Grid.Row="3" HorizontalAlignment="Left" Margin="145,0,0,0" Text=""  VerticalAlignment="Center" FontWeight="Bold" />
                 </Grid>
-                <StackPanel Orientation="Vertical" Height="Auto"  Margin="0,400,0,0"  >
-                    <WrapPanel Margin="0,29,0,0">
-                        <TextBlock Text="Минимальные системные требования"  Padding="10" Width="375" FontWeight="Bold" Height="Auto"></TextBlock>
-                        <TextBlock Text="Рекомендуемые системные требования"  Padding="10" Height="Auto" Width="375" FontWeight="Bold"></TextBlock>
-                        <TextBlock Name="sysmin" Padding="10" Width="375" Height="Auto"></TextBlock>
-                        
-                        <TextBlock Name="sysrec" Padding="10" Width="375" Height="Auto"></TextBlock>
-                        <TextBlock  HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="700" Text=" Комментарии пользователей" VerticalAlignment="Top"></TextBlock>
 
-                    </WrapPanel>
-                    <Grid  Height="350"  VerticalAlignment="Bottom" Margin="0,0,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="6*"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                        <TextBlock Name="mycom_hint" Background="Transparent" Opacity="0.6" Margin="10,0,0,0" Padding="10,0,0,0" Text="Напишите, что вы думаете об этой игре"  TextWrapping="Wrap" Width="680" Height="50" HorizontalAlignment="Left"></TextBlock>
-                        <TextBox Name="mycomm" Background="Transparent" Margin="10,0,0,0" TextChanged="Mycomm_TextChanged" Padding="10,0,0,0"  TextWrapping="Wrap" Width="680" HorizontalAlignment="Left" Height="50"></TextBox>
-                    <Button Name="com" Background="#FFFFC8F7" Click="Com_Click" Content="Отправить" HorizontalAlignment="Right" Height="50" Width="74" Margin="0,0,5,0" FontSize="14" FontWeight="Bold"></Button>
-                    <ComboBox VerticalAlignment="Center" Height="50" Width="60" HorizontalAlignment="Center" Name="howstar" Grid.Column="2" Margin="680,0,80,0" Background="Transparent"  BorderBrush="Transparent" FontWeight="Bold" FontSize="30" >
-                        <ComboBoxItem Height="60">
-                            <TextBlock>1</TextBlock>
-                        </ComboBoxItem>
-                        <ComboBoxItem Height="60">
-                            <TextBlock>2</TextBlock>
-                        </ComboBoxItem>
-                        <ComboBoxItem Height="60">
-                            <TextBlock>3</TextBlock>
-                        </ComboBoxItem>
-                        <ComboBoxItem Height="60">
-                            <TextBlock>4</TextBlock>
-                        </ComboBoxItem>
-                        <ComboBoxItem IsSelected="True" Height="60">
-                            <TextBlock>5</TextBlock>
-                        </ComboBoxItem>
-                    </ComboBox>
-                        <TextBlock Name="nocomments" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Ещё никто не оставлял отзыв об этой игре, вы можете быть первым!" VerticalAlignment="Center" Grid.ColumnSpan ="3" Grid.Row="1" FontStyle="Italic" FontSize="30" Opacity="0.6"></TextBlock>
-                    <ListView x:Name="Lvcomment"   MouseLeftButtonUp="Lvcomment_MouseLeftButtonUp"  Margin="10,5,5,5" Height="Auto" Grid.ColumnSpan ="3" Grid.Row="1">
-                        <ListView.ItemTemplate>
-                            <DataTemplate >
-                                <Grid Width="780">
-                                    <Image x:Name="tvI" Source="{Binding Path =Image}" Width="50" Height="50" HorizontalAlignment="Left"/>
-                                    <TextBlock Name="tvN" Text="{Binding Path =Login}" Margin="60,2,0,10" VerticalAlignment="Top" FontSize="20"/>
-                                    <TextBlock Text="{Binding Path =Comment}" TextWrapping="Wrap" Margin="60,30,0,10" Width="600" VerticalAlignment="Center"/>
-                                    <Border BorderThickness="1">
-                                        <TextBlock Text="{Binding Path =Star}"  TextWrapping="Wrap" Margin="750,30,0,10"  VerticalAlignment="Center" FontWeight="Bold"/>
-                                    </Border>
-                                </Grid>
-
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
-                </StackPanel>
-            </Grid>
-                
-        </ScrollViewer>
-    </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </Window>
