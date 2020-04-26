@@ -66,11 +66,17 @@ namespace Client
                 Chat.chatnow.tbChat.Text += msg.message + "\n";
             }
             ShopWindows.frmail.Add(msg);
-            MainWindow.shopWindows.messagerefresh1(msg.IDSender);
+            MainWindow.shopWindows.messagerefresh();
         }
 
         public void AcceptFriendRequest(Service.Profile User)
         {
+            MainWindow.shopWindows.friendsnew(User);
+        }
+
+        public void DeleteFromFriend(int id)
+        {
+            MainWindow.shopWindows.friendsdel(id);
         }
     }
 }

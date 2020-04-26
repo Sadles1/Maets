@@ -80,8 +80,8 @@ namespace Client
                             }
                         }
 
-                        ShopWindows.client.BuyProduct(Cartone.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
-                        ShopWindows.client.BuyProductWholesale(CartWho.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
+                       if(Cartone.Count!=0) ShopWindows.client.BuyProduct(Cartone.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
+                        if (CartWho.Count != 0) ShopWindows.client.BuyProductWholesale(CartWho.ToArray(), profile.ID); ShopWindows.client.CheckProfile(profile.ID);
                         //Тут будет добавление самой игры на аккаунт
                         MessageBox.Show("Покупка успешно совершена! \n C вашего счета списано " + tbSumm.Text + "\n Остаток: " + profile.Money);
                         ShopWindows.mainfprofile.Clear();
@@ -135,17 +135,17 @@ namespace Client
         }
             public void allprice()
         {
-
-            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
-            {
-                lvProduct.Items.Add(ShopWindows.mainfprofile[i]);
-            }
-
             double sum = 0;
             for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
             {
                 sum += ShopWindows.mainfprofile[i].Price * ShopWindows.mainfprofile[i].How;
             }
+            for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
+            {
+                lvProduct.Items.Add(ShopWindows.mainfprofile[i]);
+            }
+
+           
             tbSumm.Text = Convert.ToString(sum);
             
 
@@ -157,7 +157,7 @@ namespace Client
                 double sum = 0;
                 for (int i = 0; i < ShopWindows.mainfprofile.Count; i++)
                 {
-                    sum += ShopWindows.mainfprofile[i].RetailPrice;
+                    sum += ShopWindows.mainfprofile[i].Price * ShopWindows.mainfprofile[i].How;
                 }
                 tbSumm.Text = Convert.ToString(sum);
             }
@@ -173,6 +173,7 @@ namespace Client
                 lvProduct.Items.RemoveAt(i);
                 ShopWindows.mainfprofile.RemoveAt(i);
                 deleteproduct();
+                //allprice();
             }
         }
 

@@ -325,6 +325,7 @@ xmlns:model="clr-namespace:Client.Data.ViewModels"
                 <TextBlock x:Name="howmanymail" Panel.ZIndex="1"  FontSize="12" HorizontalAlignment="Center"  Margin="0,0,1,1" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Text="1" Foreground="White" FontWeight="Bold"></TextBlock>
                 <Ellipse  HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Fill="#FF002965" Height="17" Width="17"  >
                 </Ellipse>
+
             </Grid>
             <Button x:Name="btnmewmessage" Click="Btnmewmessage_Click" Background="White" BorderThickness="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="0,5,154,0" Padding="0" HorizontalAlignment="Right" Height="20" Width="30" FontWeight="Bold" Grid.RowSpan="2">
                 <Viewbox Width="30" Height="20">
@@ -572,7 +573,7 @@ xmlns:model="clr-namespace:Client.Data.ViewModels"
                                     <TextBox  x:Name="searchlibrary"  Margin="5" Width="200"/>
                                 </StackPanel>
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="30" Foreground="White" > Ваши игры</TextBlock>
-                                <ListView x:Name="mylibrary" MouseLeftButtonUp="leftmouse_mylibrary" ItemsSource="{Binding LibraryItems}" Margin="5" Grid.Row ="1" Background="#FF2E3784" >
+                                <ListView SelectionChanged="Mylibrary_SelectionChanged" x:Name="mylibrary" MouseLeftButtonUp="leftmouse_mylibrary" ItemsSource="{Binding LibraryItems}" Margin="5" Grid.Row ="1" Background="#FF2E3784" >
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -593,7 +594,8 @@ xmlns:model="clr-namespace:Client.Data.ViewModels"
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Column="0" Grid.Row="2" x:Name="Downloadprogress" VerticalAlignment="Center" FontSize="15" HorizontalAlignment="Center" ></TextBlock>
-                                <TextBlock x:Name="tbgamename" TextAlignment="Center" Grid.Column="0" Grid.Row="0" FontSize="50"></TextBlock>
+                                <TextBlock x:Name="tbgamename" Text="Bolls And Cows" Height="50" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" FontSize="50" Margin="0,0,0,0" Foreground="White" VerticalAlignment="Top"></TextBlock>
+
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -609,15 +611,124 @@ xmlns:model="clr-namespace:Client.Data.ViewModels"
                                         <Button  Style="{DynamicResource RoundCorner}" Visibility="Hidden" Click="Play_Click" x:Name="Play" Grid.Column="0" Grid.Row="1" Content="Играть" FontSize="20" Foreground="White" ></Button>
 
                                     </Grid>
+                                    <Grid Grid.Column="1" Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="24*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="5*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="5*"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="5*"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="5*"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="5*"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="5*"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+
+                                        </Grid.RowDefinitions>
+                                        <ListView x:Name="Screenshoot" ItemsSource="{Binding Items}" HorizontalAlignment="Left"  VerticalAlignment="Top" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Grid.Column="0" Height="250" Width="300" Grid.RowSpan="10" Margin="90,0,0,0" Background="{x:Null}"   >
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="Focusable" Value="false"/>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                        <ListView.ItemTemplate >
+
+                                            <DataTemplate>
+
+                                                <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="250" Height="250" VerticalAlignment="Center"  HorizontalAlignment="Center"  />
+                                                </StackPanel>
+                                            </DataTemplate>
+
+                                        </ListView.ItemTemplate>
+
+                                    </ListView>
+                                    
+                                        
+
+                                        <ListView x:Name="Screenshoot1" ItemsSource="{Binding Items}" MouseLeftButtonUp="Screenshoot1_MouseLeftButtonUp" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" Height="50" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" >
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Focusable" Value="false"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+
+                                        </ListView>
+
+                                        <ListView x:Name="Screenshoot2" ItemsSource="{Binding Items}" MouseLeftButtonUp="Screenshoot2_MouseLeftButtonUp"  Grid.Column="2" Grid.Row="3" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" >
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Focusable" Value="false"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                        <ListView x:Name="Screenshoot3" ItemsSource="{Binding Items}" MouseLeftButtonUp="Screenshoot3_MouseLeftButtonUp"  Grid.Column="2" Grid.Row="5" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                            <ListView.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                        <ListView x:Name="Screenshoot4" ItemsSource="{Binding Items}" MouseLeftButtonUp="Screenshoot4_MouseLeftButtonUp" Grid.Column="2" Grid.Row="7" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Focusable" Value="false"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                        <ListView x:Name="Screenshoot5" ItemsSource="{Binding Items}" MouseLeftButtonUp="Screenshoot5_MouseLeftButtonUp"  Grid.Column="2" Grid.Row="9" Canvas.Top="0" Canvas.Left="0" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}"  >
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Focusable" Value="false"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Image Source="{Binding MainImage}" Width="50"  HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Grid>
+                                    
                                 </Grid>
-                                <Grid Grid.Row="3">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Name="dnmtext"></TextBlock>
-                                    <ProgressBar Name="dwnload"></ProgressBar>
-                                </Grid>
+                                <ProgressBar  Name="dwnload" Height="10" Grid.Row="2" Width="400" Foreground="#FF06B025" Margin="0,0,0,0" Background="White" HorizontalAlignment="Left"></ProgressBar>
+                                <TextBlock Name="dnmtext" Height="15" Grid.Row="2" VerticalAlignment="Bottom" Margin="10,0,0,20" HorizontalAlignment="Left" Foreground="White"></TextBlock>
+                                <Button Style="{DynamicResource RoundCorner}" Click="Delgame_Click" Name="delgame" HorizontalAlignment="Right" FontSize="10" Margin="0,0,10,0" VerticalAlignment="Bottom" Grid.Row="3" Content="Удалить эту игру" Foreground="White"></Button>
+               
                             </Grid>
 
                         </Grid>
@@ -683,13 +794,13 @@ xmlns:model="clr-namespace:Client.Data.ViewModels"
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <TextBox Template="{StaticResource TextBoxBaseControlTemplate}"  Panel.ZIndex="1"  x:Name="tbLoginnew" Background="Transparent" Width="200" TextChanged="TbLoginnew_TextChanged" Margin="5,0,0,0" HorizontalAlignment="Left"   Grid.ColumnSpan="2" Grid.Row="0" Text="{Binding Login}" FontSize="20" Foreground="White"/>
-                                <TextBlock x:Name="tbLoginnew_hint" Opacity="0.6" Width="200" HorizontalAlignment="Left"   Grid.ColumnSpan="2" Grid.Row="0" Text="{Binding Login}" FontSize="20" Foreground="White"/>
-                                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}"  Panel.ZIndex="1" x:Name="lbNamenew" Width="200"  Background="Transparent" TextChanged="LbNamenew_TextChanged" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="White"/>
-                                <TextBlock x:Name="lbNamenew_hint" Opacity="0.6" Width="200" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="White"/>
+                                <TextBlock x:Name="tbLoginnew_hint" Opacity="0.6" Width="200" HorizontalAlignment="Left"   Grid.ColumnSpan="2" Margin="20,0,0,0" Grid.Row="0" Text="{Binding Login}" FontSize="20" Foreground="White"/>
+                                <TextBox Template="{StaticResource TextBoxBaseControlTemplate}"  Panel.ZIndex="1" x:Name="lbNamenew" Width="200"  Background="Transparent" TextChanged="LbNamenew_TextChanged" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Foreground="White"/>
+                                <TextBlock x:Name="lbNamenew_hint" Opacity="0.6" Width="200" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Foreground="White"/>
                                 <TextBox Template="{StaticResource TextBoxBaseControlTemplate}"  Panel.ZIndex="1" x:Name="tbmailnew" Width="200" Background="Transparent" TextChanged="Tbmailnew_TextChanged" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBox>
-                                <TextBlock x:Name="tbmailnew_hint" Opacity="0.6" Width="200" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                                <TextBlock x:Name="tbmailnew_hint" Opacity="0.6" Width="200" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBlock>
                                 <TextBox Template="{StaticResource TextBoxBaseControlTemplate}"  Panel.ZIndex="1" x:Name="tbtelephonenew" Width="200" Background="Transparent" TextChanged="Tbtelephonenew_TextChanged" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBox>
-                                <TextBlock x:Name="tbtelephonenew_hint" Opacity="0.6" Width="200"  Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBlock>
+                                <TextBlock x:Name="tbtelephonenew_hint" Opacity="0.6" Width="200"  Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Foreground="White"></TextBlock>
                             </Grid>
 
                             <Grid Grid.Column="0" Grid.Row="1">

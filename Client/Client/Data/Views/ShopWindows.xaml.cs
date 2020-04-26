@@ -1,5 +1,6 @@
 ﻿using Client.Data.Models;
 using Client.Service;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,10 @@ namespace Client
 
     public partial class ShopWindows : Window
     {
+        static public List<Service.Profile> r;
+        public static int isender=-1;
+        List<byte[]> screns = new List<byte[]>(); 
+        List<ModelImage> modelProducts;
         static public List<Service.Profile> fr;
         static public List<UserMessage> frmail;
         public static List<ModelProductCart> mainfprofile = new List<ModelProductCart>();
@@ -107,46 +112,74 @@ namespace Client
         {
             
             Lvfriend.Items.Clear();
-            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+            for (int i = 0; i < r.Count; i++)
             {
-                if (profile.Friends.ToList()[i].ID == id) profile.Friends.ToList()[i].status = "Online";
-                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+                if (r[i].ID == id) r[i].status = "Online";
+                Lvfriend.Items.Add(r[i]);
+            }
+        }
+        public void friendsonline(Service.Profile id)
+        {
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < r.Count; i++)
+            {
+                if (r[i].ID == id.ID) r[i].status = "Online";
+                Lvfriend.Items.Add(r[i]);
             }
         }
         public void friendsnew(Service.Profile id)
         {
-            
-            Lvfriend.Items.Add(id);
-            profile.Friends.ToList().Add(id);
+            r.Add(id);
+            Lvfriend.Items.Add(id); 
+        }
+        public void friendsdel(int id)
+        {
+            for (int i = 0; i < r.Count; i++)
+            {
+                if (r[i].ID == id)
+                {
+                    Lvfriend.Items.RemoveAt(i);
+                    r.RemoveAt(i);
+                }
+                
+            }
         }
 
 
         public void friendsoffline(int id)
         {
             Lvfriend.Items.Clear();
-            for (int i = 0; i < profile.Friends.ToList().Count; i++)
+
+            for (int i = 0; i < r.Count; i++)
             {
-                if (profile.Friends.ToList()[i].ID == id) profile.Friends.ToList()[i].status = "Offline";
-                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+                if (r[i].ID == id) r[i].status = "Offline";
+                Lvfriend.Items.Add(r[i]);
             }
         }
 
 
 
-        public void messagerefresh1(int idsender)
+        public void messagerefresh1()
         {
+            if(isender!=-1)
             for (int i = 0; i < frmail.Count; i++)
             {
-                if (frmail[i].IDSender == idsender)
+                if (frmail[i].IDSender == isender)
                 {
                     frmail.RemoveAt(i);
-                }
+                        if(frmail.Count!=0)
+                    howmanymail.Text = "+" + frmail.Count;
+                        else
+                        {
+                            MailCount.Visibility = Visibility.Hidden;
+
+                            howmanymail.Text = "";
+                        }
+                    }
             }
-            messagerefresh();
         }
             public void messagerefresh()
         {
-           
             if (frmail.Count != 0)
             {
                 MailCount.Visibility = Visibility.Visible;
@@ -160,16 +193,17 @@ namespace Client
         }
         private void Window_Initialized(object sender, EventArgs e)
         {
+            r = profile.Friends.ToList();
             mail.Text = profile.Mail;
             telephone.Text = profile.Telephone;
             fr = client.GetFriendRequests(profile.ID).ToList();
             frmail = client.GetNewMessages(profile.ID).ToList();
-            
+
             if (fr.Count != 0)
             {
                 Reaestfriends.Visibility = Visibility.Visible;
                 howmanynewfriends.Text = "+" + fr.Count;
-               
+
             }
             else Reaestfriends.Visibility = Visibility.Hidden;
             imMainImage.Source = dp.GetImageFromByte(profile.MainImage);
@@ -177,30 +211,22 @@ namespace Client
 
             tbLogin.Text = profile.Login;
             lbName.Text = profile.Name;
-            for(int i=0;i<profile.Friends.ToList().Count;i++)
+            for (int i = 0; i < r.Count; i++)
             {
-                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
+                Lvfriend.Items.Add(r[i]);
             }
-            
+
             Back.IsEnabled = false;
-           // ProductOne.DataContext = products[ishop];
+            // ProductOne.DataContext = products[ishop];
             ProductOne.Items.Add(products[ishop]);
             ProductTwo.Items.Add(products[ishop + 1]);
             ProductFree.Items.Add(products[ishop + 2]);
-           // Lvmylibrary.ItemsSource = profile.Games;
+            // Lvmylibrary.ItemsSource = profile.Games;
             btnMoney.Content = Convert.ToString(profile.Money) + " р";
             // lbLogin.Content = profile.AccessRight;
             //DataContext = new ProductViewModel();
-            
 
-        }
-        private void refreshf(Service.Profile pr)
-        {
-            Lvfriend.Items.Clear();
-            for (int i = 0; i < profile.Friends.ToList().Count; i++)
-            {
-                Lvfriend.Items.Add(profile.Friends.ToList()[i]);
-            }
+
         }
         private void refresh(Service.Profile pr)
         {
@@ -284,17 +310,7 @@ namespace Client
                     mp = mp.MakeModelProfile(produc);
                     AllUser.Items.Add(mp);
                 }
-           // searchlibrary.DataContext = new LibraryViewModel(profile.Games.ToList());
-           // mylibrary.DataContext = searchlibrary.DataContext;
-            //searchprofile.DataContext = new ProfileViewModel();
-            //searchproduct.DataContext = new ProductViewModel();
-            //AllUser.DataContext = new ProfileViewModel();
-            //Lvm.DataContext = new ProductViewModel();
-            // DataContext = new ProfileViewModel();
-
-            //tbLogin.DataContext = new MyProfileVieModel(profile);
-            // Lvmylibrary.DataContext = new MyProfileViewModel();
-
+         
             Lvm.Visibility = Visibility.Hidden;
 
         }
@@ -305,12 +321,13 @@ namespace Client
             buyProduct.Top = this.Top;
             buyProduct.Show();
         }
-        private void minirefresh()
+        private void refreshfriends()
         {
-            searchproduct.DataContext = new ProductViewModel();
-            Lvm.DataContext = searchproduct.DataContext;
-            searchprofile.DataContext = new ProfileViewModel();
-            AllUser.DataContext = searchprofile.DataContext;
+            Lvfriend.Items.Clear();
+            for (int i = 0; i < r.Count; i++)
+            {
+                Lvfriend.Items.Add(r[i]);
+            }
         }
         private void BtnexitProfile_Click(object sender, RoutedEventArgs e)
         {
@@ -374,14 +391,14 @@ namespace Client
         }
         private void leftmousefriend(object sender, EventArgs e)
         {
-            List<Service.Profile> fr = profile.Friends.ToList();
+            List<Service.Profile> fr = ShopWindows.r.ToList();
 
             int i = Lvfriend.SelectedIndex;
             //Service.Profile d = fr.FirstOrDefault(o => o.ID ==i);
             if (i != -1)
             {
                // client.AddToBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
-                client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
+              //  client.RemoveFromBlacklist(MainWindow.shopWindows.profile.ID, fr[i].ID);
                 profilefriend r = new profilefriend(ShopWindows.client.CheckProfile(fr[i].ID));
                 r.Left = this.Left;
                 r.Top = this.Top;
@@ -397,8 +414,36 @@ namespace Client
 
         private void leftmouse_mylibrary(object sender, EventArgs e)
         {
+            Screenshoot.Items.Clear();
+            Screenshoot1.Items.Clear();
+            Screenshoot2.Items.Clear();
+            Screenshoot3.Items.Clear();
+            Screenshoot4.Items.Clear();
+            Screenshoot5.Items.Clear();
+            screns.Clear();
             Service.Product idx = profile.Games[mylibrary.SelectedIndex];
-            string path = client.GetWayToGame(client.CheckProfile(profile.ID).ID, idx.Id) + "\\" + idx.Name + ".exe";
+            
+            screns.Add(idx.MainImage);
+            List<byte[]> d = ShopWindows.client.GetGameImages(idx.Id).ToList();
+
+            for (int h = 0; h < d.Count; h++)
+            {
+                screns.Add(d.ToList()[h]);
+                modelProducts = new List<ModelImage>();
+            }
+            foreach (byte[] product in screns)
+            {
+                ModelImage modelProduct = new ModelImage();
+                modelProducts.Add(modelProduct.MakeModelImage(product));
+            }
+            Screenshoot.Items.Add(modelProducts[0]);
+            Screenshoot1.Items.Add(modelProducts[0 + 1]);
+            Screenshoot2.Items.Add(modelProducts[0 + 2]);
+            Screenshoot3.Items.Add(modelProducts[0 + 3]);
+            Screenshoot4.Items.Add(modelProducts[0 + 4]);
+            Screenshoot5.Items.Add(modelProducts[0 + 5]);
+            
+            string path = GetPathToGame(idx.Id) + "\\" + idx.Name + ".exe";
             if (path == null || !File.Exists(path) )
             {
                 Download.Visibility = Visibility.Visible;
@@ -490,6 +535,7 @@ namespace Client
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //this.Close();
             client.Disconnect(profile.ID);
             client.Close();
         }
@@ -593,7 +639,7 @@ namespace Client
             rf.Left = Left;
             rf.Show();
         }
-        
+
         private void Download_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog openFileDialog = new FolderBrowserDialog();
@@ -601,18 +647,12 @@ namespace Client
             //   openFileDialog.Filter = "All files (*.*)";
             // openFileDialog.CheckFileExists = false;
             openFileDialog.ShowDialog();
-           string s = openFileDialog.SelectedPath;
-            if (s != "" )
+            string s = openFileDialog.SelectedPath;
+            if (s != "")
             {
-                s += @"\" + idg.Name ;
-                if (!File.Exists(s +"\\"+ idg.Name + ".exe"))
+                s += @"\" + idg.Name;
+                if (!File.Exists(s + "\\" + idg.Name + ".exe"))
                 {
-                    //if (openFileDialog.ShowDialog() == true)
-                    //{
-                    // profile.Games[0].Path = s;
-                    //    FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
-                    // System.Windows.MessageBox.Show(s);
-                    //  DownloadGame(s, idg.Id, profile.ID);
                     BackgroundWorker worker = new BackgroundWorker();
                     worker.RunWorkerCompleted += worker_RunWorkerCompleted;
                     worker.WorkerReportsProgress = true;
@@ -622,6 +662,7 @@ namespace Client
                     downloadProduct.path = s;
                     downloadProduct.idUser = profile.ID;
                     downloadProduct.idGame = idg.Id;
+                    SetPathToGame(s, idg.Id);
                     worker.RunWorkerAsync(downloadProduct);
                     MainWindow.shopWindows.Play.Visibility = Visibility.Visible;
                     MainWindow.shopWindows.Download.Visibility = Visibility.Hidden;
@@ -630,6 +671,7 @@ namespace Client
                 }
                 else
                 {
+                    UpdatePathToGame(s, idg.Id);
                     System.Windows.MessageBox.Show("По данному пути мы уже нашли эту игру, скачивать ничего не нужно");
                     Download.Visibility = Visibility.Hidden;
                     Play.Visibility = Visibility.Visible;
@@ -638,11 +680,43 @@ namespace Client
             }
         }
 
+        private void SetPathToGame(string path, int idProduct)
+        {
+            string pathToJson = $@"{Environment.CurrentDirectory}\Settings\GamesPath.json";
+            List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
+            GamesPath.Add(Tuple.Create(idProduct, path));
+            File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
+        }
+
+        private void UpdatePathToGame(string path, int idProduct)
+        {
+            string pathToJson = $@"{Environment.CurrentDirectory}\Settings\GamesPath.json";
+            List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
+            Tuple<int, string> tuple = GamesPath.FirstOrDefault(u => u.Item1 == idProduct);
+            GamesPath.Remove(tuple);
+            GamesPath.Add(Tuple.Create(idProduct, path));
+            File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
+        }
+
+        private string GetPathToGame(int idProduct)
+        {
+            string pathToJson = $@"{Environment.CurrentDirectory}\Settings\GamesPath.json";
+            List<Tuple<int, string>> messages = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
+            foreach (Tuple<int, string> tuple in messages)
+            {
+                if (tuple.Item1 == idProduct)
+                {
+                    return tuple.Item2;
+                }
+            }
+            return null;
+        }
+
         private void Play_Click(object sender, RoutedEventArgs e)
         {
             Service.Product idx = profile.Games[mylibrary.SelectedIndex];
-            string file = client.GetWayToGame(profile.ID, idx.Id) + @"\" + idx.Name + ".exe";
-            if (file!= null && File.Exists(file))
+            string file = GetPathToGame(idx.Id) + @"\" + idx.Name + ".exe";
+            if (file != null && File.Exists(file))
                 System.Diagnostics.Process.Start(file);
             else WinForms.MessageBox.Show("Файл не найден");
         }
@@ -685,7 +759,7 @@ namespace Client
                     {
                         FileInfo file = new FileInfo($@"{downloadProduct.path}.zip");
                         DownloadSize = file.Length;
-                        worker.ReportProgress(Convert.ToInt32((double)DownloadSize / (double)FileSize * (double)100));
+                        worker.ReportProgress(Convert.ToInt32((double)DownloadSize / (double)FileSize * (double)100),String.Format("Загружено {0} %", Convert.ToInt32((double)DownloadSize / (double)FileSize * (double)100)));
                         outputStream.Write(buffer, 0, bytesRead);
                         bytesRead = stream.Read(buffer, 0, bufferSize);
                         outputStream.Flush();
@@ -704,6 +778,8 @@ namespace Client
             System.Windows.MessageBox.Show("Загружено");
             dwnload.Value = 0;
             dnmtext.Text = "";
+            Download.Visibility = Visibility.Hidden;
+            Play.Visibility = Visibility.Visible;
         }
 
         private void AddGame_Click(object sender, RoutedEventArgs e)
@@ -798,7 +874,7 @@ namespace Client
         {
             try
             {
-                if (tbLoginnew.Text == "" && tbmailnew.Text=="" && tbmailnew.Text == "" && lbNamenew.Text == "")
+                if (tbLoginnew.Text == "" && tbtelephonenew.Text==""&& tbmailnew.Text=="" && tbmailnew.Text == "" && lbNamenew.Text == "")
                     throw new Exception("Вы не заполнили ни одного поля!");
                 Profile newprof = new Profile();
 
@@ -894,12 +970,14 @@ namespace Client
         private void Btnmewmessage_Click(object sender, RoutedEventArgs e)
         {
             messagefriends mf = new messagefriends();
+            mf.Top = Top;
+            mf.Left = Left;
             mf.Show();
         }
 
         private void Refreshmail_Click(object sender, RoutedEventArgs e)
         {
-            messagerefresh();
+            messagerefresh1();
         }
 
         private void Resetpassword_Click(object sender, RoutedEventArgs e)
@@ -935,7 +1013,78 @@ namespace Client
 
         private void Reefreshf_Click(object sender, RoutedEventArgs e)
         {
-            refreshf(client.CheckProfile(profile.ID));
+            refreshfriends();
+        }
+
+        private void Screenshoot1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Screenshoot.Items.Clear();
+            Screenshoot.Items.Add(modelProducts[1]);
+        }
+
+        private void Screenshoot2_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Screenshoot.Items.Clear();
+            Screenshoot.Items.Add(modelProducts[2]);
+        }
+
+        private void Screenshoot3_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Screenshoot.Items.Clear();
+            Screenshoot.Items.Add(modelProducts[3]);
+        }
+
+        private void Screenshoot4_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Screenshoot.Items.Clear();
+            Screenshoot.Items.Add(modelProducts[4]);
+        }
+
+        private void Screenshoot5_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Screenshoot.Items.Clear();
+            Screenshoot.Items.Add(modelProducts[5]);
+        }
+
+        private void Mylibrary_Selected(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void Delgame_Click(object sender, RoutedEventArgs e)
+        {
+            Service.Product idx = profile.Games[mylibrary.SelectedIndex];
+            string path = GetPathToGame(idx.Id) + "\\" + idx.Name + ".exe";
+            if (path != null && File.Exists(path))
+            {
+                
+                    File.Delete(path);
+                Play.Visibility = Visibility.Hidden;
+                Download.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Mylibrary_Selected_1(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Mylibrary_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (mylibrary.SelectedIndex != -1)
+            {
+                delgame.Visibility = Visibility.Visible;
+                
+            }
+            else
+            {
+                delgame.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void Mylibrary_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

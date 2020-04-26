@@ -60,7 +60,7 @@ namespace Client.Data.Views
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             ShopWindows.client.SetMessageRead(Senderg.ID, Resiverg.ID);
-
+            ShopWindows.isender = Resiverg.ID;
             MainWindow.shopWindows.Refreshmail.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             this.Close();

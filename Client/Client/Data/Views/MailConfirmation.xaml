@@ -145,7 +145,7 @@
                     </Image.Style>
                 </Image>
             </Button>
-            <TextBlock x:Name="tb" FontSize="10" Grid.Column="1" Grid.RowSpan="2" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center" Margin="0,0,5,0" Height="40"></TextBlock>
+            <TextBlock x:Name="tb" FontSize="10"  Grid.Column="1" Grid.RowSpan="2" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center" Margin="0,0,5,0" Height="40"></TextBlock>
             <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" Background="Transparent" x:Name="Codee" Panel.ZIndex="1" Grid.Column="1" TextChanged="Codee_TextChanged" Grid.Row="1" MaxLength="4" Width="120" Height="30"  FontSize="20" TextAlignment="Center" VerticalAlignment="Bottom" FontWeight="Bold"></TextBox>
             <TextBox  Template="{StaticResource TextBoxBaseControlTemplate}"  x:Name="Codeef"  Background="White" Grid.Column="1" Text="_ _ _ _"  TextChanged="Codee_TextChanged" Grid.Row="1" MaxLength="4" Width="120" Height="30"  FontSize="20" TextAlignment="Center" VerticalAlignment="Bottom" FontWeight="Bold"></TextBox>
             <Button Foreground="White"  Style="{DynamicResource RoundCorner}" x:Name="Go" Grid.Column="1" Content="Отправить" Click="Go_Click" Grid.Row="2" Height="18" Width="90" HorizontalAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"></Button>

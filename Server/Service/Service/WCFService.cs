@@ -20,7 +20,7 @@ namespace Service
         Logs log = new Logs();
 
         /// <summary>
-        /// Метод для покупки товаров
+        /// Метод для покупки товара
         /// </summary>
         public void BuyProduct(List<int> Cart, int idProfile)
         {
@@ -46,12 +46,13 @@ namespace Service
 
                     TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, 1, false);
                     context.TDeals.Add(deal);
-                    profile.Money -= pr.RetailPrice * (1 - profile.PersonalDiscount);
-                    profile.TotalSpentMoney += pr.RetailPrice * (1 - profile.PersonalDiscount);
+                    profile.Money -= pr.RetailPrice * (1-(double)(profile.PersonalDiscount / 100));
+                    profile.TotalSpentMoney += pr.RetailPrice * (1 - (double)(profile.PersonalDiscount / 100));
 
                     idDeal++;
                 }
-
+                //dp.CheckDiscount(profile.Id);
+                profile.PersonalDiscount = 10;
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
                 //Сохраняем БД
@@ -77,7 +78,7 @@ namespace Service
                 int idDeal = TDeals.Count > 0 ? (TDeals.Max(u => u.Id) + 1) : 1;
                 List<Product> ProductAbsent = new List<Product>();
                 List<TProductKeys> soldKeys = new List<TProductKeys>();
-                string mailMessage = "Купленные вами игры: ";
+                string mailMessage = "<p>Доброго времени суток, благодарим <strong>Вас</strong> за покупку игр на Maets</p><h4>Купленные вами игры:</h4>";
                 //Записываем все сделки в БД
                 foreach (Tuple<int, int> tuple in Cart)
                 {
@@ -85,7 +86,7 @@ namespace Service
                     TProducts product = context.TProducts.FirstOrDefault(u => u.Id == tuple.Item1);
                     if (product.Quantity >= tuple.Item2)
                     {
-                        mailMessage += product.Name + ": \n";
+                        mailMessage += $"<p><center><strong>{product.Name}</strong></center></p>";
                         Product pr = new Product { Id = product.Id, WholesalePrice = product.WholesalePrice };
 
                         List<TProductKeys> productKeys = context.TProductKeys.Where(u => u.IdProduct == product.Id && u.IsSold == false).ToList();
@@ -94,18 +95,16 @@ namespace Service
                             soldKeys.Add(productKeys[i]);
                             productKeys[i].IsSold = true;
                             context.TProductKeys.Update(productKeys[i]);
-                            mailMessage += Convert.ToString(productKeys[i].Key + " \n");
+                            mailMessage += $"<p><center>{Convert.ToString(productKeys[i].Key)}</center></p>";
                         }
                         product.Quantity -= tuple.Item2;
                         context.TProducts.Update(product);
 
                         TDeals deal = dp.FormTDeal(idDeal, idProfile, pr, tuple.Item2, true);
                         context.TDeals.Add(deal);
-                        profile.Money -= pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
-                        profile.TotalSpentMoney += pr.WholesalePrice * (1 - profile.PersonalDiscount) * tuple.Item2;
-
-                        dp.CheckDiscount(profile.Id);
-
+                        profile.Money -= pr.WholesalePrice * (1 - (double)(profile.PersonalDiscount/100)) * tuple.Item2;
+                        profile.TotalSpentMoney += pr.WholesalePrice * (1 - (double)(profile.PersonalDiscount / 100)) * tuple.Item2;
+                        mailMessage += $"<br></br>";
                         idDeal++;
                     }
                     else
@@ -114,8 +113,10 @@ namespace Service
 
                 Mail message = new Mail(profile.Mail);
                 message.Head = "Покупка на Maets";
-                message.Body = mailMessage;
+                message.Body = mailMessage + "<p>С уважением, команда <strong>Maets</strong></p>";
                 message.SendMsg();
+
+                dp.CheckDiscount(profile.Id);
 
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
@@ -403,6 +404,12 @@ namespace Service
             friends = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
             friends.Remove(id);
             File.WriteAllText(path, JsonConvert.SerializeObject(friends));
+
+            OnlineUser OnlineFriend = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == idFriend);
+            if (OnlineFriend != null)
+            {
+                OnlineFriend.operationContext.GetCallbackChannel<IWCFServiceCalbback>().DeleteFromFriend(id);
+            }
         }
 
 
@@ -585,7 +592,6 @@ namespace Service
         /// </summary>
         private void ClientFault(object sender, EventArgs e)
         {
-            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             //Находим пользователя которого необходимо отключить
             OnlineUser User = onlineUsers.FirstOrDefault(u => u.sessionID == (IClientChannel)sender);
 
@@ -632,7 +638,7 @@ namespace Service
             log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
             using (postgresContext context = new postgresContext())
             {
-                //Обновляем файл с запросами в друзьями у одного аккаунта
+                //Обновляем файл с запросами в друзья
                 string path = $@"{BaseSettings.Default.SourcePath}\Users\{id}\FriendRequests.json";
                 List<int> friendsReq = File.Exists(path) ? JsonConvert.DeserializeObject<List<int>>(File.ReadAllText(path)) : new List<int>();
                 friendsReq.Remove(idRequest);
@@ -697,7 +703,7 @@ namespace Service
         }
 
         /// <summary>
-        /// Метод отправляет сообщение ползователю
+        /// Метод отправляет сообщение пользователю
         /// </summary>
         /// <param name="msg">
         /// Данные о сообщении.
@@ -733,13 +739,9 @@ namespace Service
         /// <summary>
         /// Метод для загрузки продукта
         /// </summary>
-        public Stream DownloadProduct(int idProduct, int idUser, string path, long startPoint)
+        public Stream DownloadProduct(int idProduct, int idUser, long startPoint)
         {
             log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
-            string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
-            List<Tuple<int, string>> GamesPath = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
-            GamesPath.Add(Tuple.Create(idProduct, path));
-            File.WriteAllText(pathToJson, JsonConvert.SerializeObject(GamesPath));
 
             string pathToGame = $@"C:\Users\snayp\Documents\GitHub\DownloadGame\{idProduct}\Game.zip";
             FileStream gameFile = new FileStream(pathToGame, FileMode.Open, FileAccess.Read);
@@ -763,11 +765,9 @@ namespace Service
         /// </summary>
         /// <param name="Id"></param>
         public void Disconnect(int Id)
-        {
-            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
+        {           
             //Находим пользователя которого необходимо отключить
             OnlineUser User = onlineUsers.FirstOrDefault(u => u.UserProfile.ID == Id);
-
             if (User != null)
             {
                 //Получаем id сессии
@@ -804,7 +804,7 @@ namespace Service
             using (postgresContext context = new postgresContext())
             {
                 //Получаем всех пользователей из БД
-                List<TLogin> AllUsers = context.TLogin.Include(u => u.IdNavigation).ToList();
+                List<TLogin> AllUsers = context.TLogin.ToList();
 
                 //Создаём пустой список в который будем записывать всех пользователей
                 List<Profile> AllProfile = new List<Profile>();
@@ -1092,22 +1092,6 @@ namespace Service
                 return pr;
             }
         }
-
-        public string GetWayToGame(int idUser, int idGame)
-        {
-            log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);
-            string pathToJson = $@"{BaseSettings.Default.SourcePath}\Users\{idUser}\GamesPath.json";
-            List<Tuple<int, string>> messages = File.Exists(pathToJson) ? JsonConvert.DeserializeObject<List<Tuple<int, string>>>(File.ReadAllText(pathToJson)) : new List<Tuple<int, string>>();
-            foreach (Tuple<int, string> tuple in messages)
-            {
-                if (tuple.Item1 == idGame)
-                {
-                    return tuple.Item2;
-                }
-            }
-            return null;
-        }
-
         public void ChangeAccessRight(int idUser, int AccessRight)
         {
             log.WriteLog(new StackTrace(false).GetFrame(0).GetMethod().Name, OperationContext.Current.SessionId, Thread.CurrentThread.ManagedThreadId);

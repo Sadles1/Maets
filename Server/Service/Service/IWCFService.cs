@@ -99,9 +99,6 @@ namespace Service
         Profile GetEasyProfile(int id);
 
         [OperationContract]
-        string GetWayToGame(int idUser, int idGame);
-
-        [OperationContract]
         string CheckMailRegister(string Mail);
 
         [OperationContract]
@@ -163,6 +160,8 @@ namespace Service
 
         [OperationContract(IsOneWay = true)]
         void AcceptFriendRequest(Profile pr);
+        [OperationContract(IsOneWay = true)]
+        void DeleteFromFriend(int id);
 
     }
 
@@ -170,7 +169,7 @@ namespace Service
     public interface IDownloadService
     {
         [OperationContract]
-        Stream DownloadProduct(int idProduct, int idUser, string path, long startPoin);
+        Stream DownloadProduct(int idProduct, int idUser, long startPoin);
 
         [OperationContract]
         long GetFileSize(int idProduct);

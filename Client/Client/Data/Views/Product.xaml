@@ -7,7 +7,8 @@
                 AllowsTransparency="True" Background="Transparent"
 mc:Ignorable="d"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="Product" Height="470" Width="835.5"  ResizeMode="NoResize"  WindowStyle="None">
+        Title="Product" Height="470
+        " Width="835.5"  ResizeMode="NoResize"  WindowStyle="None">
     <Window.Resources>
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
             <Setter Property="Template">
@@ -144,14 +145,14 @@ mc:Ignorable="d"
             <Setter Property="Template" Value="{StaticResource VerticalScrollBar}"/>
         </Style>
         <ControlTemplate x:Key="TextBoxBaseControlTemplate" TargetType="{x:Type TextBoxBase}">
-            <Border Background="{TemplateBinding Background}" 
+            <Border Background="Transparent" 
                 x:Name="Bd" BorderBrush="White"
                 BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,0,0,10">
                 <ScrollViewer x:Name="PART_ContentHost"/>
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Background" Value="Transparent" TargetName="Bd"/>
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                 </Trigger>
                 <Trigger Property="Width" Value="Auto">
@@ -315,36 +316,6 @@ mc:Ignorable="d"
                                 <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
                             </Trigger>
 
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type TabItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Border Name="Border"  BorderBrush="White" BorderThickness="1" CornerRadius="12,12,0,0" Margin="0,11,0,0" Height="35" >
-                            <Grid Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Center" Height="25">
-                                <Label Name="L2" Content="{TemplateBinding Header}" Foreground="Gray" VerticalAlignment="Bottom" Height="28"></Label>
-                            </Grid>
-
-
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter TargetName="L2" Property="Foreground" Value="White"/>
-                                <!--<Setter TargetName="Icon" Property="Source" Value="C:\\test.png"></Setter>-->
-                            </Trigger>
-
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="FontWeight" Value="Light"/>
-                                <Setter Property="Height" TargetName="L2" Value="28"></Setter>
-                                <!--<Setter TargetName="Icon" Property="Source" Value=""></Setter>-->
-                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -607,7 +578,7 @@ mc:Ignorable="d"
                             </Grid.RowDefinitions>
 
                             <TextBlock Name="mycom_hint"   Background="Transparent" Opacity="0.6" Margin="10,10,0,0" Padding="10,0,0,0" Text="Напишите, что вы думаете об этой игре"  TextWrapping="Wrap" Width="670" Height="50" HorizontalAlignment="Left" Foreground="White"></TextBlock>
-                            <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" BorderBrush="White" Name="mycomm" Background="Transparent" Margin="10,10,0,0" TextChanged="Mycomm_TextChanged" Padding="10,0,0,0"  TextWrapping="Wrap" Width="670" HorizontalAlignment="Left" Height="50"  Foreground="White"></TextBox>
+                            <TextBox Template="{StaticResource TextBoxBaseControlTemplate}" BorderBrush="White" Name="mycomm" Background="Transparent" Margin="10,0,0,0" TextChanged="Mycomm_TextChanged" Padding="10,0,0,0"  TextWrapping="Wrap" Width="670" HorizontalAlignment="Left" Height="50"  Foreground="White"></TextBox>
                             <Button Style="{DynamicResource comRoundCorner}" Panel.ZIndex="1" Name="com" Background="#FFFFC8F7" Click="Com_Click" Content="Отправить" HorizontalAlignment="Right" Height="50" Width="75" Margin="0,0,5,0" FontSize="12" FontWeight="Bold" Foreground="White"></Button>
                             <ComboBox Style="{DynamicResource ComboBoxTest2 }" VerticalAlignment="Center" Height="50" Width="60" HorizontalAlignment="Center" Name="howstar" Grid.Column="2" Margin="680,0,80,0" Background="Transparent"  BorderBrush="Transparent" FontWeight="Bold" FontSize="30" Foreground="White" >
                                 <ComboBoxItem Height="30" HorizontalAlignment="Center">

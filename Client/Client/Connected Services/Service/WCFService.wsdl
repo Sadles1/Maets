@@ -165,12 +165,6 @@
   <wsdl:message name="IWCFService_GetEasyProfile_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetEasyProfileResponse" />
   </wsdl:message>
-  <wsdl:message name="IWCFService_GetWayToGame_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetWayToGame" />
-  </wsdl:message>
-  <wsdl:message name="IWCFService_GetWayToGame_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetWayToGameResponse" />
-  </wsdl:message>
   <wsdl:message name="IWCFService_CheckMailRegister_InputMessage">
     <wsdl:part name="parameters" element="tns:CheckMailRegister" />
   </wsdl:message>
@@ -245,6 +239,9 @@
   </wsdl:message>
   <wsdl:message name="IWCFService_AcceptFriendRequest_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:AcceptFriendRequest" />
+  </wsdl:message>
+  <wsdl:message name="IWCFService_DeleteFromFriend_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFromFriend" />
   </wsdl:message>
   <wsdl:message name="IDownloadService_DownloadProduct_InputMessage">
     <wsdl:part name="parameters" element="tns:DownloadProduct" />
@@ -365,10 +362,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetEasyProfile" message="tns:IWCFService_GetEasyProfile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetEasyProfileResponse" message="tns:IWCFService_GetEasyProfile_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetWayToGame">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/GetWayToGame" message="tns:IWCFService_GetWayToGame_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/GetWayToGameResponse" message="tns:IWCFService_GetWayToGame_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckMailRegister">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFService/CheckMailRegister" message="tns:IWCFService_CheckMailRegister_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/CheckMailRegisterResponse" message="tns:IWCFService_CheckMailRegister_OutputMessage" />
@@ -433,6 +426,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AcceptFriendRequest">
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/AcceptFriendRequest" message="tns:IWCFService_AcceptFriendRequest_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteFromFriend">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFService/DeleteFromFriend" message="tns:IWCFService_DeleteFromFriend_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="IDownloadService">
@@ -676,15 +672,6 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetWayToGame">
-      <soap12:operation soapAction="http://tempuri.org/IWCFService/GetWayToGame" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="CheckMailRegister">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/CheckMailRegister" style="document" />
       <wsdl:input>
@@ -816,6 +803,12 @@
     </wsdl:operation>
     <wsdl:operation name="AcceptFriendRequest">
       <soap12:operation soapAction="http://tempuri.org/IWCFService/AcceptFriendRequest" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteFromFriend">
+      <soap12:operation soapAction="http://tempuri.org/IWCFService/DeleteFromFriend" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

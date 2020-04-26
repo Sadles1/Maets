@@ -134,8 +134,8 @@ namespace Client
         {
             if (tbPublisher.Text != "")
             {
-
-                tbPublisher_hint.Visibility = Visibility.Hidden; }
+                tbPublisher_hint.Visibility = Visibility.Hidden;
+            }
             else tbPublisher_hint.Visibility = Visibility.Visible;
         }
 
@@ -166,7 +166,7 @@ namespace Client
                 {
                     scrs.Add(gamescreen[i]);
                 }
-                ShopWindows.client.AddModerationProduct(yourgame, scrs.ToArray());
+                ShopWindows.client.AddModerationProduct(MainWindow.shopWindows.profile.Mail,yourgame, scrs.ToArray());
                 System.Windows.MessageBox.Show("Успешно отправлено на модерацию");
                 MainWindow.shopWindows.Visibility = Visibility.Visible;
                 MainWindow.shopWindows.Refresh.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));

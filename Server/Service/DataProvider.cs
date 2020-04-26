@@ -226,13 +226,14 @@ namespace Service
         {
             using(postgresContext context = new postgresContext())
             {
-
                 string pathToModeratateProduct = $@"{BaseSettings.Default.SourcePath}\ModerateProducts\{idModerationProduct}";
 
                 //Удалить все файлы
                 if(Directory.Exists(pathToModeratateProduct))
                     foreach (string newPath in Directory.GetFiles(pathToModeratateProduct, "*.*", SearchOption.AllDirectories))
                         File.Delete(newPath);
+                Directory.Delete($@"{pathToModeratateProduct}\Images");
+                Directory.Delete(pathToModeratateProduct);
 
                 List<TModerateEmployers> moderateEmployers = context.TModerateEmployers.Where(u => u.IdModerateProduct == idModerationProduct).ToList();
                 foreach (TModerateEmployers moderator in moderateEmployers)
@@ -299,12 +300,22 @@ namespace Service
             using(postgresContext context = new postgresContext())
             {
                 TUsers user = context.TUsers.FirstOrDefault(u => u.Id == id);
-                if (user.TotalSpentMoney >= 1500 && user.TotalSpentMoney <3000)
-                    user.PersonalDiscount = 0.03;
-                if (user.TotalSpentMoney >= 3000 && user.TotalSpentMoney < 6000)
-                    user.PersonalDiscount = 0.05;
-                if (user.TotalSpentMoney >= 15000)
-                    user.PersonalDiscount = 0.1;
+                if (user.TotalSpentMoney >= 1500 && user.TotalSpentMoney < 3000)
+                {
+                    user.PersonalDiscount = 3;
+                    Console.WriteLine("Test1 " + user.PersonalDiscount);
+                }
+                else if (user.TotalSpentMoney >= 3000 && user.TotalSpentMoney < 6000)
+                {
+                    user.PersonalDiscount = 5;
+                    Console.WriteLine("Test2 " + user.PersonalDiscount);
+                }
+                else if (user.TotalSpentMoney >= 15000)
+                {
+                    user.PersonalDiscount =10;
+                    Console.WriteLine("Test3 " + user.PersonalDiscount);
+                }
+                Console.WriteLine("Test4 " + user.PersonalDiscount);
                 context.TUsers.Update(user);
                 context.SaveChanges();
             }

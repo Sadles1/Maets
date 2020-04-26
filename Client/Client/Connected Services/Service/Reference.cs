@@ -738,10 +738,10 @@ namespace Client.Service {
         System.Threading.Tasks.Task<bool> CheckBlacklistAsync(int IdMainUser, int IdSeconUser);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
-        void AddModerationProduct(Client.Service.Product product, byte[][] Images);
+        void AddModerationProduct(string mail, Client.Service.Product product, byte[][] Images);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AddModerationProduct")]
-        System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product, byte[][] Images);
+        System.Threading.Tasks.Task AddModerationProductAsync(string mail, Client.Service.Product product, byte[][] Images);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteAccount")]
         void DeleteAccount(int id);
@@ -857,12 +857,6 @@ namespace Client.Service {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetEasyProfile", ReplyAction="http://tempuri.org/IWCFService/GetEasyProfileResponse")]
         System.Threading.Tasks.Task<Client.Service.Profile> GetEasyProfileAsync(int id);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetWayToGame", ReplyAction="http://tempuri.org/IWCFService/GetWayToGameResponse")]
-        string GetWayToGame(int idUser, int idGame);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/GetWayToGame", ReplyAction="http://tempuri.org/IWCFService/GetWayToGameResponse")]
-        System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWCFService/CheckMailRegister", ReplyAction="http://tempuri.org/IWCFService/CheckMailRegisterResponse")]
         string CheckMailRegister(string Mail);
         
@@ -968,6 +962,9 @@ namespace Client.Service {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/AcceptFriendRequest")]
         void AcceptFriendRequest(Client.Service.Profile pr);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWCFService/DeleteFromFriend")]
+        void DeleteFromFriend(int id);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1078,12 +1075,12 @@ namespace Client.Service {
             return base.Channel.CheckBlacklistAsync(IdMainUser, IdSeconUser);
         }
         
-        public void AddModerationProduct(Client.Service.Product product, byte[][] Images) {
-            base.Channel.AddModerationProduct(product, Images);
+        public void AddModerationProduct(string mail, Client.Service.Product product, byte[][] Images) {
+            base.Channel.AddModerationProduct(mail, product, Images);
         }
         
-        public System.Threading.Tasks.Task AddModerationProductAsync(Client.Service.Product product, byte[][] Images) {
-            return base.Channel.AddModerationProductAsync(product, Images);
+        public System.Threading.Tasks.Task AddModerationProductAsync(string mail, Client.Service.Product product, byte[][] Images) {
+            return base.Channel.AddModerationProductAsync(mail, product, Images);
         }
         
         public void DeleteAccount(int id) {
@@ -1236,14 +1233,6 @@ namespace Client.Service {
         
         public System.Threading.Tasks.Task<Client.Service.Profile> GetEasyProfileAsync(int id) {
             return base.Channel.GetEasyProfileAsync(id);
-        }
-        
-        public string GetWayToGame(int idUser, int idGame) {
-            return base.Channel.GetWayToGame(idUser, idGame);
-        }
-        
-        public System.Threading.Tasks.Task<string> GetWayToGameAsync(int idUser, int idGame) {
-            return base.Channel.GetWayToGameAsync(idUser, idGame);
         }
         
         public string CheckMailRegister(string Mail) {

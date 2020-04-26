@@ -84,10 +84,22 @@ namespace Client
                     }
                     else
                     {
-                        btnChat.Visibility = Visibility.Visible;
-                        btnnewfriend.Visibility = Visibility.Visible;
-                        btndelfriend.Visibility = Visibility.Hidden;
+                        if (checkfriendsrequesti())
+                        {
+                            FriendYN.Visibility = Visibility.Hidden;
+                            btndelfriend.Visibility = Visibility.Hidden;
+                            btnnewfriend.Visibility = Visibility.Hidden;
+                            newreqest.Visibility = Visibility.Visible;
+                        }
+                        if (checkfriendsrequest())
+                        {
+                            FriendYN.Visibility = Visibility.Visible;
+                            btndelfriend.Visibility = Visibility.Hidden;
+                            btnnewfriend.Visibility = Visibility.Hidden;
+                        }
                     }
+                    
+
                 }
                 Loaded += Window_Loaded;
 
@@ -122,9 +134,21 @@ namespace Client
             if (cnt != 0) return true;
             else return false;
         }
+        public bool checkfriendsrequesti()
+        {
+            List<Service.Profile> myfriends = ShopWindows.client.GetFriendRequests(Resiver.ID).ToList();
+            int i = 0;
+            int cnt = 0;
+            for (i = 0; i < myfriends.Count; i++)
+            {
+                if (Sender.ID == myfriends[i].ID) cnt++;
+            }
+            if (cnt != 0) return true;
+            else return false;
+        }
         private void Inicialize(Service.Profile productnow)
         {
-            tbFriendUser.Text = "Друзья пользователя " + productnow.Login;
+            tbFriendUser.Text = "Друзья1 пользователя " + productnow.Login;
             //Service.WCFServiceClient client1 = new Service.WCFServiceClient("NetTcpBinding_IWCFService");
 
             if (Sender.AccessRight == 4)
@@ -145,24 +169,7 @@ namespace Client
             Lv.ItemsSource = productnow.Friends;
 
 
-            if (checkfriendsrequest())
-            {
-                FriendYN.Visibility = Visibility.Visible;
-                btndelfriend.Visibility = Visibility.Hidden;
-                btnnewfriend.Visibility = Visibility.Hidden;
-            }
-            else
-            if (checkfriends())
-            {
-                btndelfriend.Visibility = Visibility.Visible;
-                btnnewfriend.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                btnnewfriend.Visibility = Visibility.Visible;
-                btndelfriend.Visibility = Visibility.Hidden;
-
-            }
+           
         }
 
 
@@ -234,7 +241,15 @@ namespace Client
         private void Btndelfriend_Click(object sender, RoutedEventArgs e)
         {
             ShopWindows.client.DeleteFriend(Sender.ID, Resiver.ID);
+            for(int i=0;i<ShopWindows.r.Count; i++)
+            {
+                if(ShopWindows.r[i].ID==Resiver.ID)
+                {
+                    ShopWindows.r.RemoveAt(i);
+                }
+            }
             btnnewfriend.Visibility = Visibility.Visible;
+            btndelfriend.Visibility = Visibility.Hidden;
             newreqest.Visibility = Visibility.Hidden;
         }
 
