@@ -51,8 +51,22 @@ namespace Service
 
                     idDeal++;
                 }
-                //dp.CheckDiscount(profile.Id);
-                profile.PersonalDiscount = 10;
+
+                if (profile.TotalSpentMoney >= 1500 && profile.TotalSpentMoney < 3000)
+                {
+                    profile.PersonalDiscount = 3;
+                }
+                else if (profile.TotalSpentMoney >= 3000 && profile.TotalSpentMoney < 6000)
+                {
+                    profile.PersonalDiscount = 5;
+                }
+                else if (profile.TotalSpentMoney >= 15000)
+                {
+                    profile.PersonalDiscount = 10;
+                }
+
+
+
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);
                 //Сохраняем БД
@@ -116,7 +130,19 @@ namespace Service
                 message.Body = mailMessage + "<p>С уважением, команда <strong>Maets</strong></p>";
                 message.SendMsg();
 
-                dp.CheckDiscount(profile.Id);
+                if (profile.TotalSpentMoney >= 1500 && profile.TotalSpentMoney < 3000)
+                {
+                    profile.PersonalDiscount = 3;
+                }
+                else if (profile.TotalSpentMoney >= 3000 && profile.TotalSpentMoney < 6000)
+                {
+                    profile.PersonalDiscount = 5;
+                }
+                else if (profile.TotalSpentMoney >= 15000)
+                {
+                    profile.PersonalDiscount = 10;
+                }
+
 
                 //Обновляем данные о пользователе в БД
                 context.TUsers.Update(profile);

@@ -22,7 +22,7 @@ namespace Service
         public int AccessRight { get; set; }
         public double Money { get; set; }
         public double TotalSpentMoney { get; set; }
-        public double PersonalDiscount { get; set; }
+        public int PersonalDiscount { get; set; }
 
         public virtual ICollection<TComments> TComments { get; set; }
         public virtual ICollection<TDeals> TDeals { get; set; }

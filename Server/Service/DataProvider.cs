@@ -300,24 +300,29 @@ namespace Service
             using(postgresContext context = new postgresContext())
             {
                 TUsers user = context.TUsers.FirstOrDefault(u => u.Id == id);
-                if (user.TotalSpentMoney >= 1500 && user.TotalSpentMoney < 3000)
-                {
-                    user.PersonalDiscount = 3;
-                    Console.WriteLine("Test1 " + user.PersonalDiscount);
-                }
-                else if (user.TotalSpentMoney >= 3000 && user.TotalSpentMoney < 6000)
-                {
-                    user.PersonalDiscount = 5;
-                    Console.WriteLine("Test2 " + user.PersonalDiscount);
-                }
-                else if (user.TotalSpentMoney >= 15000)
-                {
-                    user.PersonalDiscount =10;
-                    Console.WriteLine("Test3 " + user.PersonalDiscount);
-                }
-                Console.WriteLine("Test4 " + user.PersonalDiscount);
+                Console.WriteLine(user.Id);
+//                 if (user.TotalSpentMoney >= 1500 && user.TotalSpentMoney < 3000)
+//                 {
+//                     user.PersonalDiscount = 3;
+//                     Console.WriteLine("Test1 " + user.PersonalDiscount);
+//                 }
+//                 else if (user.TotalSpentMoney >= 3000 && user.TotalSpentMoney < 6000)
+//                 {
+//                     user.PersonalDiscount = 5;
+//                     Console.WriteLine("Test2 " + user.PersonalDiscount);
+//                 }
+//                 else if (user.TotalSpentMoney >= 15000)
+//                 {
+//                     user.PersonalDiscount =10;
+//                     Console.WriteLine("Test3 " + user.PersonalDiscount);
+//                 }
+                user.PersonalDiscount = 10;
                 context.TUsers.Update(user);
                 context.SaveChanges();
+
+//                 Console.WriteLine("Test4 " + user.PersonalDiscount);
+//                 context.TUsers.Update(user);
+//                 context.SaveChanges();
             }
         }
 
